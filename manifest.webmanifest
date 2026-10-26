@@ -1,0 +1,19 @@
+{
+  "id": "/fan-tmfl-portal/",
+  "name": "TMFL Fan Portal",
+  "short_name": "TMFL",
+  "description": "TMFL game predictions, standings, schedules and results.",
+  "start_url": "/fan-tmfl-portal/",
+  "scope": "/fan-tmfl-portal/",
+  "display": "standalone",
+  "background_color": "#0c1017",
+  "theme_color": "#a80922",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
