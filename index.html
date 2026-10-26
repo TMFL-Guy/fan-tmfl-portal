@@ -40,34 +40,8 @@ const fmt=v=>v===null?'—':String(v);
    under the matching game ID, e.g. "W05G01":"1abcDEF...".
    Drive file sharing must allow viewers with the link. */
 const TMSN_REPLAYS={};
-const TMSN_DRAFT_KEY='tmfl-tmsn-replay-drafts';
-let tmsnDrafts=read(TMSN_DRAFT_KEY,{});
 const tmsnAired=g=>!!g.slot&&!['Not Aired','Not Listed'].includes(g.slot);
-const tmsnReplayId=g=>tmsnDrafts[g.id]||TMSN_REPLAYS[g.id]||'';
-function tmsnDriveId(link){
- const v=String(link||'').trim();
- if(!v)return '';
- const m=v.match(/drive\\.google\\.com\\/file\\/d\\/([A-Za-z0-9_-]+)/)||v.match(/[?&]id=([A-Za-z0-9_-]+)/);
- return m?m[1]:/^[A-Za-z0-9_-]{20,}$/.test(v)?v:'';
-}
-function tmsnSaveDraft(id){
- const field=document.getElementById('tmsn-url-'+id);
- const raw=field.value.trim(),videoId=tmsnDriveId(raw);
- if(raw&&!videoId){alert('Please paste a valid Google Drive file sharing link.');return}
- if(videoId)tmsnDrafts[id]=videoId;else delete tmsnDrafts[id];
- localStorage.setItem(TMSN_DRAFT_KEY,JSON.stringify(tmsnDrafts));render();
-}
-function tmsnExportDrafts(){
- const data=Object.fromEntries(Object.entries(tmsnDrafts).filter(([id])=>SCHEDULE.some(g=>g.id===id&&tmsnAired(g))));
- const blob=new Blob([JSON.stringify({tmsnReplays:data},null,2)],{type:'application/json'});
- const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tmsn-replay-updates.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-}
-function tmsnEditorView(){
- const aired=SCHEDULE.filter(tmsnAired),ready=aired.filter(g=>tmsnReplayId(g)).length;
- return '<div class="panel"><h2>TMSN Video Editor</h2><p class="warning">Editor changes are saved only in this browser. They do not publish to other fans. Export the replay updates JSON and send it to the commissioner for publication. This tab is not a password-protected admin system.</p><p class="muted">'+ready+' replay links entered across '+aired.length+' televised games. Games marked Not Aired are excluded.</p><div class="row space"><label>Week <select onchange="tmsnWeek=Number(this.value);render()">'+Array.from({length:18},(_,i)=>'<option value="'+(i+1)+'" '+(tmsnWeek===i+1?'selected':'')+'>Week '+(i+1)+'</option>').join('')+'</select></label><button onclick="tmsnExportDrafts()">Export Replay Updates JSON</button></div></div><div class="tmsn-cards">'+aired.filter(g=>g.week===tmsnWeek).map(g=>'<div class="tmsn-card"><div class="tmsn-live">'+esc(g.slot)+' · '+g.id+'</div><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><label>Google Drive sharing link<input style="display:block;width:100%;margin:8px 0" id="tmsn-url-'+g.id+'" placeholder="https://drive.google.com/file/d/..." value="'+esc(tmsnReplayId(g))+'"></label><button onclick="tmsnSaveDraft(\''+g.id+'\')">Save Link</button> '+(tmsnReplayId(g)?'<span class="muted">Replay configured</span>':'<span class="muted">No replay</span>')+'</div>').join('')+'</div>';
-}
-
-let tmsnWeek=5,tmsnTeam='all',tmsnSelected=null;
+const tmsnReplayId=g=>TMSN_REPLAYS[g.id]||'';
 function tmsnView(){
  const available=SCHEDULE.filter(g=>tmsnAired(g));
  const weeks=[...new Set(available.map(g=>g.week))].sort((a,b)=>b-a);
