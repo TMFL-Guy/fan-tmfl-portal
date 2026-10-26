@@ -40,6 +40,7 @@ const fmt=v=>v===null?'—':String(v);
    under the matching game ID, e.g. "W05G01":"1abcDEF...".
    Drive file sharing must allow viewers with the link. */
 const TMSN_REPLAYS={};
+let tmsnWeek=5,tmsnTeam="all",tmsnSelected=null;
 const tmsnAired=g=>!!g.slot&&!['Not Aired','Not Listed'].includes(g.slot);
 const tmsnReplayId=g=>TMSN_REPLAYS[g.id]||'';
 function tmsnView(){
