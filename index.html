@@ -39,7 +39,7 @@ const fmt=v=>v===null?'—':String(v);
 /* TMSN on-demand library. To publish a replay, add its Google Drive file ID
    under the matching game ID, e.g. "W05G01":"1abcDEF...".
    Drive file sharing must allow viewers with the link. */
-const TMSN_REPLAYS={};
+const TMSN_REPLAYS={"W01G01":"1yCJvlPkNKOMVMfGjo55aj1Bu60AUQYPo","W01G02":"1Td1-WTsGIuqRoCKJfGv74xsLyh8AJSxe","W01G03":"1HpjDTpn3tETApAQ7SKhEgVXeR0Xvjmp7","W01G04":"1ridApnziO1g0sp4MUTJIKMvbvzAYPOe6","W01G09":"1EFycWI3WKIQmKUG8oGzzf7XnGWzUyQAs","W01G11":"1M21HMEbYmnN_sCCxohg9W2M6pKTxZYr3"};
 let tmsnWeek=5,tmsnTeam="all",tmsnSelected=null;
 const tmsnAired=g=>!!g.slot&&!['Not Aired','Not Listed'].includes(g.slot);
 const tmsnReplayId=g=>TMSN_REPLAYS[g.id]||'';
