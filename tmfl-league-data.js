@@ -1,0 +1,1 @@
+window.TMFL_PUBLISHED_DATA = { rosters: {}, draftPicks: [] };
