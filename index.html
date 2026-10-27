@@ -24,7 +24,10 @@ const persist=()=>localStorage.setItem(STORE,JSON.stringify(state));
 const saveOfficial=()=>localStorage.setItem(OFFICIAL,JSON.stringify(official));
 const bracket=()=>state.brackets[state.current];
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const gamesByWeek=w=>SCHEDULE.filter(g=>g.week===w);
+// Index the fixed published schedule once instead of rescanning every game for each dashboard query.
+const GAMES_BY_WEEK=Object.fromEntries(Array.from({length:18},(_,i)=>[i+1,[]]));
+for(const game of SCHEDULE)if(GAMES_BY_WEEK[game.week])GAMES_BY_WEEK[game.week].push(game);
+const gamesByWeek=w=>GAMES_BY_WEEK[w]||[];
 const validScore=(x)=>Number.isInteger(Number(x))&&String(x).trim()!==''&&Number(x)>=0&&Number(x)<=999;
 const normalize=(g,v)=>{if(!v||!validScore(v.a)||!validScore(v.h))return null;let a=Number(v.a),h=Number(v.h),ot=!!v.ot;return {a,h,ot}};
 const result=g=>normalize(g,official[g.id])||normalize(g,bracket().games[g.id]);
@@ -78,9 +81,10 @@ const officialRecords=()=>{
 const completedWeeks=()=>Array.from({length:18},(_,i)=>i+1).filter(w=>gamesByWeek(w).length>0&&gamesByWeek(w).every(g=>!!officialResult(g)));
 const latestCompletedWeek=()=>Math.max(0,...completedWeeks());
 function homeView(){
- const done=SCHEDULE.filter(g=>officialResult(g)).length, next=Array.from({length:18},(_,i)=>i+1).find(w=>gamesByWeek(w).some(g=>!officialResult(g)))||18;
- const gs=gamesByWeek(next),completed=officialGamesForWeek(next),pending=gs.filter(g=>!officialResult(g));
- const finishedWeek=latestCompletedWeek(),r=officialRecords(),ss=seeds(r),last=SCHEDULE.filter(g=>officialResult(g)).slice(-5).reverse();
+ const finals=SCHEDULE.filter(g=>officialResult(g)),done=finals.length;
+ const next=Array.from({length:18},(_,i)=>i+1).find(w=>gamesByWeek(w).some(g=>!officialResult(g)))||18;
+ const gs=gamesByWeek(next),completed=gs.filter(g=>officialResult(g)),pending=gs.filter(g=>!officialResult(g));
+ const finishedWeek=latestCompletedWeek(),r=officialRecords(),ss=seeds(r),last=finals.slice(-5).reverse();
  return `<div class="panel"><h2>TMFL League Dashboard</h2><p class="muted">Official season updates and your personal prediction tools in one place.</p><div class="grid"><div class="game"><h3>Current schedule</h3><strong>Week ${next}</strong><p>${completed.length}/${gs.length} games final this week</p></div><div class="game"><h3>Season progress</h3><strong>${done} / ${SCHEDULE.length}</strong><p>Official regular-season finals</p></div><div class="game"><h3>Completed standings week</h3><strong>${finishedWeek?`Week ${finishedWeek}`:'None yet'}</strong><p>Accuracy updates after all games in a week are final</p></div></div></div><div class="grid"><div class="panel"><h3>Next matchups · Week ${next}</h3>${pending.length?pending.slice(0,7).map(g=>`<div class="mini-row">${esc(g.away)} @ ${esc(g.home)} <span class="muted">${esc(g.slot)}</span></div>`).join(''):'<p class="muted">All games for this week are final.</p>'}<button onclick="tab='games';state.week=${next};persist();render()">Open Game Predictor</button></div><div class="panel"><h3>Featured Matchup</h3>${featuredMatchupCard(next)}</div><div class="panel"><h3>Recent official finals</h3>${last.length?last.map(g=>`<div class="mini-row">${scoreLine(g,officialResult(g))}<span class="muted">W${g.week}</span></div>`).join(''):'<p class="muted">No official finals have been published yet.</p>'}<button onclick="tab='recaps';render()">View Weekly Recaps</button></div><div class="panel"><h3>Current conference leaders</h3>${['AFC','NFC'].map(c=>`<div class="mini-row"><strong>${c}</strong><span>${esc(ss[c][0])} · ${r[ss[c][0]].w}-${r[ss[c][0]].l}-${r[ss[c][0]].ties}</span></div>`).join('')}<p class="muted">Leaders based on official results only; ties are broken using TMFL standings rules.</p><button onclick="tab='picture';render()">Playoff Picture</button></div></div>`;
 }
 
