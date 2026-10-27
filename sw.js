@@ -13,7 +13,7 @@ self.addEventListener('fetch',event=>{
  if(event.request.mode==='navigate'){
   const cached=caches.match('./index.html');
   const refresh=fetch(event.request,{cache:'no-store'}).then(response=>{
-   if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache=>cache.put('./index.html',copy)));}
+   if(response.ok){const copy=response.clone();return caches.open(CACHE).then(cache=>cache.put('./index.html',copy)).then(()=>response);}
    return response;
   });
   event.waitUntil(refresh.then(()=>{}).catch(()=>{}));
