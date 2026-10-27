@@ -89,7 +89,8 @@ async function accountView(){
  if(session){
    const email=esc(session.user.email||'');
    const name=esc(session.user.user_metadata?.display_name||'Fan');
-   return '<section class="panel"><h2>TMFL Fan Account</h2><p>Signed in as <strong>'+email+'</strong></p><p>Display name: <strong>'+name+'</strong></p><p>Your existing browser-saved predictions have not been changed. Cloud prediction syncing is not enabled yet.</p><p id="tmfl-auth-message" role="status">'+esc(tmflAuthMessage)+'</p><div class="actions"><button onclick="tmflSignOut()">Sign Out</button></div></section>';
+   const verified=!!session.user.email_confirmed_at;
+   return '<section class="panel"><h2>TMFL Fan Account</h2><p>Signed in as <strong>'+email+'</strong></p><p>Email status: <strong>'+ (verified?'Verified':'Not verified') +'</strong></p>'+(verified?'':'<div class="notice"><strong>Verify your email to finish setting up your account</strong><p>Check your inbox for the TMFL account confirmation email and click its confirmation link. If you cannot find it, check spam or junk, or request another confirmation email below.</p><button onclick="tmflResendConfirmation()">Resend Confirmation Email</button></div>')+'<p>Display name: <strong>'+name+'</strong></p><p>Your existing browser-saved predictions have not been changed. Cloud prediction syncing is not enabled yet.</p><p id="tmfl-auth-message" role="status">'+esc(tmflAuthMessage)+'</p><div class="actions"><button onclick="tmflSignOut()">Sign Out</button></div></section>';
  }
  return '<section class="panel"><h2>TMFL Fan Account</h2><p>Create an account or sign in to prepare for shared predictions and the leaderboard.</p><label for="tmfl-display-name">Display name (for the leaderboard)</label><input id="tmfl-display-name" autocomplete="nickname" minlength="2" maxlength="24" placeholder="2–24 characters"><label for="tmfl-email">Email address</label><input id="tmfl-email" type="email" autocomplete="email" placeholder="you@example.com" required><label for="tmfl-password">Password</label><input id="tmfl-password" type="password" autocomplete="current-password" minlength="8" placeholder="At least 8 characters" required><p class="muted">Use an email address you can access. Never share your password with anyone.</p><div class="notice"><strong>Email confirmation required</strong><p>After you create an account, look for a confirmation email sent through Supabase, the service TMFL uses for account emails. The sender name or address may vary. Open the email and click its confirmation link, then return to this portal and sign in. If you do not see it, check your spam or junk folder.</p></div><p id="tmfl-auth-message" role="status">'+esc(tmflAuthMessage)+'</p><div class="actions"><button onclick="tmflSignUp()">Create Account</button><button onclick="tmflSignIn()">Sign In</button><button onclick="tmflResetPassword()">Reset Password</button></div></section>';
 }
@@ -115,10 +116,24 @@ async function tmflSignUp(){
  try{
   const {data,error}=await client.auth.signUp({email:f.email,password:f.password,options:{data:{display_name:f.displayName},emailRedirectTo:location.origin+location.pathname}});
   if(error)throw error;
-  if(data.session&&data.user){await tmflEnsureProfile(data.user,f.displayName);tmflAuthMessage='Account created and signed in.';}
-  else tmflAuthMessage='Account request submitted. Check your email to confirm your account, then sign in here.';
+  if(data.session&&data.user&&data.user.email_confirmed_at){await tmflEnsureProfile(data.user,f.displayName);tmflAuthMessage='Account created and email verified.';}
+  else tmflAuthMessage='Account created or request received. Check your email for the confirmation link before using verified account features.';
   render();
  }catch(e){tmflShowAuthMessage(e.message||'Could not create account.');}
+ finally{tmflAuthBusy=false;}
+}
+async function tmflResendConfirmation(){
+ if(tmflAuthBusy)return;
+ const client=window.tmflSupabase;
+ const {data:{session}}=await client.auth.getSession();
+ const email=session?.user?.email||tmflAuthFields().email;
+ if(!email){tmflShowAuthMessage('Enter the email address you used to register.');return;}
+ tmflAuthBusy=true;
+ try{
+  const {error}=await client.auth.resend({type:'signup',email,options:{emailRedirectTo:location.origin+location.pathname}});
+  if(error)throw error;
+  tmflShowAuthMessage('If this account can receive a confirmation email, a new message has been requested. Check your inbox and spam folder.');
+ }catch(e){tmflShowAuthMessage(e.message||'Could not resend confirmation email.');}
  finally{tmflAuthBusy=false;}
 }
 async function tmflSignIn(){
@@ -129,8 +144,9 @@ async function tmflSignIn(){
  try{
   const {data,error}=await client.auth.signInWithPassword({email:f.email,password:f.password});
   if(error)throw error;
+  if(data.user&&!data.user.email_confirmed_at){await client.auth.signOut();throw new Error('Your email is not verified yet. Open the confirmation link from your email, then sign in again.');}
   if(data.user)await tmflEnsureProfile(data.user,f.displayName);
-  tmflAuthMessage='You are signed in. Your local predictions remain untouched.';
+  tmflAuthMessage='You are signed in with a verified email. Your local predictions remain untouched.';
   render();
  }catch(e){tmflShowAuthMessage(e.message||'Could not sign in.');}
  finally{tmflAuthBusy=false;}
