@@ -16,8 +16,8 @@ const DIVS={'AFC East':['Bills','Dolphins','Patriots','Jets'],'AFC North':['Rave
 const TEAMS=Object.values(DIVS).flat(), div=Object.fromEntries(Object.entries(DIVS).flatMap(([k,v])=>v.map(t=>[t,k]))), conf=t=>div[t].slice(0,3);
 const HISTORY_STORE='tmfl-v1-history',PUBLISHED_HISTORY=[{"year":2025,"champion":"Broncos","runner":"Eagles","score":"28–21"},{"year":2024,"champion":"Lions","runner":"Bills","score":"34–30"},{"year":2023,"champion":"Broncos","runner":"Rams","score":"26–24"},{"year":2022,"champion":"Chiefs","runner":"Cowboys","score":"35–26"}];
 const PUBLISHED_FAN_FEATURES={};
-const PUBLISHED_DRAFT_PICKS=[];
-const PUBLISHED_ROSTERS={};
+let PUBLISHED_DRAFT_PICKS=[];
+let PUBLISHED_ROSTERS={};
 const GOTW_REQUEST_FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSep-hdSN7mTfOo2_qwHiOX9rUX9NpO29CGgoK59U4pcS-UlqA/viewform";
 const STORE='tmfl-v3-predictions',OFFICIAL='tmfl-v3-official',SCHEDULE_STORE='tmfl-v4-schedule';
 const fresh=()=>({week:1,current:'My Bracket',brackets:{'My Bracket':{games:{},playoffs:{}}}});
@@ -540,5 +540,13 @@ if(localStorage.getItem(HISTORY_VERSION)!==JSON.stringify(PUBLISHED_HISTORY)){hi
 const PLAYOFF_VERSION='tmfl-v4-last-published-playoffs';
 let previousPlayoffs=localStorage.getItem(PLAYOFF_VERSION),currentPlayoffs=JSON.stringify(PUBLISHED_PLAYOFF_RESULTS);
 if(previousPlayoffs!==currentPlayoffs){playoffOfficial={...PUBLISHED_PLAYOFF_RESULTS};savePlayoffOfficial();localStorage.setItem(PLAYOFF_VERSION,currentPlayoffs)}
+// Commissioner-published rosters and draft picks, loaded from the GitHub Pages JSON file.
+fetch('./tmfl-league-data.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('League data unavailable');return r.json()}).then(data=>{
+ if(data&&typeof data==='object'){
+  PUBLISHED_DRAFT_PICKS=Array.isArray(data.draftPicks)?data.draftPicks.filter(p=>p&&typeof p.player==='string'&&typeof p.team==='string'):[];
+  PUBLISHED_ROSTERS=data.rosters&&typeof data.rosters==='object'&&!Array.isArray(data.rosters)?data.rosters:{};
+  if(tab==='teams'||tab==='draft-central')render();
+ }
+}).catch(e=>console.warn('Draft and roster data could not be loaded:',e));
 document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('nav .nav-group').forEach(g=>g.open=false);render()});requestAnimationFrame(()=>render());
 </script><script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(error=>console.warn('TMFL offline setup unavailable:',error)))}</script></body></html>
