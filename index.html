@@ -13,13 +13,11 @@ const fresh=()=>({week:1,current:'My Bracket',brackets:{'My Bracket':{games:{},p
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}};
 let state=read(STORE,fresh());if(!state.brackets||typeof state.brackets!=='object')state=fresh();if(!state.brackets[state.current])state.current=Object.keys(state.brackets)[0]||'My Bracket';if(!state.brackets[state.current])state=fresh();
 let official=read(OFFICIAL,{}), tab='home';
-let historyEntries=Array.isArray(read(HISTORY_STORE,[]))?read(HISTORY_STORE,[]):[];
+const loadedHistory=read(HISTORY_STORE,[]);
+let historyEntries=Array.isArray(loadedHistory)?loadedHistory:[];
 const saveHistory=()=>localStorage.setItem(HISTORY_STORE,JSON.stringify(historyEntries));
-const PUBLISHED_SCHEDULE=JSON.parse(JSON.stringify(SCHEDULE));
-const savedSchedule=read(SCHEDULE_STORE,null);
-const scheduleVersion=JSON.stringify(PUBLISHED_SCHEDULE);
-if(localStorage.getItem('tmfl-v4-schedule-version')!==scheduleVersion){localStorage.setItem('tmfl-v4-schedule-version',scheduleVersion)}
-if(false&&localStorage.getItem(SCHEDULE_STORE)&&Array.isArray(savedSchedule)&&savedSchedule.length&&savedSchedule.every(g=>g&&typeof g.id==='string'&&Number.isInteger(g.week)&&g.week>=1&&g.week<=18&&typeof g.away==='string'&&typeof g.home==='string'))SCHEDULE=savedSchedule;
+// The published schedule is already embedded below; avoid cloning and serializing it
+// into localStorage on every visit. Existing saved predictions and history remain untouched.
 for(const g of SCHEDULE){if(!g.slot||g.slot==='Not Listed')g.slot='Not Aired'}
 let editorWeek=1;
 const persist=()=>localStorage.setItem(STORE,JSON.stringify(state));
