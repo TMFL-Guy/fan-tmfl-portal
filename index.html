@@ -808,7 +808,20 @@ let previousPlayoffs=localStorage.getItem(PLAYOFF_VERSION),currentPlayoffs=JSON.
 if(previousPlayoffs!==currentPlayoffs){playoffOfficial={...PUBLISHED_PLAYOFF_RESULTS};savePlayoffOfficial();localStorage.setItem(PLAYOFF_VERSION,currentPlayoffs)}
 
 const tmflLoadingHTML=()=>'<div class="loading-panel" role="status" aria-label="Loading"><div class="tmfl-kick-scoreboard" aria-label="Field goal points">POINTS <strong class="tmfl-kick-points">0</strong></div><div class="loading-scene"><div class="loading-crossbar"></div><div class="loading-left-upright"></div><div class="loading-right-upright"></div><div class="loading-support"></div><div class="loading-football"><div class="loading-ball-spin"></div></div></div><div class="loading-label">Loading<span class="loading-dots"></span></div></div>';
-document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('nav .nav-group').forEach(g=>g.open=false);render()});(function tmflSiteUpdateWatcher(){
+document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('nav .nav-group').forEach(g=>g.open=false);render()});
+const tmflNavGroups=[...document.querySelectorAll('nav details.nav-group')];
+function tmflCloseNavGroups(except=null){tmflNavGroups.forEach(group=>{if(group!==except)group.open=false})}
+// Opening one category closes any other open category.
+tmflNavGroups.forEach(group=>group.addEventListener('toggle',()=>{if(group.open)tmflCloseNavGroups(group)}));
+// Clicking outside the navigation or choosing another control closes its dropdowns.
+document.addEventListener('pointerdown',event=>{
+ if(!event.target.closest('nav details.nav-group'))tmflCloseNavGroups();
+});
+// Keyboard focus leaving the navigation closes any open menu.
+document.addEventListener('focusin',event=>{
+ if(!event.target.closest('nav details.nav-group'))tmflCloseNavGroups();
+});
+(function tmflSiteUpdateWatcher(){
  const KEY='tmfl-last-site-hash-v1';
  let currentHash='',checking=false;
  const banner=document.createElement('aside');
