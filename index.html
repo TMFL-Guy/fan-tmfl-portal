@@ -199,7 +199,7 @@ window.tmflSignUp=tmflSignUp;window.tmflSignIn=tmflSignIn;window.tmflResetPasswo
 
 async function tmflPublishedDraftView(){
  try{
-  const response=await fetch('./tmfl-draft.json',{cache:'no-store'});
+  const response=await fetch('./tmfl-draft.json',{cache:'default'});
   if(!response.ok)throw Error('Unable to load published draft');
   const data=await response.json();
   const picks=(Array.isArray(data)?data:Array.isArray(data.picks)?data.picks:[]).slice().sort((a,b)=>Number(a.year)-Number(b.year)||Number(a.overall)-Number(b.overall));
@@ -273,12 +273,27 @@ function tmflBuildNotifications(){
  tmflNotifications=items.sort((a,b)=>b.sort.localeCompare(a.sort)||a.team.localeCompare(b.team));
  tmflUpdateNotificationBadge();
 }
-async function tmflRefreshNotifications(){
- try{const response=await fetch('./tmfl-news.json?refresh='+Date.now(),{cache:'no-store'});if(response.ok){const data=await response.json();tmflNewsCache=Array.isArray(data.articles)?data.articles.filter(x=>x&&x.published===true&&typeof x.title==='string'&&typeof x.body==='string'):[]}}
- catch(e){console.warn('Notification news refresh unavailable',e)}
- tmflNotificationFeedLoaded=true;tmflBuildNotifications();
- if(tab==='notifications')document.getElementById('app').innerHTML=tmflNotificationsView();
+// One shared, deduplicated request powers both News and Notifications.
+let tmflNewsRequest=null,tmflNewsLoadedAt=0;
+async function tmflFetchPublishedNews(force=false){
+ if(tmflNewsRequest)return tmflNewsRequest;
+ if(!force&&tmflNewsCache!==null&&Date.now()-tmflNewsLoadedAt<60000)return tmflNewsCache;
+ tmflNewsRequest=(async()=>{
+  try{
+   const response=await fetch('./tmfl-news.json',{cache:'default'});
+   if(!response.ok)throw Error('News unavailable');
+   const data=await response.json();
+   tmflNewsCache=Array.isArray(data.articles)?data.articles.filter(x=>x&&x.published===true&&typeof x.title==='string'&&typeof x.body==='string'):[];
+   tmflNewsLoadedAt=Date.now();
+  }catch(e){if(tmflNewsCache===null)tmflNewsCache=[];console.warn('TMFL news:',e)}
+  tmflNotificationFeedLoaded=true;tmflBuildNotifications();
+  if(tab==='notifications')document.getElementById('app').innerHTML=tmflNotificationsView();
+  if(tab==='news')document.getElementById('app').innerHTML=newsCenterView();
+  return tmflNewsCache;
+ })();
+ try{return await tmflNewsRequest}finally{tmflNewsRequest=null}
 }
+function tmflRefreshNotifications(){return tmflFetchPublishedNews()}
 window.tmflOpenNotifications=()=>{tab='notifications';render();tmflUpdateNotificationBadge()};
 window.tmflMarkAllNotificationsRead=()=>{try{localStorage.setItem(TMFL_NOTIFICATIONS_SEEN,JSON.stringify([...new Set([...tmflSeenNotifications(),...tmflNotifications.map(n=>n.id)])].slice(-1500)))}catch{}tmflUpdateNotificationBadge();render()};
 window.tmflOpenNotification=id=>{
@@ -366,12 +381,7 @@ function fanPollsView(){
  return '<div class="panel"><h2>Fan Polls</h2><p class="muted">Live percentages of votes from TMFL fans. Sign in to vote; each account gets one vote per poll and may change it. Percentages use the total votes in each poll.</p>'+(cache.error?'<p class="notice">'+esc(cache.error)+'</p>':'')+(!cache.ready?'<p>Loading live results…</p>':'')+pollHtml+'<button onclick="loadTmflPolls()">Refresh Poll Results</button></div>';
 }
 let tmflNewsCache=null;
-async function loadTmflNews(){
- try{const response=await fetch('./tmfl-news.json?refresh='+Date.now(),{cache:'no-store'});if(!response.ok)throw Error('Unavailable');const payload=await response.json();tmflNewsCache=Array.isArray(payload.articles)?payload.articles.filter(x=>x&&x.published===true&&typeof x.title==='string'&&typeof x.body==='string'):[]}
- catch(e){tmflNewsCache=[];console.warn('TMFL news feed:',e)}
- tmflBuildNotifications();
- if(tab==='news')document.getElementById('app').innerHTML=newsCenterView();
-}
+function loadTmflNews(){return tmflFetchPublishedNews()}
 function newsCenterView(){
  if(tmflNewsCache===null)return '<div class="panel"><h2>TMFL News Center</h2><p>Loading published stories…</p></div>';
  const articles=tmflNewsCache.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
