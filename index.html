@@ -71,7 +71,30 @@ const TMSN_SPECIAL_GAMES=[
 ];
 const tmsnAired=g=>!!g.slot&&!['Not Aired','Not Listed'].includes(g.slot);
 const tmsnReplayId=g=>TMSN_REPLAYS[g.id]||'';
+let tmflHighlights=[],tmflHighlightsLoaded=false,tmflHighlightsRequest=null,tmflSelectedHighlight=null;
+async function tmflLoadHighlights(){
+ if(tmflHighlightsRequest)return tmflHighlightsRequest;
+ tmflHighlightsRequest=(async()=>{
+  try{
+   const response=await fetch('./tmfl-highlights.json',{cache:'no-store'});
+   if(!response.ok)throw Error('Highlights unavailable');
+   const data=await response.json();
+   tmflHighlights=Array.isArray(data.highlights)?data.highlights.filter(h=>h&&typeof h.title==='string'&&/^[A-Za-z0-9_-]{20,}$/.test(String(h.fileId||''))):[];
+  }catch(error){console.warn('TMFL highlights:',error)}
+  tmflHighlightsLoaded=true;
+  if(tab==='tmsn')render();
+ })();
+ try{return await tmflHighlightsRequest}finally{tmflHighlightsRequest=null}
+}
+function tmflHighlightsView(){
+ const highlights=tmflHighlights.slice().sort((a,b)=>Number(b.week)-Number(a.week));
+ const selected=highlights.find(h=>h.id===tmflSelectedHighlight);
+ return '<div class="panel"><div class="row space"><div><h2>Game Highlights</h2><p class="muted">Top plays and highlight reels from around the TMFL.</p></div><button onclick="tmflLoadHighlights()">Refresh Highlights</button></div>'
+ +(selected?'<div class="panel"><div class="row space"><h3>'+esc(selected.title)+'</h3><button onclick="tmflSelectedHighlight=null;render()">Close Player</button></div><iframe class="tmsn-screen" src="https://drive.google.com/file/d/'+encodeURIComponent(selected.fileId)+'/preview" allow="autoplay; fullscreen" allowfullscreen title="TMFL highlight reel"></iframe></div>':'')
+ +(highlights.length?'<div class="tmsn-cards">'+highlights.map(h=>'<div class="tmsn-card"><div class="tmsn-live">'+(Number(h.week)===-1?'PRESEASON':'WEEK '+esc(h.week))+' · HIGHLIGHTS</div><h3>'+esc(h.title)+'</h3><button onclick="tmflSelectedHighlight='+JSON.stringify(h.id).replace(/"/g,'&quot;')+';render()">▶ Watch Highlights</button></div>').join('')+'</div>':!tmflHighlightsLoaded?'<p>Loading highlights…</p>':'<p class="muted">No highlight reels published yet. Check back soon.</p>')+'</div>';
+}
 function tmsnView(){
+ if(!tmflHighlightsLoaded&&!tmflHighlightsRequest)tmflLoadHighlights();
  const available=[...TMSN_SPECIAL_GAMES,...SCHEDULE].filter(g=>tmsnAired(g));
  const weeks=[...new Set(available.map(g=>g.week))].sort((a,b)=>a===-1?-1:b===-1?1:b-a);
  if(!weeks.includes(tmsnWeek))tmsnWeek=weeks[0]||1;
@@ -82,6 +105,7 @@ function tmsnView(){
  const player=selected?'<div class="panel"><div class="row space"><h3>'+esc(selected.away)+' @ '+esc(selected.home)+' — Full Game Replay</h3><button onclick="tmsnSelected=null;render()">Close Player</button></div><iframe class="tmsn-screen" src="https://drive.google.com/file/d/'+encodeURIComponent(tmsnReplayId(selected))+'/preview" allow="autoplay; fullscreen" allowfullscreen title="TMFL game replay"></iframe><p class="muted">If the player cannot load, check Google Drive sharing permissions.</p></div>':'';
  return '<div class="tmsn-hero"><div class="tmsn-live">TMFL SPORTS NETWORK · ON DEMAND</div><div class="tmsn-brand">TM<span>S</span>N</div><h2>Every Aired Game. Every Aired Moment.</h2><p class="tmsn-sub">Your home for TMFL full-game replays, scores, and weekly matchups — all inside the Fan Portal.</p><div class="grid"><div class="game"><strong>'+ready+'</strong><p>Replays available</p></div><div class="game"><strong>'+available.filter(g=>officialResult(g)).length+'</strong><p>Official finals</p></div><div class="game"><strong>18</strong><p>Regular-season weeks</p></div></div></div>'
  +player
+ +tmflHighlightsView()
  +'<div class="panel"><div class="row space"><div><h2>Game Replay Library</h2><p class="muted">Choose a week or team. Replays appear when a recording has been published.</p></div></div><div class="tmsn-controls"><label>Week <select onchange="tmsnWeek=Number(this.value);tmsnSelected=null;render()">'+weeks.map(w=>'<option value="'+w+'" '+(w===tmsnWeek?'selected':'')+'>'+(w===-1?'Preseason':'Week '+w)+'</option>').join('')+'</select></label><label>Team <select onchange="tmsnTeam=this.value;tmsnSelected=null;render()"><option value="all">All teams</option>'+teams.map(t=>'<option value="'+esc(t)+'" '+(t===tmsnTeam?'selected':'')+'>'+esc(t)+'</option>').join('')+'</select></label></div></div>'
  +'<div class="tmsn-cards">'+(games.length?games.map(g=>{const v=g.week<=0?null:officialResult(g),has=!!tmsnReplayId(g);return '<div class="tmsn-card"><div class="tmsn-live">WEEK '+g.week+' · '+(has?'REPLAY AVAILABLE':v?'FINAL SCORE':'SCHEDULED')+'</div><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p><strong>'+(v?v.a+' – '+v.h:'Upcoming')+'</strong>'+(v&&v.ot?' (OT)':'')+'</p>'+(has?'<button onclick="tmsnSelected=\''+g.id+'\';render()">▶ Watch Full Game</button>':'<p class="muted">Replay not uploaded yet</p>')+'</div>'}).join(''):'<div class="panel"><p>No official final games match these filters.</p></div>')+'</div>'
  +'<div class="panel"><h3>About TMSN</h3><p>TMFL Sports Network is the official on-demand replay hub. Games are recorded, not livestreamed. Videos are hosted on Google Drive and become watchable here when their replay links are published.</p><button onclick="tab=\'home\';render()">Back to Fan Portal</button></div>';
