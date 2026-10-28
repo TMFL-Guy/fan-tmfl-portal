@@ -10,7 +10,7 @@ window.tmflSupabase = null;
 window.tmflInitSupabase = function(){
  if(!window.tmflSupabase && window.supabase?.createClient){
   window.tmflSupabase=window.supabase.createClient(TMFL_SUPABASE_URL,TMFL_SUPABASE_PUBLISHABLE_KEY);
-  if(typeof tab==='string' && ['account','leaderboard','fan-polls'].includes(tab) && typeof render==='function')render();
+  try{if(['account','leaderboard','fan-polls'].includes(tab)&&typeof render==='function')render()}catch(e){}
  }
 };
 window.tmflInitSupabase();
@@ -708,5 +708,7 @@ if(localStorage.getItem(HISTORY_VERSION)!==JSON.stringify(PUBLISHED_HISTORY)){hi
 const PLAYOFF_VERSION='tmfl-v4-last-published-playoffs';
 let previousPlayoffs=localStorage.getItem(PLAYOFF_VERSION),currentPlayoffs=JSON.stringify(PUBLISHED_PLAYOFF_RESULTS);
 if(previousPlayoffs!==currentPlayoffs){playoffOfficial={...PUBLISHED_PLAYOFF_RESULTS};savePlayoffOfficial();localStorage.setItem(PLAYOFF_VERSION,currentPlayoffs)}
-document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('nav .nav-group').forEach(g=>g.open=false);render()});requestAnimationFrame(()=>{render();tmflRefreshNotifications()});
+document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('nav .nav-group').forEach(g=>g.open=false);render()});requestAnimationFrame(()=>{render();if(navigator.onLine)tmflRefreshNotifications();else tmflBuildNotifications()});
+window.addEventListener('online',()=>{window.tmflInitSupabase();tmflRefreshNotifications()});
+
 </script><script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(error=>console.warn('TMFL offline setup unavailable:',error)))}</script></body></html>
