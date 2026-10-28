@@ -1,11 +1,13 @@
-const CACHE='tmfl-fan-v8-offline';
+const CACHE='tmfl-fan-v9-fast-shell';
 const ASSETS=['./index.html','./manifest.webmanifest','./tmfl-icon-512.png','./tmfl-news.json','./tmfl-draft.json'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
   const cache=await caches.open(CACHE);
-  await Promise.all(ASSETS.map(async asset=>{
-   try{const response=await fetch(asset,{cache:'reload'});if(response.ok)await cache.put(asset,response)}catch(error){console.warn('TMFL offline cache:',asset,error)}
-  }));
+  // Cache the app shell first so optional feeds cannot delay offline activation.
+  try{
+   const response=await fetch('./index.html',{cache:'reload'});
+   if(response.ok)await cache.put('./index.html',response);
+  }catch(error){console.warn('TMFL shell cache:',error)}
   await self.skipWaiting();
  })());
 });
