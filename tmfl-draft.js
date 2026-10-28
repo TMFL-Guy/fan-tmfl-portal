@@ -1,0 +1,92 @@
+window.TMFL_PUBLISHED_DRAFT=[
+  {
+    "year": 2026,
+    "round": 1,
+    "overall": 1,
+    "roundPick": 1,
+    "team": "Panthers",
+    "player": "Tetairoa McMillan",
+    "college": "Arizona"
+  },
+  {
+    "year": 2026,
+    "round": 1,
+    "overall": 2,
+    "roundPick": 2,
+    "team": "Chargers",
+    "player": "Ladd McConkey",
+    "college": "Georgia"
+  },
+  {
+    "year": 2026,
+    "round": 1,
+    "overall": 3,
+    "roundPick": 3,
+    "team": "Jets",
+    "player": "Garrett Wilson",
+    "college": "Ohio State"
+  },
+  {
+    "year": 2026,
+    "round": 1,
+    "overall": 4,
+    "roundPick": 4,
+    "team": "Eagles",
+    "player": "Cooper DeJean",
+    "college": "Iowa"
+  },
+  {
+    "year": 2026,
+    "round": 1,
+    "overall": 5,
+    "roundPick": 5,
+    "team": "Colts",
+    "player": "Dallas Clark",
+    "college": "Iowa"
+  },
+  {
+    "year": 2026,
+    "round": 1,
+    "overall": 6,
+    "roundPick": 6,
+    "team": "Browns",
+    "player": "Tim Couch",
+    "college": "Kentucky"
+  },
+  {
+    "year": 2026,
+    "round": 1,
+    "overall": 7,
+    "roundPick": 7,
+    "team": "Jets",
+    "player": "Wayne Chrebet",
+    "college": "Hofstra"
+  },
+  {
+    "year": 2026,
+    "round": 1,
+    "overall": 8,
+    "roundPick": 8,
+    "team": "Texans",
+    "player": "Chester Pitts",
+    "college": "San Diego State"
+  },
+  {
+    "year": 2026,
+    "round": 2,
+    "overall": 9,
+    "roundPick": 1,
+    "team": "Falcons",
+    "player": "Warrick Dunn",
+    "college": "Florida State"
+  },
+  {
+    "year": 2026,
+    "round": 2,
+    "overall": 10,
+    "roundPick": 2,
+    "team": "Titans",
+    "player": "Bruce Matthews",
+    "college": "USC"
+  }
+];
