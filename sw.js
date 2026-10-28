@@ -1,4 +1,4 @@
-const CACHE='tmfl-fan-v10-startup-fix';
+const CACHE='tmfl-fan-v11-fresh-navigation';
 const ASSETS=['./index.html','./manifest.webmanifest','./tmfl-icon-512.png','./tmfl-news.json','./tmfl-draft.json'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
@@ -26,12 +26,17 @@ self.addEventListener('fetch',event=>{
   event.respondWith((async()=>{
    const cache=await caches.open(CACHE);
    const cached=await cache.match('./index.html');
-   const refresh=fetch(req).then(async response=>{
-    if(response.ok)await cache.put('./index.html',response.clone());
-    return response;
-   });
-   if(cached){event.waitUntil(refresh.catch(()=>{}));return cached}
-   return refresh.catch(()=>new Response('<h1>TMFL offline setup not finished</h1><p>Connect to the internet once and reload to save the portal.</p>',{status:503,headers:{'Content-Type':'text/html'}}));
+   // Fresh page online, cached page offline. A timeout avoids hanging on poor connections.
+   if(navigator.onLine===false&&cached)return cached;
+   try{
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),3500);
+    try{
+     const response=await fetch(req,{signal:controller.signal,cache:'no-store'});
+     if(response.ok){event.waitUntil(cache.put('./index.html',response.clone()));return response}
+    }finally{clearTimeout(timeout)}
+   }catch(error){console.warn('TMFL using offline page:',error)}
+   return cached||new Response('<h1>TMFL offline</h1><p>Connect once to save the latest portal.</p>',{status:503,headers:{'Content-Type':'text/html'}});
   })());
   return;
  }
