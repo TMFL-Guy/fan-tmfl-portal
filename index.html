@@ -304,8 +304,13 @@ function homeView(){
  return `<div class="panel"><h2>TMFL League Dashboard</h2><p class="muted">Official season updates and your personal prediction tools in one place.</p><div class="grid"><div class="game"><h3>Current schedule</h3><strong>Week ${next}</strong><p>${completed.length}/${gs.length} games final this week</p></div><div class="game"><h3>Season progress</h3><strong>${done} / ${SCHEDULE.length}</strong><p>Official regular-season finals</p></div><div class="game"><h3>Completed standings week</h3><strong>${finishedWeek?`Week ${finishedWeek}`:'None yet'}</strong><p>Accuracy updates after all games in a week are final</p></div></div></div><div class="grid"><div class="panel"><h3>Next matchups · Week ${next}</h3>${pending.length?pending.slice(0,7).map(g=>`<div class="mini-row">${esc(g.away)} @ ${esc(g.home)} <span class="muted">${esc(g.slot)}</span></div>`).join(''):'<p class="muted">All games for this week are final.</p>'}<button onclick="tab='games';state.week=${next};persist();render()">Open Game Predictor</button></div><div class="panel"><h3>Featured Matchup</h3>${featuredMatchupCard(next)}</div><div class="panel"><h3>Recent official finals</h3>${last.length?last.map(g=>`<div class="mini-row">${scoreLine(g,officialResult(g))}<span class="muted">W${g.week}</span></div>`).join(''):'<p class="muted">No official finals have been published yet.</p>'}<button onclick="tab='recaps';render()">View Weekly Recaps</button></div><div class="panel"><h3>Current conference leaders</h3>${['AFC','NFC'].map(c=>`<div class="mini-row"><strong>${c}</strong><span>${esc(ss[c][0])} · ${r[ss[c][0]].w}-${r[ss[c][0]].l}-${r[ss[c][0]].ties}</span></div>`).join('')}<p class="muted">Leaders based on official results only; ties are broken using TMFL standings rules.</p><button onclick="tab='picture';render()">Playoff Picture</button></div></div>`;
 }
 
+const tmflDashboardFeaturedGame=()=>{
+ const next=Array.from({length:18},(_,i)=>i+1).find(w=>gamesByWeek(w).some(g=>!officialResult(g)))||18;
+ const pinned=String(PUBLISHED_FAN_FEATURES.featuredGameId||'').trim();
+ return (pinned&&SCHEDULE.find(g=>g.id===pinned))||gamesByWeek(next).find(g=>g.slot==='GOTW'&&!officialResult(g))||gamesByWeek(next).find(g=>!officialResult(g))||gamesByWeek(next).find(g=>officialResult(g))||null;
+};
 function featuredMatchupCard(week){
- const pinned=(PUBLISHED_FAN_FEATURES.featuredGameId||'').trim(),allGames=SCHEDULE,pinnedGame=pinned?allGames.find(x=>x.id===pinned):null,chosen=pinnedGame||gamesByWeek(week).find(x=>x.slot==='GOTW'&&!officialResult(x))||gamesByWeek(week).find(x=>!officialResult(x))||gamesByWeek(week).find(x=>officialResult(x));
+ const chosen=tmflDashboardFeaturedGame();
  if(!chosen)return '<p class="muted">No matchup is available yet.</p>';
  const g=chosen,v=officialResult(chosen);
  return '<div class="game"><span class="pill">'+(v?'FINAL':'WEEK '+g.week)+'</span><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p class="muted">'+esc(g.slot==='GOTW'?'TMFL Game of the Week':g.slot==='Not Aired'?'Scheduled matchup':g.slot)+' · '+(v?scoreLine(g,v):'Preview the matchup and make your pick')+'</p><button onclick="tab=\'games\';state.week='+g.week+';persist();render()">Open Matchup</button></div>';
@@ -417,10 +422,11 @@ function achievementsView(){
  const badges=[['First Prediction',Object.keys(p).some(id=>SCHEDULE.some(g=>g.id===id&&normalize(g,p[id])))],['First Correct Winner',correct.length>=1],['10 Correct Winners',correct.length>=10],['50 Correct Winners',correct.length>=50],['Perfect Week',perfect],['Follow a Team',getFavoriteTeams().length>0]];
  return '<div class="panel"><h2>Fan Achievements</h2><p class="muted">Milestones are calculated from predictions in '+esc(state.current)+' and favorite teams saved in this browser.</p><div class="grid">'+badges.map(([name,unlocked])=>'<div class="game"><h3>'+(unlocked?'★ ':'☆ ')+esc(name)+'</h3><p>'+(unlocked?'Unlocked':'Not yet unlocked')+'</p></div>').join('')+'</div></div>';
 }
-const tmflPublishedGotw=()=>SCHEDULE.find(x=>x.id===PUBLISHED_FAN_FEATURES.featuredGameId)||null;
+const tmflPublishedGotw=()=>tmflDashboardFeaturedGame();
+const tmflGotwPollId=g=>g?'gotw-'+g.id.toLowerCase():'gotw';
 const tmflPublishedPollOutcome=id=>{
- if(id==='gotw'){
-  const g=tmflPublishedGotw();if(!g)return null;
+ if(id.startsWith('gotw-')){
+  const g=SCHEDULE.find(x=>tmflGotwPollId(x)===id);if(!g)return null;
   const v=normalize(g,PUBLISHED_RESULTS[g.id]);if(!v)return null;
   return {locked:true,winner:v.a===v.h?null:v.a>v.h?g.away:g.home,tie:v.a===v.h,description:'Week '+g.week+' official final: '+g.away+' '+v.a+' – '+v.h+' '+g.home};
  }
@@ -431,7 +437,7 @@ const tmflPublishedPollOutcome=id=>{
  }
  return null;
 };
-const tmflPolls=()=>[{id:'champion',title:'Who will win the TMFL championship?',choices:TEAMS.slice().sort()},{id:'gotw',title:'Who will win the featured Game of the Week?',choices:(()=>{const g=tmflPublishedGotw();return g?[g.away,g.home]:[]})()}];
+const tmflPolls=()=>[{id:'champion',title:'Who will win the TMFL championship?',choices:TEAMS.slice().sort()},{id:tmflGotwPollId(tmflPublishedGotw()),title:(()=>{const g=tmflPublishedGotw();return g?'Week '+g.week+': '+g.away+' vs '+g.home+' — Featured Matchup':'Featured Matchup'})(),choices:(()=>{const g=tmflPublishedGotw();return g?[g.away,g.home]:[]})()}];
 let tmflPollCache={results:{},mine:{},ready:false,error:''};
 async function loadTmflPolls(){
  const client=window.tmflSupabase;
