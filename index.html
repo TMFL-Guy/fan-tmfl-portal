@@ -314,7 +314,7 @@ function featuredMatchupCard(week){
  const chosen=tmflDashboardFeaturedGame();
  if(!chosen)return '<p class="muted">No matchup is available yet.</p>';
  const g=chosen,v=officialResult(chosen);
- return '<div class="game"><span class="pill">'+(v?'FINAL':'WEEK '+g.week)+'</span><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p class="muted">'+esc(g.slot==='GOTW'?'TMFL Game of the Week':g.slot==='Not Aired'?'Scheduled matchup':g.slot)+' · '+(v?scoreLine(g,v):'Preview the matchup and make your pick')+'</p><button onclick="tab=\'games\';state.week='+g.week+';persist();render()">Open Matchup</button></div>';
+ return '<div class="game"><span class="pill">'+(v?'FINAL':'WEEK '+g.week)+'</span><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p class="muted">'+esc(g.slot==='GOTW'?'TMFL Game of the Week':g.slot==='Not Aired'?'Scheduled matchup':g.slot)+' · '+(v?scoreLine(g,v):'Preview the matchup and make your pick')+'</p><button onclick="tmflOpenGameCenter(\''+esc(g.id)+'\')">Open Matchup</button></div>';
 }
 const FAVORITE_TEAM_STORE='tmfl-favorite-teams-v2';
 const getFavoriteTeams=()=>{try{const saved=JSON.parse(localStorage.getItem(FAVORITE_TEAM_STORE)||'null');if(Array.isArray(saved))return [...new Set(saved.filter(t=>TEAMS.includes(t)))];const legacy=localStorage.getItem('tmfl-favorite-team-v1');return TEAMS.includes(legacy)?[legacy]:[]}catch{return []}};
