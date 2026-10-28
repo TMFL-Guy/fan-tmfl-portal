@@ -1,4 +1,4 @@
-const CACHE='tmfl-fan-v12-game-center';
+const CACHE='tmfl-fan-v13-fresh-notifications';
 const ASSETS=['./index.html','./manifest.webmanifest','./tmfl-icon-512.png','./tmfl-news.json','./tmfl-draft.json'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
@@ -36,6 +36,20 @@ self.addEventListener('fetch',event=>{
     }finally{clearTimeout(timeout)}
    }catch(error){console.warn('TMFL using offline page:',error)}
    return cached||new Response('<h1>TMFL offline</h1><p>Connect once to save the latest portal.</p>',{status:503,headers:{'Content-Type':'text/html'}});
+  })());
+  return;
+ }
+ // Always request fresh news and alerts; only use cached copies offline.
+ if(/\/(tmfl-news|tmfl-alerts)\.json$/.test(url.pathname)){
+  event.respondWith((async()=>{
+   const cache=await caches.open(CACHE);
+   try{
+    const response=await fetch(req,{cache:'no-store'});
+    if(response.ok){await cache.put(req,response.clone());return response}
+    throw Error('News or alerts feed unavailable');
+   }catch(error){
+    return await cache.match(req,{ignoreSearch:true})||new Response('{"articles":[],"entries":[]}',{status:503,headers:{'Content-Type':'application/json'}});
+   }
   })());
   return;
  }
