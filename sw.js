@@ -1,4 +1,4 @@
-const CACHE='tmfl-fan-v11-fresh-navigation';
+const CACHE='tmfl-fan-v12-game-center';
 const ASSETS=['./index.html','./manifest.webmanifest','./tmfl-icon-512.png','./tmfl-news.json','./tmfl-draft.json'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
