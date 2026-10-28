@@ -22,15 +22,16 @@ let PUBLISHED_DRAFT_PICKS=Array.isArray(window.TMFL_PUBLISHED_DRAFT)?window.TMFL
 let PUBLISHED_ROSTERS=window.TMFL_PUBLISHED_ROSTERS&&typeof window.TMFL_PUBLISHED_ROSTERS==="object"?window.TMFL_PUBLISHED_ROSTERS:(window.TMFL_PUBLISHED_DATA?.rosters&&typeof window.TMFL_PUBLISHED_DATA.rosters==="object"?window.TMFL_PUBLISHED_DATA.rosters:{});
 // Published commissioner data is stored in a separate JSON file at the repository root.
 async function tmflLoadLeagueData(){
- try{
-  const response=await fetch('./tmfl-league-data.json',{cache:'no-store'});
-  if(!response.ok){if(response.status!==404)console.warn('TMFL league data HTTP',response.status);return;}
-  const data=await response.json();
-  if(!data||typeof data!=='object'||Array.isArray(data))return;
-  if(Array.isArray(data.draftPicks))PUBLISHED_DRAFT_PICKS=data.draftPicks.filter(p=>p&&typeof p==='object');
-  if(data.rosters&&typeof data.rosters==='object'&&!Array.isArray(data.rosters))PUBLISHED_ROSTERS=data.rosters;
-  if(['draft-central','history','teams'].includes(tab))render();
- }catch(err){console.warn('TMFL league data could not be loaded:',err)}
+ // Roster and draft data are published independently by the commissioner.
+ const fetchJSON=async path=>{
+  try{const response=await fetch(path+'?v='+Date.now(),{cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);return await response.json()}
+  catch(err){console.warn('TMFL data could not be loaded from '+path,err);return null}
+ };
+ const [rosters,draft]=await Promise.all([fetchJSON('./tmfl-rosters.json'),fetchJSON('./tmfl-draft.json')]);
+ if(rosters&&typeof rosters==='object'&&!Array.isArray(rosters))PUBLISHED_ROSTERS=rosters;
+ const picks=Array.isArray(draft)?draft:draft?.picks;
+ if(Array.isArray(picks))PUBLISHED_DRAFT_PICKS=picks.filter(p=>p&&typeof p==='object');
+ if(['draft-central','teams'].includes(tab))render();
 }
 document.addEventListener('DOMContentLoaded',tmflLoadLeagueData);
 const GOTW_REQUEST_FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSep-hdSN7mTfOo2_qwHiOX9rUX9NpO29CGgoK59U4pcS-UlqA/viewform";
