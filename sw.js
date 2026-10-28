@@ -1,42 +1,50 @@
-const CACHE='tmfl-fan-v7-fast-start';
-const ASSETS=['./index.html','./manifest.webmanifest','./tmfl-icon-512.png'];
+const CACHE='tmfl-fan-v8-offline';
+const ASSETS=['./index.html','./manifest.webmanifest','./tmfl-icon-512.png','./tmfl-news.json','./tmfl-draft.json'];
 self.addEventListener('install',event=>{
- event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
- self.skipWaiting();
+ event.waitUntil((async()=>{
+  const cache=await caches.open(CACHE);
+  await Promise.all(ASSETS.map(async asset=>{
+   try{const response=await fetch(asset,{cache:'reload'});if(response.ok)await cache.put(asset,response)}catch(error){console.warn('TMFL offline cache:',asset,error)}
+  }));
+  await self.skipWaiting();
+ })());
 });
 self.addEventListener('activate',event=>{
- event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))));
- self.clients.claim();
+ event.waitUntil((async()=>{
+  const keys=await caches.keys();
+  await Promise.all(keys.filter(key=>key.startsWith('tmfl-fan-')&&key!==CACHE).map(key=>caches.delete(key)));
+  await self.clients.claim();
+ })());
 });
 self.addEventListener('fetch',event=>{
- if(event.request.method!=='GET'||new URL(event.request.url).origin!==self.location.origin)return;
- if(event.request.mode==='navigate'){
+ const req=event.request;
+ if(req.method!=='GET'||new URL(req.url).origin!==self.location.origin)return;
+ const url=new URL(req.url);
+ if(req.mode==='navigate'){
   event.respondWith((async()=>{
    const cache=await caches.open(CACHE);
    const cached=await cache.match('./index.html');
-   const update=fetch(event.request).then(response=>{
-    if(response.ok)cache.put('./index.html',response.clone()).catch(()=>{});
+   const refresh=fetch(req).then(async response=>{
+    if(response.ok)await cache.put('./index.html',response.clone());
     return response;
    });
-   if(cached){event.waitUntil(update.catch(()=>{}));return cached}
-   return update.catch(()=>new Response('<h1>TMFL is temporarily offline</h1>',{status:503,headers:{'Content-Type':'text/html'}}));
+   if(cached){event.waitUntil(refresh.catch(()=>{}));return cached}
+   return refresh.catch(()=>new Response('<h1>TMFL offline setup not finished</h1><p>Connect to the internet once and reload to save the portal.</p>',{status:503,headers:{'Content-Type':'text/html'}}));
   })());
   return;
  }
- // Published JSON is safe to show immediately from cache while refreshing it.
- const path=new URL(event.request.url).pathname;
- if(/\/(tmfl-news|tmfl-draft)\.json$/.test(path)){
+ if(/\/(tmfl-news|tmfl-draft)\.json$/.test(url.pathname)||/\/(manifest\.webmanifest|tmfl-icon-512\.png)$/.test(url.pathname)){
   event.respondWith((async()=>{
    const cache=await caches.open(CACHE);
-   const cached=await cache.match(event.request,{ignoreSearch:true});
-   const update=fetch(event.request).then(response=>{
-    if(response.ok)cache.put(event.request,response.clone()).catch(()=>{});
+   const cached=await cache.match(req,{ignoreSearch:true});
+   const refresh=fetch(req).then(async response=>{
+    if(response.ok)await cache.put(req,response.clone());
     return response;
    });
-   if(cached){event.waitUntil(update.catch(()=>{}));return cached}
-   return update.catch(()=>new Response('{}',{headers:{'Content-Type':'application/json'},status:503}));
+   if(cached){event.waitUntil(refresh.catch(()=>{}));return cached}
+   return refresh.catch(()=>new Response('{}',{status:503,headers:{'Content-Type':'application/json'}}));
   })());
   return;
  }
- event.respondWith(fetch(event.request).catch(()=>caches.match(event.request)));
+ event.respondWith(fetch(req).catch(()=>caches.match(req)));
 });
