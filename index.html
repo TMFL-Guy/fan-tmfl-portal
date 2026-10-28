@@ -22,7 +22,7 @@ let PUBLISHED_ROSTERS=window.TMFL_PUBLISHED_DATA?.rosters&&typeof window.TMFL_PU
 async function tmflLoadCommissionerExports(){
  try{const r=await fetch('./tmfl-rosters.json',{cache:'no-store'});if(r.ok){const d=await r.json();if(d&&d.teams&&typeof d.teams==='object'&&!Array.isArray(d.teams))PUBLISHED_ROSTERS=d.teams;}}catch(e){console.info('Rosters JSON not yet published');}
  try{const r=await fetch('./tmfl-draft.json',{cache:'no-store'});if(r.ok){const d=await r.json();if(d&&Array.isArray(d.picks))PUBLISHED_DRAFT_PICKS=d.picks;}}catch(e){console.info('Draft JSON not yet published');}
- if(tab==='teams'||tab==='draft-central')render();
+ if(tab==='teams'||tab==='draft-central'||tab==='history')render();
 }
 const GOTW_REQUEST_FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSep-hdSN7mTfOo2_qwHiOX9rUX9NpO29CGgoK59U4pcS-UlqA/viewform";
 const STORE='tmfl-v3-predictions',OFFICIAL='tmfl-v3-official',SCHEDULE_STORE='tmfl-v4-schedule';
@@ -296,7 +296,14 @@ function historyView(){
  const top=finals.map(g=>({g,v:officialResult(g)})).sort((a,b)=>b.v.a+b.v.h-a.v.a-a.v.h).slice(0,5);
  const championship=playoffOfficial['CHAMP'];
  const champValid=championship&&validScore(championship.a)&&validScore(championship.h)&&Number(championship.a)!==Number(championship.h);
- return `<div class="panel"><h2>TMFL History & Records</h2><p class="muted">Season records below are calculated from published official finals. Previous Super Bowl results are listed below from the commissioner’s supplied records.</p>${champValid?`<h3>Current championship result</h3><p>${esc(championship.away)} ${championship.a} – ${championship.h} ${esc(championship.home)}${championship.ot?' (OT)':''}</p><p><strong>Champion:</strong> ${esc(Number(championship.a)>Number(championship.h)?championship.away:championship.home)}</p>`:'<p><strong>TMFL champion:</strong> Not determined yet.</p>'}</div><div class="grid"><div class="panel"><h3>Current season records</h3><p><strong>Official games played:</strong> ${finals.length}</p><p><strong>Shutouts:</strong> ${shutouts.length}</p><p><strong>Current AFC leader:</strong> ${esc(s.AFC[0])}</p><p><strong>Current NFC leader:</strong> ${esc(s.NFC[0])}</p></div><div class="panel"><h3>Highest-scoring games</h3>${top.length?top.map(({g,v})=>`<div class="mini-row">${scoreLine(g,v)} <span class="muted">${v.a+v.h} total</span></div>`).join(''):'<p class="muted">No official games yet.</p>'}</div></div><div class="panel"><h3>Past seasons</h3>${historyEntries.length?[...historyEntries].sort((a,b)=>Number(b.year)-Number(a.year)).map(e=>`<div class="mini-row"><span><strong>${esc(e.year)}:</strong> ${esc(e.champion)} defeated ${esc(e.runner)} ${esc(e.score)}${e.ot?' (OT)':''}${e.notes?` — ${esc(e.notes)}`:''}</span></div>`).join(''):'<p class="muted">No historical seasons have been added yet.</p>'}</div>`;
+ return `<div class="panel"><h2>TMFL History & Records</h2><p class="muted">Season records below are calculated from published official finals. Previous Super Bowl results are listed below from the commissioner’s supplied records.</p>${champValid?`<h3>Current championship result</h3><p>${esc(championship.away)} ${championship.a} – ${championship.h} ${esc(championship.home)}${championship.ot?' (OT)':''}</p><p><strong>Champion:</strong> ${esc(Number(championship.a)>Number(championship.h)?championship.away:championship.home)}</p>`:'<p><strong>TMFL champion:</strong> Not determined yet.</p>'}</div><div class="grid"><div class="panel"><h3>Current season records</h3><p><strong>Official games played:</strong> ${finals.length}</p><p><strong>Shutouts:</strong> ${shutouts.length}</p><p><strong>Current AFC leader:</strong> ${esc(s.AFC[0])}</p><p><strong>Current NFC leader:</strong> ${esc(s.NFC[0])}</p></div><div class="panel"><h3>Highest-scoring games</h3>${top.length?top.map(({g,v})=>`<div class="mini-row">${scoreLine(g,v)} <span class="muted">${v.a+v.h} total</span></div>`).join(''):'<p class="muted">No official games yet.</p>'}</div></div><div class="panel"><h3>Past seasons</h3>${historyEntries.length?[...historyEntries].sort((a,b)=>Number(b.year)-Number(a.year)).map(e=>`<div class="mini-row"><span><strong>${esc(e.year)}:</strong> ${esc(e.champion)} defeated ${esc(e.runner)} ${esc(e.score)}${e.ot?' (OT)':''}${e.notes?` — ${esc(e.notes)}`:''}</span></div>`).join(''):'<p class="muted">No historical seasons have been added yet.</p>'}</div>${tmflDraftHistoryByYear()}</div>`;
+}
+function tmflDraftHistoryByYear(){
+ const picks=Array.isArray(PUBLISHED_DRAFT_PICKS)?PUBLISHED_DRAFT_PICKS:[];
+ const years=[...new Set(picks.map(p=>String(p.year||'').trim()).filter(Boolean))].sort((a,b)=>Number(b)-Number(a));
+ return '<div class="panel"><h2>Draft History by Year</h2><p class="muted">Official TMFL draft picks published by the commissioner.</p>'+(years.length?years.map(year=>{
+ const rows=picks.filter(p=>String(p.year)===year).sort((a,b)=>Number(a.overall)-Number(b.overall)||Number(a.round)-Number(b.round));
+ return '<details style="margin:12px 0" '+(year===years[0]?'open':'')+'><summary style="cursor:pointer;font-weight:700;font-size:17px">'+esc(year)+' TMFL Draft · '+rows.length+' picks</summary><div style="overflow-x:auto"><table><thead><tr><th>Round</th><th>Round Pick</th><th>Overall</th><th>Team</th><th>Player</th><th>College</th></tr></thead><tbody>'+rows.map(p=>'<tr><td>'+esc(p.round||'—')+'</td><td>'+esc(p.roundPick||'—')+'</td><td>'+esc(p.overall||'—')+'</td><td>'+esc(p.team||'—')+'</td><td>'+esc(p.player||'—')+'</td><td>'+esc(p.college||'—')+'</td></tr>').join('')+'</tbody></table></div></details>';}).join(''):'<p class="muted">No draft history has been published yet.</p>')+'</div>';
 }
 function historyEditorView(){
  if(PUBLIC_PORTAL)return '<div class="panel">Commissioner only.</div>';
@@ -552,7 +559,7 @@ fetch('./tmfl-league-data.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Erro
  if(data&&typeof data==='object'){
   PUBLISHED_DRAFT_PICKS=Array.isArray(data.draftPicks)?data.draftPicks.filter(p=>p&&typeof p.player==='string'&&typeof p.team==='string'):[];
   PUBLISHED_ROSTERS=data.rosters&&typeof data.rosters==='object'&&!Array.isArray(data.rosters)?data.rosters:{};
-  if(tab==='teams'||tab==='draft-central')render();
+  if(tab==='teams'||tab==='draft-central'||tab==='history')render();
  }
 }).catch(e=>console.warn('Draft and roster data could not be loaded:',e));
 document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('nav .nav-group').forEach(g=>g.open=false);render()});requestAnimationFrame(()=>render());
