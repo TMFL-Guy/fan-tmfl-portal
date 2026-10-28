@@ -1,4 +1,4 @@
-const CACHE='tmfl-fan-v6-fast-data';
+const CACHE='tmfl-fan-v7-fast-start';
 const ASSETS=['./index.html','./manifest.webmanifest','./tmfl-icon-512.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
@@ -11,11 +11,16 @@ self.addEventListener('activate',event=>{
 self.addEventListener('fetch',event=>{
  if(event.request.method!=='GET'||new URL(event.request.url).origin!==self.location.origin)return;
  if(event.request.mode==='navigate'){
-  const refresh=fetch(event.request,{cache:'no-store'}).then(response=>{
-   if(response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put('./index.html',copy)).catch(()=>{});}
-   return response;
-  });
-  event.respondWith(refresh.catch(()=>caches.match('./index.html')));
+  event.respondWith((async()=>{
+   const cache=await caches.open(CACHE);
+   const cached=await cache.match('./index.html');
+   const update=fetch(event.request).then(response=>{
+    if(response.ok)cache.put('./index.html',response.clone()).catch(()=>{});
+    return response;
+   });
+   if(cached){event.waitUntil(update.catch(()=>{}));return cached}
+   return update.catch(()=>new Response('<h1>TMFL is temporarily offline</h1>',{status:503,headers:{'Content-Type':'text/html'}}));
+  })());
   return;
  }
  // Published JSON is safe to show immediately from cache while refreshing it.
