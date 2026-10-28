@@ -6,7 +6,7 @@ const json=(obj,status=200,headers={})=>new Response(JSON.stringify(obj),{status
 const redirect=(url,headers={})=>new Response(null,{status:302,headers:{Location:url,...headers}});
 const cookie=(name,value,age=3600)=>name+'='+encodeURIComponent(value)+'; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age='+age;
 function cookies(req){return Object.fromEntries((req.headers.get('cookie')||'').split(';').map(x=>x.trim().split('=').map(decodeURIComponent)).filter(x=>x.length===2))}
-function b64(bytes){return btoa(String.fromCharCode(...bytes)).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/,'')}
+function b64(bytes){return btoa(String.fromCharCode(...bytes)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function unb64(str){return Uint8Array.from(atob(str.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0))}
 async function key(env){if(!env.SESSION_SECRET||env.SESSION_SECRET.length<48)throw Error('SESSION_SECRET must be 48+ chars');const raw=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(env.SESSION_SECRET));return crypto.subtle.importKey('raw',raw,'AES-GCM',false,['encrypt','decrypt'])}
 async function seal(obj,env){const iv=crypto.getRandomValues(new Uint8Array(12));const encrypted=await crypto.subtle.encrypt({name:'AES-GCM',iv},await key(env),new TextEncoder().encode(JSON.stringify(obj)));return b64(iv)+'.'+b64(new Uint8Array(encrypted))}
@@ -39,7 +39,7 @@ export default {async fetch(req,env){try{
  if(url.pathname==='/api/file'&&req.method==='GET'){
   const path=url.searchParams.get('path');if(!allow.has(path))return json({error:'File not permitted'},400);
   const data=await github('/repos/'+repo+'/contents/'+path+'?ref=main',session.token);
-  const bytes=unb64(data.content.replace(/\\s/g,''));return json({sha:data.sha,content:new TextDecoder().decode(bytes)});
+  const bytes=unb64(data.content.replace(/\s/g,''));return json({sha:data.sha,content:new TextDecoder().decode(bytes)});
  }
  if(url.pathname==='/api/publish'&&req.method==='POST'){
   if(req.headers.get('Origin')!==base)return json({error:'Invalid request origin'},403);
