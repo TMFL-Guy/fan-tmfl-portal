@@ -82,7 +82,8 @@ async function tmflLoadHighlights(){
    tmflHighlights=Array.isArray(data.highlights)?data.highlights.filter(h=>h&&typeof h.title==='string'&&/^[A-Za-z0-9_-]{20,}$/.test(String(h.fileId||''))):[];
   }catch(error){console.warn('TMFL highlights:',error)}
   tmflHighlightsLoaded=true;
-  if(tab==='tmsn')render();
+  tmflBuildNotifications();
+  if(tab==='tmsn'||tab==='notifications')render();
  })();
  try{return await tmflHighlightsRequest}finally{tmflHighlightsRequest=null}
 }
@@ -239,7 +240,7 @@ async function tmflPublishedDraftView(){
   return '<div class="panel"><h2>Draft Central</h2><p>Official published TMFL draft picks.</p>'+(picks.length?'<div class="tmfl-draft-table-wrap"><table class="tmfl-draft-board"><thead><tr><th scope="col">Year</th><th scope="col">Round</th><th scope="col">Overall Pick</th><th scope="col">Round Pick</th><th scope="col">Team</th><th scope="col">Player</th><th scope="col">College</th></tr></thead><tbody>'+rows+'</tbody></table></div>':'<p>No draft picks have been published yet.</p>')+'</div>';
  }catch(error){return '<div class="panel"><h2>Draft Central</h2><p>Published draft information is temporarily unavailable.</p></div>'}
 }
-function render(){if(!document.querySelector('nav button[data-tab="'+tab+'"]')&&tab!=='favorite-detail')tab='home';try{sessionStorage.setItem(TMFL_LAST_TAB,tab)}catch{}document.querySelectorAll('nav button').forEach(b=>{b.hidden=false;b.classList.toggle('active',b.dataset.tab===tab)});document.getElementById('app').innerHTML=({home:homeView,account:()=>{const el=document.createElement("div");el.innerHTML="<section><h2>Fan Account</h2>'+tmflLoadingHTML()+'</section>";accountView().then(html=>{if(tab==="account")document.getElementById("app").innerHTML=html});return el.innerHTML},"draft-central":()=>{tmflPublishedDraftView().then(html=>{if(tab==="draft-central")document.getElementById("app").innerHTML=html});return '<section class="panel"><h2>Draft Central</h2><p>Loading published draft…</p></section>'},leaderboard:()=>{const el=document.createElement("div");el.innerHTML="<section class='panel'><h2>Fan Leaderboard</h2>'+tmflLoadingHTML()+'</section>";tmflLeaderboardView().then(html=>{if(tab==="leaderboard")document.getElementById("app").innerHTML=html});return el.innerHTML},games:gamesView,"regular-schedule":tmflRegularScheduleView,standings:standingsView,accuracy:accuracyView,recaps:recapsView,tmsn:tmsnView,history:historyView,rules:rulesView,"final-standings":finalStandingsView,picture:playoffPictureView,playoffs:playoffsView,"playoff-results":playoffResultsView,brackets:bracketsView,"favorite-team":favoriteTeamDashboardView,notifications:()=>{if(!tmflNotificationFeedLoaded)tmflRefreshNotifications();return tmflNotificationsView()},"favorite-detail":favoriteTeamDetailView,teams:teamProfilesView,"head-to-head":headToHeadView,"fan-polls":()=>{if(!tmflPollCache.ready){loadTmflPolls()}return fanPollsView()},news:()=>{if(tmflNewsCache===null)loadTmflNews();return newsCenterView()},"weekly-picks":weeklyPicksView,achievements:achievementsView,awards:weeklyAwardsView,records:leagueRecordsView,archive:seasonArchiveView,hof:hallOfFameView,"gotw-request":gotwRequestView}[tab])()}
+function render(){if(!document.querySelector('nav button[data-tab="'+tab+'"]')&&tab!=='favorite-detail')tab='home';try{sessionStorage.setItem(TMFL_LAST_TAB,tab)}catch{}document.querySelectorAll('nav button').forEach(b=>{b.hidden=false;b.classList.toggle('active',b.dataset.tab===tab)});document.getElementById('app').innerHTML=({home:homeView,account:()=>{const el=document.createElement("div");el.innerHTML="<section><h2>Fan Account</h2>'+tmflLoadingHTML()+'</section>";accountView().then(html=>{if(tab==="account")document.getElementById("app").innerHTML=html});return el.innerHTML},"draft-central":()=>{tmflPublishedDraftView().then(html=>{if(tab==="draft-central")document.getElementById("app").innerHTML=html});return '<section class="panel"><h2>Draft Central</h2><p>Loading published draft…</p></section>'},leaderboard:()=>{const el=document.createElement("div");el.innerHTML="<section class='panel'><h2>Fan Leaderboard</h2>'+tmflLoadingHTML()+'</section>";tmflLeaderboardView().then(html=>{if(tab==="leaderboard")document.getElementById("app").innerHTML=html});return el.innerHTML},games:gamesView,"regular-schedule":tmflRegularScheduleView,standings:standingsView,accuracy:accuracyView,recaps:recapsView,tmsn:tmsnView,history:historyView,rules:rulesView,"final-standings":finalStandingsView,picture:playoffPictureView,playoffs:playoffsView,"playoff-results":playoffResultsView,brackets:bracketsView,"favorite-team":favoriteTeamDashboardView,notifications:()=>{if(!tmflNotificationFeedLoaded)tmflRefreshNotifications();if(!tmflHighlightsLoaded&&!tmflHighlightsRequest)tmflLoadHighlights();return tmflNotificationsView()},"favorite-detail":favoriteTeamDetailView,teams:teamProfilesView,"head-to-head":headToHeadView,"fan-polls":()=>{if(!tmflPollCache.ready){loadTmflPolls()}return fanPollsView()},news:()=>{if(tmflNewsCache===null)loadTmflNews();return newsCenterView()},"weekly-picks":weeklyPicksView,achievements:achievementsView,awards:weeklyAwardsView,records:leagueRecordsView,archive:seasonArchiveView,hof:hallOfFameView,"gotw-request":gotwRequestView}[tab])()}
 
 
 /* TMFL Regular Season Schedule and Game Center. Probabilities are illustrative
@@ -374,6 +375,11 @@ function tmflBuildNotifications(){
   const id=tmflNotificationKey('alert',a.id||[a.title,a.date,team].join('|'));
   items.push({id,team:team||'League',kind:String(a.type||'Announcement'),title:String(a.title||'TMFL Alert'),detail:[a.date,a.message].filter(Boolean).join(' · '),sort:String(a.date||''),open:'news'});
  }
+ for(const h of tmflHighlights){
+  const team=String(h.announceTeam||'').trim();
+  if(!team||!favorites.has(team))continue;
+  items.push({id:tmflNotificationKey('highlight',h.id+':'+team),team,kind:'New Highlights',title:String(h.title||'New Highlight Reel'),detail:'New highlight reel available in TMSN Watch',sort:String(h.publishedAt||'2026-10-28'),open:'tmsn'});
+ }
  for(const g of SCHEDULE){
   const interested=[g.away,g.home].filter(t=>favorites.has(t));
   const v=officialResult(g);
@@ -413,6 +419,7 @@ async function tmflFetchPublishedNews(force=false){
    tmflPublishedAlerts=Array.isArray(data.entries)?data.entries.filter(x=>x&&x.published===true&&typeof x.title==='string'):[];
   }catch(e){console.warn('TMFL alerts:',e)}
   tmflNotificationFeedLoaded=true;tmflBuildNotifications();
+  if(!tmflHighlightsLoaded&&!tmflHighlightsRequest)tmflLoadHighlights();
   if(tab==='notifications')document.getElementById('app').innerHTML=tmflNotificationsView();
   if(tab==='news')document.getElementById('app').innerHTML=newsCenterView();
   return tmflNewsCache;
@@ -426,7 +433,7 @@ window.tmflOpenNotification=id=>{
  const n=tmflNotifications.find(x=>x.id===id);if(!n)return;
  try{localStorage.setItem(TMFL_NOTIFICATIONS_SEEN,JSON.stringify([...new Set([...tmflSeenNotifications(),id])].slice(-1500)))}catch{}
  if(n.open==='team'){window.tmflFavoriteDetail=n.team;tab='favorite-detail'}
- else tab='news';
+ else tab=n.open==='tmsn'?'tmsn':'news';
  tmflUpdateNotificationBadge();render();
 };
 function tmflNotificationsView(){
