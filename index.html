@@ -812,27 +812,31 @@ const tmflLoadingOverlay=document.createElement('div');
 tmflLoadingOverlay.style.cssText='display:none;position:fixed;inset:0;z-index:9000;background:rgba(12,16,23,.94);align-items:center;justify-content:center;pointer-events:none';
 tmflLoadingOverlay.innerHTML='<div style="width:min(90vw,360px);padding:20px;border-radius:14px;background:#161e2b;border:1px solid #3b485c">'+tmflLoadingHTML()+'</div>';
 document.body.appendChild(tmflLoadingOverlay);
-let tmflLoadingTimer,tmflKickTimer,tmflKickScore=0;
+let tmflLoadingTimer,tmflKickTimer,tmflKickScore=0,tmflKickGeneration=0;
 function tmflShowLoading(){
- tmflLoadingOverlay.style.display='flex';
+ const generation=++tmflKickGeneration;
  clearTimeout(tmflLoadingTimer);
- clearInterval(tmflKickTimer);
+ clearTimeout(tmflKickTimer);
+ tmflLoadingOverlay.style.display='flex';
  tmflKickScore=0;
  const score=tmflLoadingOverlay.querySelector('.tmfl-kick-points');
  const board=tmflLoadingOverlay.querySelector('.tmfl-kick-scoreboard');
- score.textContent='0';
- board.classList.remove('tmfl-score-flash');
- // The ball reaches the uprights near 82% of its 2.8-second flight.
- // Keep the loader visible for a full kick so each appearance can score.
+ const ball=tmflLoadingOverlay.querySelector('.loading-football');
+ score.textContent='0';board.classList.remove('tmfl-score-flash');
+ // Restart the football's animation in sync with this loading session.
+ ball.style.animation='none';void ball.offsetWidth;ball.style.animation='';
  const scoreGoal=()=>{
-  if(tmflLoadingOverlay.style.display==='none'){clearInterval(tmflKickTimer);return}
+  if(generation!==tmflKickGeneration||tmflLoadingOverlay.style.display==='none')return;
   tmflKickScore+=3;score.textContent=String(tmflKickScore);
   board.classList.remove('tmfl-score-flash');void board.offsetWidth;board.classList.add('tmfl-score-flash');
+  tmflKickTimer=setTimeout(scoreGoal,2800);
  };
- setTimeout(()=>{if(tmflLoadingOverlay.style.display!=='none')scoreGoal()},2300);
- tmflKickTimer=setInterval(scoreGoal,2800);
+ // One scoring event per complete flight, at the actual uprights crossing.
+ tmflKickTimer=setTimeout(scoreGoal,2300);
  tmflLoadingTimer=setTimeout(()=>{
-  tmflLoadingOverlay.style.display='none';clearInterval(tmflKickTimer);
+  if(generation!==tmflKickGeneration)return;
+  tmflLoadingOverlay.style.display='none';
+  clearTimeout(tmflKickTimer);
  },Math.max(2900,window.tmflLoadingDuration||0));
 }
 document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('nav .nav-group').forEach(g=>g.open=false);render()});(function tmflSiteUpdateWatcher(){
