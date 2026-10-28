@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "cms-1793228684060-7j0ygp",
+      "title": "New News Article",
+      "team": "Chiefs",
+      "type": "Announcement",
+      "message": "Calling all Chiefs fans! There is a new story in the News Center! Go check it out!",
+      "date": "2026-10-28",
+      "published": true
+    }
+  ]
+}
