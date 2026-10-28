@@ -83,7 +83,7 @@ async function tmflLoadHighlights(){
   }catch(error){console.warn('TMFL highlights:',error)}
   tmflHighlightsLoaded=true;
   tmflBuildNotifications();
-  if(tab==='tmsn'||tab==='notifications')render();
+  if(tab==='tmsn'||tab==='notifications'||tab==='regular-schedule')render();
  })();
  try{return await tmflHighlightsRequest}finally{tmflHighlightsRequest=null}
 }
@@ -282,10 +282,12 @@ window.tmflOpenGameCenter=id=>{
 window.tmflScheduleSetWeek=w=>{tmflScheduleWeek=Math.max(1,Math.min(18,Number(w)||1));tmflSelectedGameId='';render()};
 window.tmflScheduleBack=()=>{tmflSelectedGameId='';render()};
 function tmflGameCenterView(g){
+ if(!tmflHighlightsLoaded&&!tmflHighlightsRequest)tmflLoadHighlights();
  const v=officialResult(g),p=tmflPregameProbability(g),r=tmflGameCenterRecords();
  const record=t=>r[t]?r[t].w+'-'+r[t].l+'-'+r[t].ties:'0-0-0';
  const label=v?'FINAL'+(v.ot?' · OT':''):'UPCOMING';
  const result=v?esc(g.away)+' '+v.a+' — '+v.h+' '+esc(g.home):esc(g.away)+' vs '+esc(g.home);
+ const gameHighlights=tmflHighlights.filter(h=>h.gameId===g.id);
  const centeredScore='<div class="tmfl-centered-matchup"><div class="tmfl-matchup-teams"><span>'+esc(g.away)+'</span><span class="tmfl-matchup-versus">vs.</span><span>'+esc(g.home)+'</span></div><div class="tmfl-matchup-scores"><span>'+(v?v.a:'—')+'</span><span class="tmfl-matchup-dash">–</span><span>'+(v?v.h:'—')+'</span></div></div>';
  // The chart is a static pregame estimate. A live timeline needs play-by-play data.
  const path='M 0 '+(100-p.away)+' L 100 '+(100-p.away);
@@ -296,6 +298,7 @@ function tmflGameCenterView(g){
  '<div class="tmfl-prob-grid"><div class="tmfl-prob-wheel" role="img" aria-label="'+esc(g.away)+' '+p.away+' percent, '+esc(g.home)+' '+p.home+' percent" style="background:conic-gradient(#aab4c5 0% '+p.away+'%,#c31938 '+p.away+'% 100%)"><div class="tmfl-prob-wheel-inner"><div><strong style="font-size:25px">'+p.away+'% / '+p.home+'%</strong><div class="muted">Pregame estimate</div></div></div></div>'+
  '<div><div class="tmfl-prob-row"><span>'+esc(g.away)+' · '+p.away+'%</span><span>'+esc(g.home)+' · '+p.home+'%</span></div><div class="tmfl-prob-bar" role="img" aria-label="Win probability split"><span style="width:'+p.away+'%;background:#aab4c5"></span><span style="width:'+p.home+'%;background:#c31938"></span></div>'+
  '</div></div></div>'+ 
+ '<div class="panel"><h3>Game Highlights</h3>'+(gameHighlights.length?gameHighlights.map(h=>'<div class="game"><h4>'+esc(h.title)+'</h4><iframe class="tmsn-screen" loading="lazy" src="https://drive.google.com/file/d/'+encodeURIComponent(h.fileId)+'/preview" allow="autoplay; fullscreen" allowfullscreen title="'+esc(h.title)+'"></iframe></div>').join(''):'<p class="muted">No highlights published for this game yet.</p>')+'</div>'+ 
  '<div class="panel"><h3>Matchup Details</h3><p>Game ID: '+esc(g.id)+' · Broadcast: '+esc(g.slot||'Not Aired')+'</p><p>Official result: '+(v?result:'Not played / not published')+'</p><p class="muted">Additional Game Center features can be added here later.</p></div></div>';
 }
 function tmflRegularScheduleView(){
