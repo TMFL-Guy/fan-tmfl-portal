@@ -325,7 +325,7 @@ window.openFavoriteTeamProfile=t=>{if(!TEAMS.includes(t))return;window.tmflProfi
 window.openFavoriteTeamPredictions=w=>{tab='games';state.week=w;persist();render()};
 window.backToFavoriteTeams=()=>{tab='favorite-team';render()};
 const TMFL_NOTIFICATIONS_SEEN='tmfl-notifications-seen-v1';
-let tmflNotifications=[],tmflNotificationFeedLoaded=false;
+let tmflNotifications=[],tmflNotificationFeedLoaded=false,tmflPublishedAlerts=[];
 const tmflSeenNotifications=()=>{try{const v=JSON.parse(localStorage.getItem(TMFL_NOTIFICATIONS_SEEN)||'[]');return Array.isArray(v)?v:[]}catch{return []}};
 const tmflNotificationKey=(kind,id)=>kind+':'+id;
 const tmflUnreadNotifications=()=>tmflNotifications.filter(n=>!tmflSeenNotifications().includes(n.id)).length;
@@ -343,6 +343,12 @@ function tmflBuildNotifications(){
   if(!favorites.has(team))continue;
   const id=tmflNotificationKey('news',a.id||[a.title,a.date,team].join('|'));
   items.push({id,team,kind:'News',title:a.title,detail:String(a.date||''),sort:String(a.date||''),open:'news'});
+ }
+ for(const a of tmflPublishedAlerts){
+  const team=String(a.team||'').trim();
+  if(team&&!favorites.has(team))continue;
+  const id=tmflNotificationKey('alert',a.id||[a.title,a.date,team].join('|'));
+  items.push({id,team:team||'League',kind:String(a.type||'Announcement'),title:String(a.title||'TMFL Alert'),detail:[a.date,a.message].filter(Boolean).join(' · '),sort:String(a.date||''),open:'news'});
  }
  for(const g of SCHEDULE){
   const interested=[g.away,g.home].filter(t=>favorites.has(t));
@@ -368,6 +374,12 @@ async function tmflFetchPublishedNews(force=false){
    tmflNewsCache=Array.isArray(data.articles)?data.articles.filter(x=>x&&x.published===true&&typeof x.title==='string'&&typeof x.body==='string'):[];
    tmflNewsLoadedAt=Date.now();
   }catch(e){if(tmflNewsCache===null)tmflNewsCache=[];console.warn('TMFL news:',e)}
+  try{
+   const response=await fetch('./tmfl-alerts.json',{cache:'no-store'});
+   if(!response.ok)throw Error('Alerts unavailable');
+   const data=await response.json();
+   tmflPublishedAlerts=Array.isArray(data.entries)?data.entries.filter(x=>x&&x.published===true&&typeof x.title==='string'):[];
+  }catch(e){console.warn('TMFL alerts:',e)}
   tmflNotificationFeedLoaded=true;tmflBuildNotifications();
   if(tab==='notifications')document.getElementById('app').innerHTML=tmflNotificationsView();
   if(tab==='news')document.getElementById('app').innerHTML=newsCenterView();
@@ -375,7 +387,7 @@ async function tmflFetchPublishedNews(force=false){
  })();
  try{return await tmflNewsRequest}finally{tmflNewsRequest=null}
 }
-function tmflRefreshNotifications(){return tmflFetchPublishedNews()}
+function tmflRefreshNotifications(){return tmflFetchPublishedNews(true)}
 window.tmflOpenNotifications=()=>{tab='notifications';render();tmflUpdateNotificationBadge()};
 window.tmflMarkAllNotificationsRead=()=>{try{localStorage.setItem(TMFL_NOTIFICATIONS_SEEN,JSON.stringify([...new Set([...tmflSeenNotifications(),...tmflNotifications.map(n=>n.id)])].slice(-1500)))}catch{}tmflUpdateNotificationBadge();render()};
 window.tmflOpenNotification=id=>{
