@@ -1,4 +1,4 @@
-const CACHE='tmfl-fan-v4-network';
+const CACHE='tmfl-fan-v5-notifications';
 const ASSETS=['./index.html','./manifest.webmanifest','./tmfl-icon-512.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
