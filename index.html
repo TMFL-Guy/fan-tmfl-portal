@@ -358,7 +358,15 @@ function tmflBuildNotifications(){
    items.push({id:tmflNotificationKey('final',g.id+':'+team+':'+v.a+':'+v.h+':'+Number(v.ot)),team,kind:'Final Score',title:g.away+' '+v.a+' – '+v.h+' '+g.home,detail:'Week '+g.week,sort:'week-'+String(g.week).padStart(2,'0'),open:'team'});
   }
  }
- tmflNotifications=items.sort((a,b)=>b.sort.localeCompare(a.sort)||a.team.localeCompare(b.team));
+ // Newest first. Dated news/announcements sort by date; final scores lack
+ // calendar dates, so group those by week (newest week first).
+ tmflNotifications=items.sort((a,b)=>{
+  const aDate=/^\\d{4}-\\d{2}-\\d{2}$/.test(a.sort);
+  const bDate=/^\\d{4}-\\d{2}-\\d{2}$/.test(b.sort);
+  if(aDate!==bDate)return aDate?-1:1;
+  const order=b.sort.localeCompare(a.sort);
+  return order||a.team.localeCompare(b.team)||a.title.localeCompare(b.title);
+ });
  tmflUpdateNotificationBadge();
 }
 // One shared, deduplicated request powers both News and Notifications.
