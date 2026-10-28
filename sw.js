@@ -27,7 +27,6 @@ self.addEventListener('fetch',event=>{
    const cache=await caches.open(CACHE);
    const cached=await cache.match('./index.html');
    // Fresh page online, cached page offline. A timeout avoids hanging on poor connections.
-   if(navigator.onLine===false&&cached)return cached;
    try{
     const controller=new AbortController();
     const timeout=setTimeout(()=>controller.abort(),3500);
