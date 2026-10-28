@@ -1,3 +1,13 @@
 {
-  "articles": []
+  "articles": [
+    {
+      "id": "cms-1793227458942-fpf5ye",
+      "title": "HUGE COMEBACK IN KC",
+      "body": "On the Monday Night Brawl, after being down 22-0, the Kansas City Chiefs come from behind and score 24 unanswered points against the Atlanta Falcons. Kansas City is now currently 4-1, and Atlanta is 3-2. The Chiefs are in playoff position, at 2nd in the AFC and 5th overall, and are sitting at the 5-seed in the AFC Playoff Picture. The Falcons are currently in 8th in the NFC and in 11th overall.",
+      "date": "2026-10-28",
+      "category": "League News",
+      "team": "Chiefs",
+      "published": true
+    }
+  ]
 }
