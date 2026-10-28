@@ -1,4 +1,4 @@
-const CACHE='tmfl-fan-v9-fast-shell';
+const CACHE='tmfl-fan-v10-startup-fix';
 const ASSETS=['./index.html','./manifest.webmanifest','./tmfl-icon-512.png','./tmfl-news.json','./tmfl-draft.json'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
