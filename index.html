@@ -15,7 +15,7 @@ let SCHEDULE=[{"id":"W01G01","week":1,"away":"Bills","home":"Rams","slot":"TNF",
 const DIVS={'AFC East':['Bills','Dolphins','Patriots','Jets'],'AFC North':['Ravens','Bengals','Browns','Steelers'],'AFC South':['Texans','Colts','Jaguars','Titans'],'AFC West':['Broncos','Chiefs','Chargers','Raiders'],'NFC East':['Cowboys','Giants','Eagles','Commanders'],'NFC North':['Bears','Lions','Packers','Vikings'],'NFC South':['Falcons','Panthers','Saints','Buccaneers'],'NFC West':['Cardinals','Rams','49ers','Seahawks']};
 const TEAMS=Object.values(DIVS).flat(), div=Object.fromEntries(Object.entries(DIVS).flatMap(([k,v])=>v.map(t=>[t,k]))), conf=t=>div[t].slice(0,3);
 const HISTORY_STORE='tmfl-v1-history',PUBLISHED_HISTORY=[{"year":2025,"champion":"Broncos","runner":"Eagles","score":"28–21"},{"year":2024,"champion":"Lions","runner":"Bills","score":"34–30"},{"year":2023,"champion":"Broncos","runner":"Rams","score":"26–24"},{"year":2022,"champion":"Chiefs","runner":"Cowboys","score":"35–26"}];
-const PUBLISHED_FAN_FEATURES={};
+const PUBLISHED_FAN_FEATURES={featuredGameId:"W05G04"};
 const GOTW_REQUEST_FORM_URL="";
 const STORE='tmfl-v3-predictions',OFFICIAL='tmfl-v3-official',SCHEDULE_STORE='tmfl-v4-schedule';
 const fresh=()=>({week:1,current:'My Bracket',brackets:{'My Bracket':{games:{},playoffs:{}}}});
