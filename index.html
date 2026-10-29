@@ -37,39 +37,43 @@ window.tmflInitSupabase();
 #tmfl-startup-splash .kick-action{margin-top:12px;background:#f7c948;color:#101722;font-weight:900;border:0;border-radius:7px;padding:12px 24px;min-width:160px;font-size:16px}
 #tmfl-startup-splash .kick-instruction{min-height:24px;margin:8px 0;font-weight:700}
 #tmfl-startup-splash .kick-skip{display:block;margin:12px auto 0;background:transparent;border:0;color:#d7e2f2;text-decoration:underline;cursor:pointer}
-</style></head><body><div id="tmfl-startup-splash" role="dialog" aria-label="TMFL field goal kickoff"><div class="loading-panel"><h2>TMFL FIELD GOAL</h2><div class="tmfl-kick-scoreboard">POINTS <strong class="tmfl-kick-points">0</strong></div><div class="kick-field"><div class="kick-goal"></div><div class="kick-arrow"></div><div class="kick-ball"></div></div><div class="kick-instruction" aria-live="polite">Tap to lock your aim</div><div class="kick-meter"><div class="kick-needle"></div></div><button type="button" class="kick-action">LOCK AIM</button><button type="button" class="kick-skip">Skip to Fan Portal</button></div></div><script>
+</style></head><body><div id="tmfl-startup-splash" role="dialog" aria-modal="true" aria-label="TMFL field goal kickoff"><div class="loading-panel"><h2>TMFL FIELD GOAL</h2><div class="tmfl-kick-scoreboard">POINTS <strong class="tmfl-kick-points">0</strong></div><div class="kick-field"><div class="kick-goal"></div><div class="kick-arrow"></div><div class="kick-ball"></div></div><div class="kick-instruction" aria-live="polite">Lock your aim, then time your kick. Make one field goal to enter!</div><div class="kick-meter"><div class="kick-needle"></div></div><button type="button" class="kick-action">LOCK AIM</button></div></div><script>
 (function(){
- const splash=document.getElementById('tmfl-startup-splash'),key='tmfl-fan-startup-shown-v2';
- let shown=false;try{shown=sessionStorage.getItem(key)==='1';if(!shown)sessionStorage.setItem(key,'1')}catch(e){}
- if(shown){splash.hidden=true;return}
+ const splash=document.getElementById('tmfl-startup-splash'),key='tmfl-fan-fieldgoal-completed-v3';
+ let completed=false;try{completed=sessionStorage.getItem(key)==='1'}catch(e){}
+ if(completed){splash.hidden=true;return}
  const arrow=splash.querySelector('.kick-arrow'),needle=splash.querySelector('.kick-needle'),ball=splash.querySelector('.kick-ball'),action=splash.querySelector('.kick-action'),instruction=splash.querySelector('.kick-instruction'),points=splash.querySelector('.tmfl-kick-points'),board=splash.querySelector('.tmfl-kick-scoreboard');
- let phase=0,angle=0,power=50,frame=0,finished=false,last=performance.now();
+ let phase=0,angle=0,power=50,frame=0,finished=false;
  const started=performance.now();
- function finish(){if(finished)return;finished=true;cancelAnimationFrame(frame);splash.hidden=true;document.removeEventListener('keydown',onKey)}
- function onKey(e){if(splash.hidden)return;if(e.code==='Space'||e.code==='Enter'){e.preventDefault();kick()}}
+ function finish(){if(finished)return;finished=true;try{sessionStorage.setItem(key,'1')}catch(e){}cancelAnimationFrame(frame);splash.hidden=true;document.removeEventListener('keydown',onKey)}
+ function onKey(e){if(splash.hidden)return;if((e.code==='Space'||e.code==='Enter')&&e.target!==action){e.preventDefault();kick()}}
  document.addEventListener('keydown',onKey);
- splash.querySelector('.kick-skip').onclick=finish;
  function kick(){
-  if(phase===0){phase=1;action.textContent='KICK!';instruction.textContent='Tap again to set your power';return}
+  if(phase===0){phase=1;action.textContent='KICK!';instruction.textContent='Time your power in the green zone, then kick!';return}
   if(phase!==1)return;
   phase=2;action.disabled=true;action.textContent='KICKING…';
   const good=Math.abs(angle)<=15&&power>=37&&power<=85;
   ball.style.setProperty('--kick-x',angle*2.3+'px');ball.classList.add('flying');
-  setTimeout(()=>{
+  window.setTimeout(()=>{
    if(finished)return;
-   if(good){points.textContent='3';board.classList.add('tmfl-score-flash');instruction.textContent='GOOD! +3 POINTS'}
-   else instruction.textContent='NO GOOD! Try again next time';
-   action.textContent='ENTER FAN PORTAL';action.disabled=false;phase=3;
+   if(good){
+    points.textContent='3';board.classList.add('tmfl-score-flash');
+    instruction.textContent='GOOD! +3 POINTS — Entering Fan Portal…';
+    action.textContent='FIELD GOAL GOOD!';
+    window.setTimeout(finish,1000);
+   }else{
+    instruction.textContent='NO GOOD! Adjust your aim and try again.';
+    action.textContent='LOCK AIM';action.disabled=false;phase=0;
+    ball.classList.remove('flying');
+   }
   },700);
  }
- action.onclick=()=>{if(phase===3)finish();else kick()};
+ action.onclick=kick;
  function animate(now){
   if(finished)return;
   const t=(now-started)/1000;
   if(phase===0){angle=Math.sin(t*2.5)*38;arrow.style.transform='translateX(-50%) rotate('+angle+'deg)'}
   if(phase===1){power=50+50*Math.sin(t*5);needle.style.left=power+'%'}
-  // Give the player time to aim, but never trap them behind the loading screen.
-  if(now-started>12000){finish();return}
   frame=requestAnimationFrame(animate);
  }
  frame=requestAnimationFrame(animate);
