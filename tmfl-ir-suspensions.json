@@ -1,45 +1,15 @@
 {
-  "updated": "2026-10-28",
   "entries": [
     {
-      "id": "ir-brian-robinson-jr",
-      "player": "Brian Robinson Jr.",
-      "team": "Commanders",
-      "type": "IR",
-      "status": "Active",
-      "duration": "4 weeks",
-      "details": "Mild concussion following a late hit against the Titans.",
-      "date": "2026-10-28"
-    },
-    {
-      "id": "susp-bruce-matthews",
-      "player": "Bruce Matthews",
-      "team": "Titans",
-      "type": "Suspension",
-      "status": "Pending",
-      "duration": "1–3 weeks under review",
-      "details": "Disqualified after three personal fouls; league and team decision pending.",
-      "date": "2026-10-28"
-    },
-    {
-      "id": "susp-deandre-hopkins",
-      "player": "DeAndre Hopkins",
-      "team": "Titans",
-      "type": "Suspension",
-      "status": "Pending",
-      "duration": "1–3 weeks under review",
-      "details": "Disqualified after three personal fouls; league and team decision pending.",
-      "date": "2026-10-28"
-    },
-    {
-      "id": "susp-steve-mcnair",
+      "id": "cms-1793315337710-y0dq9p",
       "player": "Steve McNair",
       "team": "Titans",
       "type": "Suspension",
-      "status": "Pending",
-      "duration": "1–3 weeks under review",
-      "details": "Disqualified for targeting; league and team decision pending.",
-      "date": "2026-10-28"
+      "status": "Suspended",
+      "duration": "2 Weeks",
+      "details": "Targeting Disqualification",
+      "date": "2026-10-29",
+      "published": true
     }
   ]
 }
