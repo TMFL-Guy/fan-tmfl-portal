@@ -26,7 +26,7 @@ let SCHEDULE=[{"id":"W01G01","week":1,"away":"Bills","home":"Rams","slot":"TNF",
 const DIVS={'AFC East':['Bills','Dolphins','Patriots','Jets'],'AFC North':['Ravens','Bengals','Browns','Steelers'],'AFC South':['Texans','Colts','Jaguars','Titans'],'AFC West':['Broncos','Chiefs','Chargers','Raiders'],'NFC East':['Cowboys','Giants','Eagles','Commanders'],'NFC North':['Bears','Lions','Packers','Vikings'],'NFC South':['Falcons','Panthers','Saints','Buccaneers'],'NFC West':['Cardinals','Rams','49ers','Seahawks']};
 const TEAMS=Object.values(DIVS).flat(), div=Object.fromEntries(Object.entries(DIVS).flatMap(([k,v])=>v.map(t=>[t,k]))), conf=t=>div[t].slice(0,3);
 const HISTORY_STORE='tmfl-v1-history',PUBLISHED_HISTORY=[{"year":2025,"champion":"Broncos","runner":"Eagles","score":"28–21"},{"year":2024,"champion":"Lions","runner":"Bills","score":"34–30"},{"year":2023,"champion":"Broncos","runner":"Rams","score":"26–24"},{"year":2022,"champion":"Chiefs","runner":"Cowboys","score":"35–26"}];
-const PUBLISHED_FAN_FEATURES={featuredGameId:"W05G04"};
+const PUBLISHED_FAN_FEATURES={featuredGameId:"W06G04"};
 const GOTW_REQUEST_FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSep-hdSN7mTfOo2_qwHiOX9rUX9NpO29CGgoK59U4pcS-UlqA/viewform?usp=publish-editor";
 const STORE='tmfl-v3-predictions',OFFICIAL='tmfl-v3-official',SCHEDULE_STORE='tmfl-v4-schedule';
 const fresh=()=>({week:1,current:'My Bracket',brackets:{'My Bracket':{games:{},playoffs:{}}}});
@@ -976,6 +976,25 @@ document.addEventListener('focusin',event=>{
  check();setInterval(check,120000);window.addEventListener('focus',check);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)check()});
 })();
+// Refresh commissioner-selected dashboard content from its published JSON feed.
+let tmflFanFeaturesRequest=null;
+async function tmflLoadPublishedFanFeatures(){
+ if(tmflFanFeaturesRequest)return tmflFanFeaturesRequest;
+ tmflFanFeaturesRequest=(async()=>{
+  try{
+   const response=await fetch('./tmfl-fan-features.json',{cache:'no-store'});
+   if(!response.ok)throw Error('Published fan features unavailable');
+   const data=await response.json();
+   if(!data||typeof data!=='object'||Array.isArray(data))throw Error('Invalid fan features');
+   const old=JSON.stringify(PUBLISHED_FAN_FEATURES);
+   Object.assign(PUBLISHED_FAN_FEATURES,data);
+   if(JSON.stringify(PUBLISHED_FAN_FEATURES)!==old&&['home','teams','awards'].includes(tab))render();
+  }catch(error){console.warn('TMFL published fan features:',error)}
+  finally{tmflFanFeaturesRequest=null}
+ })();
+ return tmflFanFeaturesRequest;
+}
+tmflLoadPublishedFanFeatures();
 // Load commissioner-published scores before refreshing public-facing standings and profiles.
 async function tmflLoadPublishedResults(){
  try{
@@ -1023,6 +1042,7 @@ async function tmflLiveRefresh(){
   await Promise.allSettled([
    tmflRefreshNotifications(),
    tmflLoadPublishedResults(),
+   tmflLoadPublishedFanFeatures(),
    ...(tab==='ir-suspensions'?[tmflLoadDiscipline()]:[])
   ]);
  }finally{tmflLiveRefreshBusy=false}
