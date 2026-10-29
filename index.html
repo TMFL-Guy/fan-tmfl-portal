@@ -44,10 +44,8 @@ window.tmflInitSupabase();
  let phase=0,angle=0,power=50,frame=0,finished=false,loaded=false;
  const started=performance.now();
  function finish(){if(finished)return;finished=true;cancelAnimationFrame(frame);splash.hidden=true;document.removeEventListener('keydown',onKey)}
- function completeLoad(){loaded=true;const wait=Math.max(0,1600-(performance.now()-started));window.setTimeout(finish,wait)}
+ function completeLoad(){loaded=true;finish()}
  if(document.readyState==='complete')completeLoad();else window.addEventListener('load',completeLoad,{once:true});
- // Network problems must never leave fans trapped behind a loading minigame.
- window.setTimeout(finish,8000);
  function onKey(e){if(splash.hidden)return;if((e.code==='Space'||e.code==='Enter')&&e.target!==action){e.preventDefault();kick()}}
  document.addEventListener('keydown',onKey);
  function kick(){
