@@ -37,15 +37,20 @@ window.tmflInitSupabase();
 #tmfl-startup-splash .kick-action{margin-top:12px;background:#f7c948;color:#101722;font-weight:900;border:0;border-radius:7px;padding:12px 24px;min-width:160px;font-size:16px}
 #tmfl-startup-splash .kick-instruction{min-height:24px;margin:8px 0;font-weight:700}
 #tmfl-startup-splash .kick-skip{display:block;margin:12px auto 0;background:transparent;border:0;color:#d7e2f2;text-decoration:underline;cursor:pointer}
+#tmfl-startup-splash .loading-panel{position:relative}
+#tmfl-startup-splash .tmfl-kick-bonus{position:absolute;z-index:5;pointer-events:none;font-size:27px;font-weight:900;color:#f7c948;text-shadow:0 2px 6px #000;transition:transform .9s ease-in-out,opacity .9s ease-in-out;transform:translate(-50%,-50%)}
+#tmfl-startup-splash .tmfl-score-flash{animation:tmflScorePulse .4s ease-out}
+@keyframes tmflScorePulse{50%{color:#f7c948;transform:scale(1.1)}}
 </style></head><body><div id="tmfl-startup-splash" role="status" aria-label="TMFL Fan Portal loading"><div class="loading-panel"><h2>TMFL LOADING</h2><p class="tmfl-loading-message">Site Loading. This can take up to 40 seconds.</p><div class="tmfl-kick-scoreboard">POINTS <strong class="tmfl-kick-points">0</strong></div><div class="kick-field"><div class="kick-goal"></div><div class="kick-arrow"></div><div class="kick-ball"></div></div><div class="kick-instruction" aria-live="polite">While the portal loads, try a field goal! Lock aim, then time your power.</div><div class="kick-meter"><div class="kick-needle"></div></div><button type="button" class="kick-action">LOCK AIM</button><p class="muted">The portal opens after at least 20 seconds, once loading is complete and you make a successful field goal.</p></div></div><script>
 (function(){
  const splash=document.getElementById('tmfl-startup-splash');
  const arrow=splash.querySelector('.kick-arrow'),needle=splash.querySelector('.kick-needle'),ball=splash.querySelector('.kick-ball'),action=splash.querySelector('.kick-action'),instruction=splash.querySelector('.kick-instruction'),points=splash.querySelector('.tmfl-kick-points'),board=splash.querySelector('.tmfl-kick-scoreboard');
- let phase=0,angle=0,power=50,frame=0,finished=false,loaded=false,minimumElapsed=false,successfulKick=false;
+ let phase=0,angle=0,power=50,frame=0,finished=false,loaded=false,minimumElapsed=false,successfulKick=false,score=0;
+ const started=performance.now();
  function finish(){if(finished)return;finished=true;cancelAnimationFrame(frame);splash.hidden=true;document.removeEventListener('keydown',onKey)}
  function checkReady(){
   if(finished)return;
-  if(!minimumElapsed){instruction.textContent=successfulKick?'Field goal good! Waiting for the 20-second minimum…':'Keep practicing your field goal while the portal loads.';return}
+  if(!minimumElapsed){instruction.textContent=successfulKick?'Field goal good!':'Keep practicing your field goal while the portal loads.';return}
   if(!successfulKick){instruction.textContent='20 seconds elapsed! Make a successful field goal to enter.';return}
   if(!loaded){instruction.textContent='Field goal good! Waiting for the site to finish loading…';return}
   finish();
@@ -63,18 +68,29 @@ window.tmflInitSupabase();
   ball.style.setProperty('--kick-x',angle*2.3+'px');ball.classList.add('flying');
   window.setTimeout(()=>{
    if(finished)return;
-   if(good){successfulKick=true;points.textContent='3';board.classList.add('tmfl-score-flash');instruction.textContent='GOOD! +3 POINTS'}
+   if(good){successfulKick=true;instruction.textContent='Field goal good!';animateScore()}
    else instruction.textContent='NO GOOD! Try again.';
    action.textContent='LOCK AIM';action.disabled=false;phase=0;ball.classList.remove('flying');
-   if(good)checkReady();
+   if(good)window.setTimeout(checkReady,1050);
   },700);
+ }
+ function animateScore(){
+  const goal=splash.querySelector('.kick-goal'),panel=splash.querySelector('.loading-panel');
+  const from=goal.getBoundingClientRect(),to=points.getBoundingClientRect(),origin=panel.getBoundingClientRect();
+  const bonus=document.createElement('span');
+  bonus.className='tmfl-kick-bonus';bonus.textContent='+3';
+  bonus.style.left=(from.left+from.width/2-origin.left)+'px';
+  bonus.style.top=(from.top+from.height/2-origin.top)+'px';
+  panel.appendChild(bonus);
+  requestAnimationFrame(()=>{bonus.style.transform='translate('+(to.left+to.width/2-from.left-from.width/2)+'px,'+(to.top+to.height/2-from.top-from.height/2)+'px) scale(.75)';bonus.style.opacity='0.7'});
+  window.setTimeout(()=>{score+=3;points.textContent=String(score);board.classList.remove('tmfl-score-flash');void board.offsetWidth;board.classList.add('tmfl-score-flash');bonus.remove()},900);
  }
  action.onclick=kick;
  function animate(now){
   if(finished)return;
   const t=(now-started)/1000;
   if(phase===0){angle=Math.sin(t*2.5)*38;arrow.style.transform='translateX(-50%) rotate('+angle+'deg)'}
-  if(phase===1){power=50+50*Math.sin(t*5);needle.style.left=power+'%'}
+  power=50+50*Math.sin(t*5);needle.style.left=power+'%';
   frame=requestAnimationFrame(animate);
  }
  frame=requestAnimationFrame(animate);
