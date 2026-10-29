@@ -1014,5 +1014,22 @@ if(navigator.onLine){
  else setTimeout(()=>window.tmflLoadSupabase(),1200);
 }
 window.addEventListener('online',()=>{window.tmflLoadSupabase();tmflRefreshNotifications()});
+/* Check published TMFL data every 15 seconds while fans have the page open. */
+let tmflLiveRefreshBusy=false;
+async function tmflLiveRefresh(){
+ if(document.hidden||!navigator.onLine||tmflLiveRefreshBusy)return;
+ tmflLiveRefreshBusy=true;
+ try{
+  await Promise.allSettled([
+   tmflRefreshNotifications(),
+   tmflLoadPublishedResults(),
+   ...(tab==='ir-suspensions'?[tmflLoadDiscipline()]:[])
+  ]);
+ }finally{tmflLiveRefreshBusy=false}
+}
+setInterval(tmflLiveRefresh,15000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)tmflLiveRefresh()});
+window.addEventListener('focus',tmflLiveRefresh);
+
 
 </script><script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(error=>console.warn('TMFL offline setup unavailable:',error)))}</script></body></html>
