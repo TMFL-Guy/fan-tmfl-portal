@@ -321,7 +321,7 @@ function tmflDisciplineView(){
  if(tmflDisciplineData===null){tmflLoadDiscipline();return '<section class="panel"><h2>IR &amp; Suspensions</h2><p>Loading official league updates…</p></section>'}
  const rows=tmflDisciplineData;
  const section=(type,title)=>{
-  const list=rows.filter(e=>e.type===type||(type==='SSPD'&&e.type==='Suspension'));
+  const list=rows.filter(e=>e.published!==false&&(e.type===type||(type==='SSPD'&&e.type==='Suspension')));
   return '<div class="panel"><h3>'+title+'</h3>'+(list.length?list.map(e=>'<div class="game"><h4>'+esc(e.player||'Unknown player')+' · '+esc(e.team||'')+'</h4><p><strong>'+esc(e.status||'Unknown')+'</strong> · '+esc(e.duration||'Duration TBD')+'</p><p>'+esc(e.details||'')+'</p><p class="muted">'+esc(e.date||'')+'</p></div>').join(''):'<p class="muted">No entries currently listed.</p>')+'</div>';
  };
  return '<section class="panel"><h2>TMFL IR &amp; Suspensions</h2><p class="muted">Official injury reserve and disciplinary updates. Pending suspensions are not confirmed.</p></section>'+section('IR','Injured Reserve')+section('SSPD','Suspensions &amp; Pending Decisions');
