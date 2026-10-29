@@ -37,6 +37,12 @@ window.tmflInitSupabase();
 #tmfl-startup-splash .kick-action{margin-top:12px;background:#f7c948;color:#101722;font-weight:900;border:0;border-radius:7px;padding:12px 24px;min-width:160px;font-size:16px}
 #tmfl-startup-splash .kick-instruction{min-height:24px;margin:8px 0;font-weight:700}
 #tmfl-startup-splash .kick-skip{display:block;margin:12px auto 0;background:transparent;border:0;color:#d7e2f2;text-decoration:underline;cursor:pointer}
+/* Native CSS motion provides a visible fallback even if a stale script is still active. */
+#tmfl-startup-splash .kick-arrow{animation:tmflAimSweep 1.9s ease-in-out infinite alternate}
+#tmfl-startup-splash .kick-needle{animation:tmflPowerSweep 1.1s ease-in-out infinite alternate}
+#tmfl-startup-splash .kick-field{isolation:isolate}
+@keyframes tmflAimSweep{0%{transform:translateX(-50%) rotate(-38deg)}100%{transform:translateX(-50%) rotate(38deg)}}
+@keyframes tmflPowerSweep{0%{left:3%}100%{left:97%}}
 #tmfl-startup-splash .loading-panel{position:relative}
 #tmfl-startup-splash .tmfl-kick-bonus{position:absolute;z-index:5;pointer-events:none;font-size:27px;font-weight:900;color:#f7c948;text-shadow:0 2px 6px #000;transition:transform .9s ease-in-out,opacity .9s ease-in-out;transform:translate(-50%,-50%)}
 #tmfl-startup-splash .tmfl-score-flash{animation:tmflScorePulse .4s ease-out}
@@ -61,7 +67,7 @@ window.tmflInitSupabase();
  function onKey(e){if(splash.hidden)return;if((e.code==='Space'||e.code==='Enter')&&e.target!==action){e.preventDefault();kick()}}
  document.addEventListener('keydown',onKey);
  function kick(){
-  if(phase===0){phase=1;action.textContent='KICK!';instruction.textContent='Time the strength meter and kick!';return}
+  if(phase===0){phase=1;arrow.style.animationPlayState='paused';action.textContent='KICK!';instruction.textContent='Time the strength meter and kick!';return}
   if(phase!==1)return;
   phase=2;action.disabled=true;action.textContent='KICKING…';
   const good=Math.abs(angle)<=15&&power>=37&&power<=85;
@@ -70,7 +76,7 @@ window.tmflInitSupabase();
    if(finished)return;
    if(good){successfulKick=true;instruction.textContent='Field goal good!';animateScore()}
    else instruction.textContent='NO GOOD! Try again.';
-   action.textContent='LOCK AIM';action.disabled=false;phase=0;ball.classList.remove('flying');
+   action.textContent='LOCK AIM';action.disabled=false;phase=0;arrow.style.animationPlayState='running';ball.classList.remove('flying');
    if(good)window.setTimeout(checkReady,1050);
   },700);
  }
@@ -90,7 +96,7 @@ window.tmflInitSupabase();
   if(finished)return;
   const t=(now-started)/1000;
   if(phase===0){angle=Math.sin(t*2.5)*38;arrow.style.transform='translateX(-50%) rotate('+angle+'deg)'}
-  power=50+50*Math.sin(t*5);needle.style.left=power+'%';
+  if(phase!==2){power=50+50*Math.sin(t*5);needle.style.left=power+'%'}
   frame=requestAnimationFrame(animate);
  }
  frame=requestAnimationFrame(animate);
