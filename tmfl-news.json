@@ -16,7 +16,7 @@
       "date": "2026-10-28",
       "category": "League News",
       "team": "",
-      "published": true
+      "published": false
     },
     {
       "id": "news-1793245074005-5k4we",
@@ -25,7 +25,7 @@
       "date": "2026-10-28",
       "category": "Injury Update",
       "team": "Commanders",
-      "published": true
+      "published": false
     },
     {
       "id": "news-1793237716074-jyhh5",
@@ -35,6 +35,15 @@
       "category": "Team News",
       "team": "Colts",
       "published": true
+    },
+    {
+      "id": "news-1793316128969-fvkuw",
+      "title": "Titans Players to Not be Suspended",
+      "body": "Two of the three Titans players will not receive suspensions. Bruce Matthews and DeAndre Hopkins will not be suspended due to their personal foul outs against Washington. Steve McNair's suspension for targeting has been confirmed for two weeks.",
+      "date": "2026-10-29",
+      "category": "Team News",
+      "team": "Titans",
+      "published": false
     }
   ]
 }
