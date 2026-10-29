@@ -1,4 +1,4 @@
-const CACHE='tmfl-fan-v13-fresh-notifications';
+const CACHE='tmfl-fan-v14-chi-nyj-gotw';
 const ASSETS=['./index.html','./manifest.webmanifest','./tmfl-icon-512.png','./tmfl-news.json','./tmfl-draft.json'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
