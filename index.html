@@ -995,6 +995,26 @@ async function tmflLoadPublishedFanFeatures(){
  return tmflFanFeaturesRequest;
 }
 tmflLoadPublishedFanFeatures();
+// Keep the published league schedule in sync without overwriting fan predictions.
+let tmflScheduleRequest=null;
+async function tmflLoadPublishedSchedule(){
+ if(tmflScheduleRequest)return tmflScheduleRequest;
+ tmflScheduleRequest=(async()=>{
+  try{
+   const response=await fetch('./tmfl-schedule.json',{cache:'no-store'});
+   if(!response.ok)throw Error('Published schedule unavailable');
+   const data=await response.json();
+   if(!Array.isArray(data)||!data.every(g=>g&&typeof g.id==='string'&&Number.isInteger(Number(g.week))&&typeof g.away==='string'&&typeof g.home==='string'))throw Error('Invalid published schedule');
+   if(JSON.stringify(SCHEDULE)!==JSON.stringify(data)){
+    SCHEDULE=data;
+    render();
+   }
+  }catch(error){console.warn('TMFL published schedule:',error)}
+  finally{tmflScheduleRequest=null}
+ })();
+ return tmflScheduleRequest;
+}
+tmflLoadPublishedSchedule();
 // Load commissioner-published scores before refreshing public-facing standings and profiles.
 async function tmflLoadPublishedResults(){
  try{
@@ -1043,6 +1063,7 @@ async function tmflLiveRefresh(){
    tmflRefreshNotifications(),
    tmflLoadPublishedResults(),
    tmflLoadPublishedFanFeatures(),
+   tmflLoadPublishedSchedule(),
    ...(tab==='ir-suspensions'?[tmflLoadDiscipline()]:[])
   ]);
  }finally{tmflLiveRefreshBusy=false}
