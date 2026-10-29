@@ -1,15 +1,27 @@
 {
+  "version": 1,
   "entries": [
     {
       "id": "cms-1793315337710-y0dq9p",
       "player": "Steve McNair",
       "team": "Titans",
-      "type": "Suspension",
-      "status": "In Effect",
+      "type": "SSPD",
+      "status": "ENF",
       "duration": "2 Weeks",
       "details": "Targeting Disqualification",
       "date": "2026-10-29",
       "published": true
+    },
+    {
+      "id": "cms-1793315865022-lwrii1",
+      "player": "Brian Robinson Jr.",
+      "team": "Commanders",
+      "type": "IR",
+      "status": "Out",
+      "duration": "4 weeks",
+      "details": "Mild Concussion",
+      "date": "2026-10-29",
+      "published": false
     }
   ]
 }
