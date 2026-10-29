@@ -262,9 +262,39 @@ window.tmflCMSSaveEntry=key=>{
 };
 window.tmflCMSExport=key=>{const cfg=TMFL_CMS_CONFIG[key];download(cfg.file,JSON.stringify({version:1,entries:tmflCMSData(key)},null,2))};
 window.tmflCMSImport=async(event,key)=>{const file=event.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(!Array.isArray(data.entries))throw Error('Missing entries array');if(!confirm('Replace all local entries in '+TMFL_CMS_CONFIG[key].title+'?'))return;tmflCMSSave(key,data.entries.filter(x=>x&&typeof x==='object'&&typeof x.id==='string'));tmflCMSSelection[key]='';render()}catch(e){alert('Import failed: '+e.message)}};
+
+const TMFL_GITHUB_REPO='TMFL-Guy/fan-tmfl-portal';
+window.tmflPublishToGitHub=async kind=>{
+ const options={
+  results:['tmfl-official-results.json',official],
+  highlights:['tmfl-highlights.json',{highlights:tmsnHighlights}],
+  news:['tmfl-news.json',{articles:tmflNewsArticles}],
+  rosters:['tmfl-rosters.json',tmflEditorRosters],
+  draft:['tmfl-draft.json',{picks:tmflEditorDraft}]
+ };
+ if(TMFL_CMS_CONFIG[kind])options[kind]=[TMFL_CMS_CONFIG[kind].file,{version:1,entries:tmflCMSData(kind)}];
+ if(!options[kind])return alert('Unknown editor');
+ const [file,data]=options[kind],content=JSON.stringify(data,null,2)+'\n';
+ const edit='https://github.com/'+TMFL_GITHUB_REPO+'/edit/main/'+encodeURIComponent(file);
+ const create='https://github.com/'+TMFL_GITHUB_REPO+'/new/main?filename='+encodeURIComponent(file);
+ download(file,content);
+ const old=document.getElementById('tmfl-github-publisher');if(old)old.remove();
+ const panel=document.createElement('section');panel.id='tmfl-github-publisher';panel.className='panel';
+ panel.style.cssText='position:fixed;top:5vh;left:5vw;width:90vw;max-height:90vh;overflow:auto;z-index:9999;box-shadow:0 0 0 100vmax rgba(0,0,0,.75);border:2px solid white;background:#161e2b';
+ const h=document.createElement('h2');h.textContent='Publish '+file;panel.appendChild(h);
+ const p=document.createElement('p');p.textContent='The updated JSON has downloaded. Copy the contents below, open GitHub, replace the existing file contents, and click Commit changes. Only your GitHub account can authorize the commit.';panel.appendChild(p);
+ const area=document.createElement('textarea');area.readOnly=true;area.value=content;area.style.cssText='width:100%;height:180px;background:#101827;color:white;padding:10px';panel.appendChild(area);
+ const row=document.createElement('div');row.className='actions';panel.appendChild(row);
+ function add(label,fn){const b=document.createElement('button');b.textContent=label;b.onclick=fn;row.appendChild(b)}
+ add('Copy JSON',async()=>{try{await navigator.clipboard.writeText(content);alert('Copied! Paste it into GitHub.')}catch(e){area.focus();area.select();alert('Use Command+C or Ctrl+C to copy the selected JSON.')}});
+ add('Open GitHub Editor',()=>window.open(edit,'_blank','noopener,noreferrer'));
+ add('Create File on GitHub',()=>window.open(create,'_blank','noopener,noreferrer'));
+ add('Close',()=>panel.remove());
+ document.body.appendChild(panel);
+};
 function tmflCMSPublishingView(){
  const keys=Object.keys(TMFL_CMS_CONFIG);
- return '<div class="panel"><h2>Commissioner Publishing Center</h2><p class="warning">This is a local export and release-preparation center, not a live publisher. Do not upload the commissioner HTML to the public repository. The new content JSON feeds need Fan Portal integration before they become visible.</p><p>Existing TMFL News publishing: use the TMFL News Editor to download <code>tmfl-news.json</code>, then upload that file to the public repository. Other editor exports currently serve as backups and future content feeds.</p><div class="grid">'+keys.map(key=>'<div class="game"><strong>'+esc(TMFL_CMS_CONFIG[key].title)+'</strong><p class="muted">'+tmflCMSData(key).length+' saved entries · '+esc(TMFL_CMS_CONFIG[key].file)+'</p><button onclick="tmflCMSExport(\''+key+'\')">Export JSON</button></div>').join('')+'</div><div class="actions"><button onclick="tmflCMSExportAll()">Download All Editors Backup</button><button onclick="tab=\'news-editor\';render()">Open News Editor</button></div><p class="muted">Keep this backup private: it can include unpublished drafts.</p></div>';
+ return '<div class="panel"><h2>Commissioner Publishing Center</h2><p>Publish to GitHub: prepare the JSON, copy it into the GitHub editor, and confirm the commit. No passwords or tokens are stored on this page.</p><div class="actions"><button onclick="tmflPublishToGitHub(\'results\')">Publish Results to GitHub</button><button onclick="tmflPublishToGitHub(\'highlights\')">Publish Highlights to GitHub</button><button onclick="tmflPublishToGitHub(\'news\')">Publish News to GitHub</button><button onclick="tmflPublishToGitHub(\'rosters\')">Publish Rosters to GitHub</button><button onclick="tmflPublishToGitHub(\'draft\')">Publish Draft to GitHub</button></div><p class="warning">This is a local export and release-preparation center, not a live publisher. Do not upload the commissioner HTML to the public repository. The new content JSON feeds need Fan Portal integration before they become visible.</p><p>Existing TMFL News publishing: use the TMFL News Editor to download <code>tmfl-news.json</code>, then upload that file to the public repository. Other editor exports currently serve as backups and future content feeds.</p><div class="grid">'+keys.map(key=>'<div class="game"><strong>'+esc(TMFL_CMS_CONFIG[key].title)+'</strong><p class="muted">'+tmflCMSData(key).length+' saved entries · '+esc(TMFL_CMS_CONFIG[key].file)+'</p><button onclick="tmflCMSExport(\''+key+'\')">Export JSON</button></div>').join('')+'</div><div class="actions"><button onclick="tmflCMSExportAll()">Download All Editors Backup</button><button onclick="tab=\'news-editor\';render()">Open News Editor</button></div><p class="muted">Keep this backup private: it can include unpublished drafts.</p></div>';
 }
 window.tmflCMSExportAll=()=>download('tmfl-commissioner-content-backup.json',JSON.stringify({version:1,exportedAt:new Date().toISOString(),editors:Object.fromEntries(Object.keys(TMFL_CMS_CONFIG).map(key=>[key,tmflCMSData(key)])),news:tmflNewsArticles},null,2));
 
