@@ -38,8 +38,8 @@ window.tmflInitSupabase();
 #tmfl-startup-splash .kick-instruction{min-height:24px;margin:8px 0;font-weight:700}
 #tmfl-startup-splash .kick-skip{display:block;margin:12px auto 0;background:transparent;border:0;color:#d7e2f2;text-decoration:underline;cursor:pointer}
 /* Native CSS motion provides a visible fallback even if a stale script is still active. */
-#tmfl-startup-splash .kick-arrow{animation:tmflAimSweep 1.9s ease-in-out infinite alternate}
-#tmfl-startup-splash .kick-needle{animation:tmflPowerSweep 1.1s ease-in-out infinite alternate}
+#tmfl-startup-splash .kick-arrow{animation:none!important}
+#tmfl-startup-splash .kick-needle{animation:none!important}
 #tmfl-startup-splash .kick-field{isolation:isolate}
 @keyframes tmflAimSweep{0%{transform:translateX(-50%) rotate(-38deg)}100%{transform:translateX(-50%) rotate(38deg)}}
 @keyframes tmflPowerSweep{0%{left:3%}100%{left:97%}}
@@ -51,7 +51,7 @@ window.tmflInitSupabase();
 (function(){
  const splash=document.getElementById('tmfl-startup-splash');
  const arrow=splash.querySelector('.kick-arrow'),needle=splash.querySelector('.kick-needle'),ball=splash.querySelector('.kick-ball'),action=splash.querySelector('.kick-action'),instruction=splash.querySelector('.kick-instruction'),points=splash.querySelector('.tmfl-kick-points'),board=splash.querySelector('.tmfl-kick-scoreboard');
- let phase=0,angle=0,power=50,frame=0,finished=false,loaded=false,minimumElapsed=false,successfulKick=false,score=0;
+ let phase=0,angle=0,power=50,frame=0,finished=false,loaded=false,minimumElapsed=false,successfulKick=false,score=0,madeKicks=0,aimSpeed=3.6,powerSpeed=1.6;
  const started=performance.now();
  function finish(){if(finished)return;finished=true;cancelAnimationFrame(frame);splash.hidden=true;document.removeEventListener('keydown',onKey)}
  function checkReady(){
@@ -67,16 +67,16 @@ window.tmflInitSupabase();
  function onKey(e){if(splash.hidden)return;if((e.code==='Space'||e.code==='Enter')&&e.target!==action){e.preventDefault();kick()}}
  document.addEventListener('keydown',onKey);
  function kick(){
-  if(phase===0){phase=1;arrow.style.animationPlayState='paused';action.textContent='KICK!';instruction.textContent='Time the strength meter and kick!';return}
+  if(phase===0){phase=1;action.textContent='KICK!';instruction.textContent='Time the strength meter and kick!';return}
   if(phase!==1)return;
   phase=2;action.disabled=true;action.textContent='KICKING…';
   const good=Math.abs(angle)<=15&&power>=37&&power<=85;
   ball.style.setProperty('--kick-x',angle*2.3+'px');ball.classList.add('flying');
   window.setTimeout(()=>{
    if(finished)return;
-   if(good){successfulKick=true;instruction.textContent='Field goal good!';animateScore()}
+   if(good){successfulKick=true;madeKicks++;aimSpeed=Math.min(9,3.6+madeKicks*.45);powerSpeed=Math.min(5,1.6+madeKicks*.28);instruction.textContent='Field goal good!';animateScore()}
    else instruction.textContent='NO GOOD! Try again.';
-   action.textContent='LOCK AIM';action.disabled=false;phase=0;arrow.style.animationPlayState='running';ball.classList.remove('flying');
+   action.textContent='LOCK AIM';action.disabled=false;phase=0;ball.classList.remove('flying');
    if(good)window.setTimeout(checkReady,1050);
   },700);
  }
@@ -95,8 +95,8 @@ window.tmflInitSupabase();
  function animate(now){
   if(finished)return;
   const t=(now-started)/1000;
-  if(phase===0){angle=Math.sin(t*2.5)*38;arrow.style.transform='translateX(-50%) rotate('+angle+'deg)'}
-  if(phase!==2){power=50+50*Math.sin(t*5);needle.style.left=power+'%'}
+  if(phase===0){angle=Math.sin(t*aimSpeed)*38;arrow.style.transform='translateX(-50%) rotate('+angle+'deg)'}
+  if(phase===1){power=50+47*Math.sin(t*powerSpeed);needle.style.left=power+'%'}
   frame=requestAnimationFrame(animate);
  }
  frame=requestAnimationFrame(animate);
