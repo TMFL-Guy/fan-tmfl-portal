@@ -37,15 +37,22 @@ window.tmflInitSupabase();
 #tmfl-startup-splash .kick-action{margin-top:12px;background:#f7c948;color:#101722;font-weight:900;border:0;border-radius:7px;padding:12px 24px;min-width:160px;font-size:16px}
 #tmfl-startup-splash .kick-instruction{min-height:24px;margin:8px 0;font-weight:700}
 #tmfl-startup-splash .kick-skip{display:block;margin:12px auto 0;background:transparent;border:0;color:#d7e2f2;text-decoration:underline;cursor:pointer}
-</style></head><body><div id="tmfl-startup-splash" role="status" aria-label="TMFL Fan Portal loading"><div class="loading-panel"><h2>TMFL LOADING</h2><div class="tmfl-kick-scoreboard">POINTS <strong class="tmfl-kick-points">0</strong></div><div class="kick-field"><div class="kick-goal"></div><div class="kick-arrow"></div><div class="kick-ball"></div></div><div class="kick-instruction" aria-live="polite">While the portal loads, try a field goal! Lock aim, then time your power.</div><div class="kick-meter"><div class="kick-needle"></div></div><button type="button" class="kick-action">LOCK AIM</button><p class="muted">The Fan Portal opens automatically when loading finishes.</p></div></div><script>
+</style></head><body><div id="tmfl-startup-splash" role="status" aria-label="TMFL Fan Portal loading"><div class="loading-panel"><h2>TMFL LOADING</h2><p class="tmfl-loading-message">Site Loading. This can take up to 40 seconds.</p><div class="tmfl-kick-scoreboard">POINTS <strong class="tmfl-kick-points">0</strong></div><div class="kick-field"><div class="kick-goal"></div><div class="kick-arrow"></div><div class="kick-ball"></div></div><div class="kick-instruction" aria-live="polite">While the portal loads, try a field goal! Lock aim, then time your power.</div><div class="kick-meter"><div class="kick-needle"></div></div><button type="button" class="kick-action">LOCK AIM</button><p class="muted">The portal opens after at least 20 seconds, once loading is complete and you make a successful field goal.</p></div></div><script>
 (function(){
  const splash=document.getElementById('tmfl-startup-splash');
  const arrow=splash.querySelector('.kick-arrow'),needle=splash.querySelector('.kick-needle'),ball=splash.querySelector('.kick-ball'),action=splash.querySelector('.kick-action'),instruction=splash.querySelector('.kick-instruction'),points=splash.querySelector('.tmfl-kick-points'),board=splash.querySelector('.tmfl-kick-scoreboard');
- let phase=0,angle=0,power=50,frame=0,finished=false,loaded=false;
- const started=performance.now();
+ let phase=0,angle=0,power=50,frame=0,finished=false,loaded=false,minimumElapsed=false,successfulKick=false;
  function finish(){if(finished)return;finished=true;cancelAnimationFrame(frame);splash.hidden=true;document.removeEventListener('keydown',onKey)}
- function completeLoad(){loaded=true;finish()}
+ function checkReady(){
+  if(finished)return;
+  if(!minimumElapsed){instruction.textContent=successfulKick?'Field goal good! Waiting for the 20-second minimum…':'Keep practicing your field goal while the portal loads.';return}
+  if(!successfulKick){instruction.textContent='20 seconds elapsed! Make a successful field goal to enter.';return}
+  if(!loaded){instruction.textContent='Field goal good! Waiting for the site to finish loading…';return}
+  finish();
+ }
+ function completeLoad(){loaded=true;checkReady()}
  if(document.readyState==='complete')completeLoad();else window.addEventListener('load',completeLoad,{once:true});
+ window.setTimeout(()=>{minimumElapsed=true;checkReady()},20000);
  function onKey(e){if(splash.hidden)return;if((e.code==='Space'||e.code==='Enter')&&e.target!==action){e.preventDefault();kick()}}
  document.addEventListener('keydown',onKey);
  function kick(){
@@ -56,9 +63,10 @@ window.tmflInitSupabase();
   ball.style.setProperty('--kick-x',angle*2.3+'px');ball.classList.add('flying');
   window.setTimeout(()=>{
    if(finished)return;
-   if(good){points.textContent='3';board.classList.add('tmfl-score-flash');instruction.textContent='GOOD! +3 POINTS'}
-   else instruction.textContent='NO GOOD! Try another kick while loading.';
+   if(good){successfulKick=true;points.textContent='3';board.classList.add('tmfl-score-flash');instruction.textContent='GOOD! +3 POINTS'}
+   else instruction.textContent='NO GOOD! Try again.';
    action.textContent='LOCK AIM';action.disabled=false;phase=0;ball.classList.remove('flying');
+   if(good)checkReady();
   },700);
  }
  action.onclick=kick;
