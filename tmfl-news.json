@@ -10,15 +10,6 @@
       "published": true
     },
     {
-      "id": "news-1793237716074-jyhh5",
-      "title": "Big Game for Indy",
-      "body": "The Rookie Wayne Chrebet made his first start for Indianapolis in their most recent game (a 21-10 victory) against the Minnesota Vikings. He played the whole game, scoring 3 TDs. The Colts are now 2-3 and are sitting in 8th in the AFC and 17th overall. The Vikings are now 0-5, sitting in last in the NFC and overall.",
-      "date": "2026-10-29",
-      "category": "Team News",
-      "team": "Colts",
-      "published": true
-    },
-    {
       "id": "news-1793244458121-coxek",
       "title": "Nothing But Flags Flying During Commanders/Titans Game",
       "body": "Nothing but flags flew during the recent game between the Titans and Commanders. A total of eleven penalties were called (mostly personal fouls) in the bloodbath of that game. The Commanders had one illegal hit below the waist penalty, adding up to fifteen total penalty yards. The Titans had ten penalties called. Six late-hit out-of-bounds calls, one targeting, and three encroachment calls, adding up to one hundred ten penalty yards. One of the late hits resulted in Brian Robinson Jr., a third-year out of Alabama, getting injured. Two Titans players \"personal fouled out\" by committing three personal fouls: Bruce Matthews (Rookie) and DeAndre Hopkins (Second Year). One was disqualified due to targeting: Steve McNair, a third-year. All three players are facing one to three week suspensions, at the league's and team's discretion. As a result of three players getting disqualified, the Titans coach also had to go to the locker room for the last ninety seconds. The final score was Titans: 26, Commanders: 24.",
@@ -34,6 +25,15 @@
       "date": "2026-10-28",
       "category": "Injury Update",
       "team": "Commanders",
+      "published": true
+    },
+    {
+      "id": "news-1793237716074-jyhh5",
+      "title": "Big Game for Indy",
+      "body": "The Rookie Wayne Chrebet made his first start for Indianapolis in their most recent game (a 21-10 victory) against the Minnesota Vikings. He played the whole game, scoring 3 TDs. The Colts are now 2-3 and are sitting in 8th in the AFC and 17th overall. The Vikings are now 0-5, sitting in last in the NFC and overall.",
+      "date": "2026-10-29",
+      "category": "Team News",
+      "team": "Colts",
       "published": true
     }
   ]
