@@ -21,47 +21,58 @@ window.tmflInitSupabase();
 #tmfl-game-center .tmfl-matchup-teams,#tmfl-game-center .tmfl-matchup-scores{display:flex!important;align-items:center!important;justify-content:center!important;gap:12px;flex-wrap:wrap;width:100%;text-align:center!important}
 #tmfl-game-center .tmfl-matchup-teams span,#tmfl-game-center .tmfl-matchup-scores span{text-align:center}
 </style><style>
-#tmfl-startup-splash{position:fixed;inset:0;z-index:2147483647;background:#0b101a;color:#f4f6fc;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;text-align:center}
+#tmfl-startup-splash{position:fixed;inset:0;z-index:2147483647;background:#0b101a;color:#f4f6fc;display:flex;align-items:center;justify-content:center;padding:18px;box-sizing:border-box;text-align:center}
 #tmfl-startup-splash[hidden]{display:none!important}
-#tmfl-startup-splash .loading-panel{width:min(100%,400px);padding:28px 18px}
-#tmfl-startup-splash h2{margin:0 0 20px;font-size:24px;letter-spacing:.08em}
-</style></head><body><div id="tmfl-startup-splash" role="status" aria-label="TMFL loading" aria-live="polite"><div class="loading-panel"><h2>TMFL FAN PORTAL</h2><div class="tmfl-kick-scoreboard" aria-label="Field goal points">POINTS <strong class="tmfl-kick-points">0</strong></div><div class="loading-scene"><div class="loading-crossbar"></div><div class="loading-left-upright"></div><div class="loading-right-upright"></div><div class="loading-support"></div><div class="loading-football"><div class="loading-ball-spin"></div></div></div><div class="loading-label">Loading<span class="loading-dots"></span></div></div></div><script>
+#tmfl-startup-splash .loading-panel{width:min(100%,420px);padding:20px 16px;border:3px solid #f7c948;border-radius:12px;background:#15253b;box-shadow:0 12px 45px #000a}
+#tmfl-startup-splash h2{margin:0 0 12px;font-size:23px;letter-spacing:.08em}
+#tmfl-startup-splash .kick-field{height:200px;position:relative;background:linear-gradient(#193c69 0 62%,#22613d 62%);border:3px solid #fff7;border-radius:8px;margin:12px 0;overflow:hidden}
+#tmfl-startup-splash .kick-goal{position:absolute;left:50%;top:24px;width:112px;height:75px;transform:translateX(-50%);border-left:6px solid #f7c948;border-right:6px solid #f7c948;border-bottom:6px solid #f7c948;box-sizing:border-box}
+#tmfl-startup-splash .kick-goal:after{content:'';position:absolute;left:50%;top:69px;width:5px;height:48px;background:#f7c948;transform:translateX(-50%)}
+#tmfl-startup-splash .kick-arrow{position:absolute;left:50%;bottom:37px;height:100px;width:5px;background:#fff;transform-origin:50% 100%;transform:translateX(-50%) rotate(0deg);border-radius:4px}
+#tmfl-startup-splash .kick-arrow:before{content:'';position:absolute;top:-8px;left:-6px;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:15px solid white}
+#tmfl-startup-splash .kick-ball{position:absolute;left:calc(50% - 12px);bottom:18px;width:24px;height:17px;background:#9b542b;border:2px solid #fff;border-radius:50%;box-sizing:border-box}
+#tmfl-startup-splash .kick-ball.flying{transition:transform .65s ease-out,opacity .65s ease-in;transform:translate(var(--kick-x),-125px) scale(.55);opacity:.3}
+#tmfl-startup-splash .kick-meter{height:23px;border:2px solid white;border-radius:5px;position:relative;overflow:hidden;background:linear-gradient(90deg,#a72727 0 20%,#e8b92c 20% 37%,#43bc68 37% 63%,#e8b92c 63% 80%,#a72727 80%)}
+#tmfl-startup-splash .kick-needle{position:absolute;left:50%;height:100%;width:5px;background:white;box-shadow:0 0 3px black}
+#tmfl-startup-splash .kick-action{margin-top:12px;background:#f7c948;color:#101722;font-weight:900;border:0;border-radius:7px;padding:12px 24px;min-width:160px;font-size:16px}
+#tmfl-startup-splash .kick-instruction{min-height:24px;margin:8px 0;font-weight:700}
+#tmfl-startup-splash .kick-skip{display:block;margin:12px auto 0;background:transparent;border:0;color:#d7e2f2;text-decoration:underline;cursor:pointer}
+</style></head><body><div id="tmfl-startup-splash" role="dialog" aria-label="TMFL field goal kickoff"><div class="loading-panel"><h2>TMFL FIELD GOAL</h2><div class="tmfl-kick-scoreboard">POINTS <strong class="tmfl-kick-points">0</strong></div><div class="kick-field"><div class="kick-goal"></div><div class="kick-arrow"></div><div class="kick-ball"></div></div><div class="kick-instruction" aria-live="polite">Tap to lock your aim</div><div class="kick-meter"><div class="kick-needle"></div></div><button type="button" class="kick-action">LOCK AIM</button><button type="button" class="kick-skip">Skip to Fan Portal</button></div></div><script>
 (function(){
- const splash=document.getElementById('tmfl-startup-splash');
- const key='tmfl-fan-startup-shown-v1';
- let shown=false;
- try{shown=sessionStorage.getItem(key)==='1';if(!shown)sessionStorage.setItem(key,'1')}catch(e){}
+ const splash=document.getElementById('tmfl-startup-splash'),key='tmfl-fan-startup-shown-v2';
+ let shown=false;try{shown=sessionStorage.getItem(key)==='1';if(!shown)sessionStorage.setItem(key,'1')}catch(e){}
  if(shown){splash.hidden=true;return}
- const points=splash.querySelector('.tmfl-kick-points');
- const board=splash.querySelector('.tmfl-kick-scoreboard');
- let score=0;
- // Score once per forward kick, when the football actually reaches the uprights.
- // Track the CSS animation timeline instead of an unrelated interval so the
- // reset/send-back phase can never award points.
- const ball=splash.querySelector('.loading-football');
- let lastScoredCycle=-1,frame=0;
- function trackKick(){
-  if(splash.hidden)return;
-  const animation=ball.getAnimations().find(a=>a.animationName==='tmfl-kick');
-  if(animation&&animation.currentTime!=null){
-   const elapsed=Number(animation.currentTime);
-   const duration=2800;
-   const cycle=Math.floor(elapsed/duration);
-   const phase=(elapsed%duration)/duration;
-   // At 74% the ball has traveled forward between the goalposts.
-   if(phase>=0.74&&phase<0.88&&cycle>lastScoredCycle){
-    lastScoredCycle=cycle;
-    score+=3;
-    points.textContent=String(score);
-    board.classList.remove('tmfl-score-flash');
-    void board.offsetWidth;
-    board.classList.add('tmfl-score-flash');
-   }
-  }
-  frame=requestAnimationFrame(trackKick);
+ const arrow=splash.querySelector('.kick-arrow'),needle=splash.querySelector('.kick-needle'),ball=splash.querySelector('.kick-ball'),action=splash.querySelector('.kick-action'),instruction=splash.querySelector('.kick-instruction'),points=splash.querySelector('.tmfl-kick-points'),board=splash.querySelector('.tmfl-kick-scoreboard');
+ let phase=0,angle=0,power=50,frame=0,finished=false,last=performance.now();
+ const started=performance.now();
+ function finish(){if(finished)return;finished=true;cancelAnimationFrame(frame);splash.hidden=true;document.removeEventListener('keydown',onKey)}
+ function onKey(e){if(splash.hidden)return;if(e.code==='Space'||e.code==='Enter'){e.preventDefault();kick()}}
+ document.addEventListener('keydown',onKey);
+ splash.querySelector('.kick-skip').onclick=finish;
+ function kick(){
+  if(phase===0){phase=1;action.textContent='KICK!';instruction.textContent='Tap again to set your power';return}
+  if(phase!==1)return;
+  phase=2;action.disabled=true;action.textContent='KICKING…';
+  const good=Math.abs(angle)<=15&&power>=37&&power<=85;
+  ball.style.setProperty('--kick-x',angle*2.3+'px');ball.classList.add('flying');
+  setTimeout(()=>{
+   if(finished)return;
+   if(good){points.textContent='3';board.classList.add('tmfl-score-flash');instruction.textContent='GOOD! +3 POINTS'}
+   else instruction.textContent='NO GOOD! Try again next time';
+   action.textContent='ENTER FAN PORTAL';action.disabled=false;phase=3;
+  },700);
  }
- frame=requestAnimationFrame(trackKick);
- window.setTimeout(()=>{cancelAnimationFrame(frame);splash.hidden=true},6000);
+ action.onclick=()=>{if(phase===3)finish();else kick()};
+ function animate(now){
+  if(finished)return;
+  const t=(now-started)/1000;
+  if(phase===0){angle=Math.sin(t*2.5)*38;arrow.style.transform='translateX(-50%) rotate('+angle+'deg)'}
+  if(phase===1){power=50+50*Math.sin(t*5);needle.style.left=power+'%'}
+  // Give the player time to aim, but never trap them behind the loading screen.
+  if(now-started>12000){finish();return}
+  frame=requestAnimationFrame(animate);
+ }
+ frame=requestAnimationFrame(animate);
 })();
 </script><header><h1>OFFICIAL TMFL FAN PORTAL</h1><div>Predict the Season - Track Your Favorite Team - Watch the Games - All in One Place</div><button id="tmfl-notif-bell" type="button" aria-label="Open team notifications" title="Team notifications" onclick="window.tmflOpenNotifications()" >🔔 <span>Notifications</span><span id="tmfl-notif-header-count"></span></button></header><main><nav aria-label="TMFL Fan Portal navigation" class="categorized-nav"><details class="nav-group"><summary>Home</summary><div class="nav-menu"><button data-tab="home" class="active">Home</button><button data-tab="account">Fan Accounts</button><button data-tab="favorite-team">Favorite Team Dashboard</button><button data-tab="notifications">Notifications <span id="tmfl-notif-nav-count"></span></button></div></details><details class="nav-group"><summary>Season Center</summary><div class="nav-menu"><button data-tab="standings">Standings</button><button data-tab="recaps">Weekly Recaps</button><button data-tab="picture">Playoff Picture</button><button data-tab="playoff-results">Playoff Schedule &amp; Results</button><button data-tab="tmsn">TMSN Watch</button><button data-tab="gotw-request">Game of the Week Requests</button><button data-tab="teams">Team Profiles</button><button data-tab="head-to-head">Head-to-Head</button><button data-tab="regular-schedule">Regular Season Schedule</button><button data-tab="fan-polls">Fan Polls</button><button data-tab="news">TMFL News Center</button><button data-tab="ir-suspensions">IR &amp; Suspensions</button><button data-tab="awards">Weekly Awards</button></div></details><details class="nav-group"><summary>Predictions</summary><div class="nav-menu"><button data-tab="games">Game Predictor</button><button data-tab="accuracy">My Accuracy</button><button data-tab="weekly-picks">Weekly Prediction Tracker</button><button data-tab="achievements">Fan Achievements</button><button data-tab="final-standings">Final Standings Predictor</button><button data-tab="playoffs">Playoff Predictor</button><button data-tab="brackets">My Predictions</button><button data-tab="leaderboard">Fan Prediction Leaderboard</button></div></details><details class="nav-group"><summary>League Information</summary><div class="nav-menu"><button data-tab="history">League History</button><button data-tab="records">League Records</button><button data-tab="archive">Season Archive</button><button data-tab="hof">Hall of Fame</button><button data-tab="draft-central">Draft Central</button><button data-tab="rules">Rules &amp; Guide</button></div></details></nav><div id="app"><section class="panel"><h2>TMFL League Dashboard</h2><p>Schedule, standings, game predictions, and TMSN Watch are available from the menu above.</p><p class="muted">Preparing your dashboard…</p></section></div></main><script>
 'use strict';
