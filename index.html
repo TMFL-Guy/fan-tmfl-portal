@@ -339,7 +339,7 @@ function tmflRegularScheduleView(){
  (selected?tmflGameCenterView(selected):'')+
  '<div class="tmfl-schedule-list">'+games.map(g=>{
  const v=officialResult(g);
- return '<div class="game"><span class="pill">'+esc(g.slot||'Scheduled')+'</span><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p class="muted">'+(v?'FINAL · '+esc(g.away)+' '+v.a+' – '+v.h+' '+esc(g.home)+(v.ot?' (OT)':''):'Upcoming · '+esc(g.id))+'</p><button onclick="tmflOpenGameCenter(\''+esc(g.id)+'\')">Open Game Center</button></div>';
+ return '<div class="game"><span class="pill">'+esc(g.slot==='GOTW'?'Game of the Week':g.slot||'Scheduled')+'</span><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p class="muted">'+(v?'FINAL · '+esc(g.away)+' '+v.a+' – '+v.h+' '+esc(g.home)+(v.ot?' (OT)':''):'Upcoming · '+esc(g.id))+'</p><button onclick="tmflOpenGameCenter(\''+esc(g.id)+'\')">Open Game Center</button></div>';
  }).join('')+'</div>';
 }
 
