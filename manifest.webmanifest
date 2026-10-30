@@ -3,7 +3,7 @@
   "name": "TMFL Fan Portal",
   "short_name": "TMFL",
   "description": "TMFL game predictions, standings, schedules and results.",
-  "start_url": "/fan-tmfl-portal/",
+  "start_url": "/fan-tmfl-portal/index.html?build=20261030-v18",
   "scope": "/fan-tmfl-portal/",
   "display": "standalone",
   "background_color": "#0c1017",
@@ -17,6 +17,6 @@
     }
   ],
   "launch_handler": {
-    "client_mode": "focus-existing"
+    "client_mode": "navigate-existing"
   }
 }
