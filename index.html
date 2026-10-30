@@ -318,7 +318,7 @@ window.tmflSignUp=tmflSignUp;window.tmflSignIn=tmflSignIn;window.tmflResetPasswo
 
 async function tmflPublishedDraftView(){
  try{
-  const response=await fetch('./tmfl-draft.json',{cache:'default'});
+  const response=await fetch('./tmfl-draft.json?updated='+Date.now(),{cache:'no-store'});
   if(!response.ok)throw Error('Unable to load published draft');
   const data=await response.json();
   const picks=(Array.isArray(data)?data:Array.isArray(data.picks)?data.picks:[]).slice().sort((a,b)=>Number(a.year)-Number(b.year)||Number(a.overall)-Number(b.overall));
