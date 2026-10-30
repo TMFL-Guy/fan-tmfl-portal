@@ -72,8 +72,7 @@ window.tmflInitSupabase();
   if(!loaded){instruction.textContent='Field goal good! Waiting for the site to finish loading…';return}
   finish();
  }
- function completeLoad(){loaded=true;checkReady()}
- if(document.readyState==='complete')completeLoad();else window.addEventListener('load',completeLoad,{once:true});
+ window.tmflStartupDataReady=function(){loaded=true;checkReady()};
  window.setTimeout(()=>{minimumElapsed=true;checkReady()},startupDelayMs);
  function onKey(e){if(splash.hidden)return;if((e.code==='Space'||e.code==='Enter')&&e.target!==action){e.preventDefault();kick()}}
  document.addEventListener('keydown',onKey);
@@ -1139,7 +1138,7 @@ async function tmflLoadPublishedFanFeatures(){
  })();
  return tmflFanFeaturesRequest;
 }
-tmflLoadPublishedFanFeatures();
+const tmflInitialFeatures=tmflLoadPublishedFanFeatures();
 // Keep the published league schedule in sync without overwriting fan predictions.
 let tmflScheduleRequest=null;
 async function tmflLoadPublishedSchedule(){
@@ -1163,7 +1162,7 @@ async function tmflLoadPublishedSchedule(){
  })();
  return tmflScheduleRequest;
 }
-tmflLoadPublishedSchedule();
+const tmflInitialSchedule=tmflLoadPublishedSchedule();
 // Load commissioner-published scores before refreshing public-facing standings and profiles.
 async function tmflLoadPublishedResults(){
  try{
@@ -1182,9 +1181,11 @@ async function tmflLoadPublishedResults(){
   render();
  }catch(error){console.warn('TMFL published results:',error)}
 }
-tmflLoadPublishedResults();
+const tmflInitialResults=tmflLoadPublishedResults();
 // Render immediately; do not wait for third-party libraries or network data.
 render();
+// The splash stays playable until initial published league data settles and the first view renders.
+Promise.allSettled([tmflInitialFeatures,tmflInitialSchedule,tmflInitialResults]).then(()=>{if(typeof window.tmflStartupDataReady==='function')window.tmflStartupDataReady()});
 if(navigator.onLine)requestAnimationFrame(()=>tmflRefreshNotifications());else tmflBuildNotifications();
 // Defer account services until the first dashboard paint.
 window.tmflLoadSupabase=function(){
