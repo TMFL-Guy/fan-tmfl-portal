@@ -517,7 +517,7 @@ function tmflBuildNotifications(){
 let tmflNewsRequest=null,tmflNewsLoadedAt=0;
 async function tmflFetchPublishedNews(force=false){
  if(tmflNewsRequest)return tmflNewsRequest;
- if(!force&&tmflNewsCache!==null&&Date.now()-tmflNewsLoadedAt<120000)return tmflNewsCache;
+ if(!force&&tmflNewsCache!==null&&Date.now()-tmflNewsLoadedAt<5000)return tmflNewsCache;
  tmflNewsRequest=(async()=>{
   try{
    const response=await fetch('./tmfl-news.json',{cache:'no-store'});
@@ -1135,7 +1135,7 @@ if(navigator.onLine){
  else setTimeout(()=>window.tmflLoadSupabase(),1200);
 }
 window.addEventListener('online',()=>{window.tmflLoadSupabase();tmflRefreshNotifications()});
-/* Check published TMFL data every 15 seconds while fans have the page open. */
+/* Check published TMFL data every 5 seconds while fans have the page open. */
 let tmflLiveRefreshBusy=false;
 async function tmflLiveRefresh(){
  if(document.hidden||!navigator.onLine||tmflLiveRefreshBusy)return;
@@ -1150,7 +1150,7 @@ async function tmflLiveRefresh(){
   ]);
  }finally{tmflLiveRefreshBusy=false}
 }
-setInterval(tmflLiveRefresh,45000);
+setInterval(tmflLiveRefresh,5000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)tmflLiveRefresh()});
 window.addEventListener('focus',tmflLiveRefresh);
 
