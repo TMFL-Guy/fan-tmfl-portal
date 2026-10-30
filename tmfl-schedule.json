@@ -5,7 +5,8 @@
     "away": "Bills",
     "home": "Rams",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G02",
@@ -13,7 +14,8 @@
     "away": "Dolphins",
     "home": "Chargers",
     "slot": "GOTW",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G03",
@@ -21,7 +23,8 @@
     "away": "Patriots",
     "home": "Chiefs",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G04",
@@ -29,7 +32,8 @@
     "away": "Giants",
     "home": "Jets",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G05",
@@ -37,7 +41,8 @@
     "away": "Ravens",
     "home": "Jaguars",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G06",
@@ -45,7 +50,8 @@
     "away": "Saints",
     "home": "Bengals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G07",
@@ -53,7 +59,8 @@
     "away": "Browns",
     "home": "Colts",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G08",
@@ -61,7 +68,8 @@
     "away": "Steelers",
     "home": "Buccaneers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G09",
@@ -69,7 +77,8 @@
     "away": "Texans",
     "home": "Cowboys",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G10",
@@ -77,7 +86,8 @@
     "away": "Titans",
     "home": "Raiders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G11",
@@ -85,7 +95,8 @@
     "away": "Broncos",
     "home": "49ers",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G12",
@@ -93,7 +104,8 @@
     "away": "Eagles",
     "home": "Bears",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G13",
@@ -101,7 +113,8 @@
     "away": "Commanders",
     "home": "Falcons",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G14",
@@ -109,7 +122,8 @@
     "away": "Cardinals",
     "home": "Lions",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G15",
@@ -117,7 +131,8 @@
     "away": "Packers",
     "home": "Seahawks",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W01G16",
@@ -125,7 +140,8 @@
     "away": "Panthers",
     "home": "Vikings",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G01",
@@ -133,7 +149,8 @@
     "away": "Packers",
     "home": "Bills",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G02",
@@ -141,7 +158,8 @@
     "away": "Lions",
     "home": "Dolphins",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G03",
@@ -149,7 +167,8 @@
     "away": "Patriots",
     "home": "Jaguars",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G04",
@@ -157,7 +176,8 @@
     "away": "Jets",
     "home": "Broncos",
     "slot": "GOTW",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G05",
@@ -165,7 +185,8 @@
     "away": "Panthers",
     "home": "Ravens",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G06",
@@ -173,7 +194,8 @@
     "away": "Bengals",
     "home": "Chiefs",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G07",
@@ -181,7 +203,8 @@
     "away": "Browns",
     "home": "Titans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G08",
@@ -189,7 +212,8 @@
     "away": "Steelers",
     "home": "Eagles",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G09",
@@ -197,7 +221,8 @@
     "away": "Texans",
     "home": "Giants",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G10",
@@ -205,7 +230,8 @@
     "away": "Colts",
     "home": "Commanders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G11",
@@ -213,7 +239,8 @@
     "away": "Rams",
     "home": "Raiders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G12",
@@ -221,7 +248,8 @@
     "away": "Chargers",
     "home": "Seahawks",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G13",
@@ -229,7 +257,8 @@
     "away": "Cowboys",
     "home": "49ers",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G14",
@@ -237,7 +266,8 @@
     "away": "Falcons",
     "home": "Bears",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G15",
@@ -245,7 +275,8 @@
     "away": "Buccaneers",
     "home": "Vikings",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W02G16",
@@ -253,7 +284,8 @@
     "away": "Saints",
     "home": "Cardinals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G01",
@@ -261,7 +293,8 @@
     "away": "Bills",
     "home": "Broncos",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G02",
@@ -269,7 +302,8 @@
     "away": "Bears",
     "home": "Dolphins",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G03",
@@ -277,7 +311,8 @@
     "away": "Patriots",
     "home": "Lions",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G04",
@@ -285,7 +320,8 @@
     "away": "Jets",
     "home": "Browns",
     "slot": "GOTW",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G05",
@@ -293,7 +329,8 @@
     "away": "Texans",
     "home": "Ravens",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G06",
@@ -301,7 +338,8 @@
     "away": "Jaguars",
     "home": "Bengals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G07",
@@ -309,7 +347,8 @@
     "away": "Saints",
     "home": "Steelers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G08",
@@ -317,7 +356,8 @@
     "away": "Colts",
     "home": "Cowboys",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G09",
@@ -325,7 +365,8 @@
     "away": "Giants",
     "home": "Titans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G10",
@@ -333,7 +374,8 @@
     "away": "Seahawks",
     "home": "Chiefs",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G11",
@@ -341,7 +383,8 @@
     "away": "Raiders",
     "home": "49ers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G12",
@@ -349,7 +392,8 @@
     "away": "Chargers",
     "home": "Buccaneers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G13",
@@ -357,7 +401,8 @@
     "away": "Eagles",
     "home": "Cardinals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G14",
@@ -365,7 +410,8 @@
     "away": "Rams",
     "home": "Commanders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G15",
@@ -373,7 +419,8 @@
     "away": "Panthers",
     "home": "Packers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W03G16",
@@ -381,7 +428,8 @@
     "away": "Vikings",
     "home": "Falcons",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G01",
@@ -389,7 +437,8 @@
     "away": "Bills",
     "home": "Vikings",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G02",
@@ -397,7 +446,8 @@
     "away": "Dolphins",
     "home": "Packers",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G03",
@@ -405,7 +455,8 @@
     "away": "Patriots",
     "home": "Chargers",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G04",
@@ -413,7 +464,8 @@
     "away": "Jets",
     "home": "Cardinals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G05",
@@ -421,7 +473,8 @@
     "away": "Texans",
     "home": "Commanders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G06",
@@ -429,7 +482,8 @@
     "away": "Bengals",
     "home": "Titans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G07",
@@ -437,7 +491,8 @@
     "away": "Falcons",
     "home": "Browns",
     "slot": "GOTW",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G08",
@@ -445,7 +500,8 @@
     "away": "Broncos",
     "home": "Steelers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G09",
@@ -453,7 +509,8 @@
     "away": "Eagles",
     "home": "Colts",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G10",
@@ -461,7 +518,8 @@
     "away": "Chiefs",
     "home": "49ers",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G11",
@@ -469,7 +527,8 @@
     "away": "Saints",
     "home": "Raiders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G12",
@@ -477,7 +536,8 @@
     "away": "Cowboys",
     "home": "Seahawks",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G13",
@@ -485,7 +545,8 @@
     "away": "Rams",
     "home": "Giants",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G14",
@@ -493,7 +554,8 @@
     "away": "Panthers",
     "home": "Lions",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G15",
@@ -501,7 +563,8 @@
     "away": "Buccaneers",
     "home": "Ravens",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W04G16",
@@ -509,7 +572,8 @@
     "away": "Bears",
     "home": "Jaguars",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G01",
@@ -517,7 +581,8 @@
     "away": "Texans",
     "home": "Bills",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G02",
@@ -525,7 +590,8 @@
     "away": "Bengals",
     "home": "Dolphins",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G03",
@@ -533,7 +599,8 @@
     "away": "Bears",
     "home": "Patriots",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G04",
@@ -541,7 +608,8 @@
     "away": "Raiders",
     "home": "Jets",
     "slot": "GOTW",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G05",
@@ -549,7 +617,8 @@
     "away": "Ravens",
     "home": "Cowboys",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G06",
@@ -557,7 +626,8 @@
     "away": "Saints",
     "home": "Browns",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G07",
@@ -565,7 +635,8 @@
     "away": "Vikings",
     "home": "Colts",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G08",
@@ -573,7 +644,8 @@
     "away": "Commanders",
     "home": "Titans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G09",
@@ -581,7 +653,8 @@
     "away": "Cardinals",
     "home": "Broncos",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G10",
@@ -589,7 +662,8 @@
     "away": "Falcons",
     "home": "Chiefs",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G11",
@@ -597,7 +671,8 @@
     "away": "Rams",
     "home": "Chargers",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G12",
@@ -605,7 +680,8 @@
     "away": "Steelers",
     "home": "Lions",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G13",
@@ -613,7 +689,8 @@
     "away": "Eagles",
     "home": "49ers",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G14",
@@ -621,7 +698,8 @@
     "away": "Buccaneers",
     "home": "Packers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W05G15",
@@ -629,7 +707,8 @@
     "away": "Seahawks",
     "home": "Panthers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G01",
@@ -637,7 +716,8 @@
     "away": "Chargers",
     "home": "Bills",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G02",
@@ -645,7 +725,8 @@
     "away": "Dolphins",
     "home": "Chiefs",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G03",
@@ -653,7 +734,8 @@
     "away": "Patriots",
     "home": "Raiders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G04",
@@ -661,7 +743,8 @@
     "away": "Bears",
     "home": "Jets",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G05",
@@ -669,7 +752,8 @@
     "away": "Titans",
     "home": "Ravens",
     "slot": "Special Edition",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G06",
@@ -677,7 +761,8 @@
     "away": "Falcons",
     "home": "Bengals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G07",
@@ -685,7 +770,8 @@
     "away": "Jaguars",
     "home": "Browns",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G08",
@@ -693,7 +779,8 @@
     "away": "Steelers",
     "home": "Colts",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G09",
@@ -701,7 +788,8 @@
     "away": "Packers",
     "home": "Texans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G10",
@@ -709,7 +797,8 @@
     "away": "Panthers",
     "home": "Broncos",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G11",
@@ -717,7 +806,8 @@
     "away": "Cowboys",
     "home": "Rams",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G12",
@@ -725,7 +815,8 @@
     "away": "Giants",
     "home": "Saints",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G13",
@@ -733,7 +824,8 @@
     "away": "Seahawks",
     "home": "Eagles",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G14",
@@ -741,7 +833,8 @@
     "away": "Cardinals",
     "home": "Commanders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G15",
@@ -749,7 +842,8 @@
     "away": "Lions",
     "home": "Buccaneers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W06G16",
@@ -757,7 +851,8 @@
     "away": "49ers",
     "home": "Vikings",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G01",
@@ -765,7 +860,8 @@
     "away": "Raiders",
     "home": "Bills",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G02",
@@ -773,7 +869,8 @@
     "away": "Dolphins",
     "home": "Broncos",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G03",
@@ -781,7 +878,8 @@
     "away": "Patriots",
     "home": "Steelers",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G04",
@@ -789,7 +887,8 @@
     "away": "Jets",
     "home": "Vikings",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G05",
@@ -797,7 +896,8 @@
     "away": "Ravens",
     "home": "Saints",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G06",
@@ -805,7 +905,8 @@
     "away": "Panthers",
     "home": "Bengals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G07",
@@ -813,7 +914,8 @@
     "away": "Browns",
     "home": "Giants",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G08",
@@ -821,7 +923,8 @@
     "away": "Texans",
     "home": "Chargers",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G09",
@@ -829,7 +932,8 @@
     "away": "Buccaneers",
     "home": "Rams",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G10",
@@ -837,7 +941,8 @@
     "away": "Chiefs",
     "home": "Colts",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G11",
@@ -845,7 +950,8 @@
     "away": "Jaguars",
     "home": "Eagles",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G12",
@@ -853,7 +959,8 @@
     "away": "Titans",
     "home": "Lions",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G13",
@@ -861,7 +968,8 @@
     "away": "Cardinals",
     "home": "Cowboys",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G14",
@@ -869,7 +977,8 @@
     "away": "Commanders",
     "home": "49ers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G15",
@@ -877,7 +986,8 @@
     "away": "Bears",
     "home": "Seahawks",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W07G16",
@@ -885,7 +995,8 @@
     "away": "Packers",
     "home": "Falcons",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G01",
@@ -893,7 +1004,8 @@
     "away": "Bills",
     "home": "Bears",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G02",
@@ -901,7 +1013,8 @@
     "away": "Colts",
     "home": "Dolphins",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G03",
@@ -909,7 +1022,8 @@
     "away": "Patriots",
     "home": "Broncos",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G04",
@@ -917,7 +1031,8 @@
     "away": "Jets",
     "home": "Chiefs",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G05",
@@ -925,7 +1040,8 @@
     "away": "Ravens",
     "home": "Chargers",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G06",
@@ -933,7 +1049,8 @@
     "away": "Panthers",
     "home": "Browns",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G07",
@@ -941,7 +1058,8 @@
     "away": "Steelers",
     "home": "Titans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G08",
@@ -949,7 +1067,8 @@
     "away": "Texans",
     "home": "Eagles",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G09",
@@ -957,7 +1076,8 @@
     "away": "Bengals",
     "home": "Buccaneers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G10",
@@ -965,7 +1085,8 @@
     "away": "Jaguars",
     "home": "Cowboys",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G11",
@@ -973,7 +1094,8 @@
     "away": "Seahawks",
     "home": "Raiders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G12",
@@ -981,7 +1103,8 @@
     "away": "Giants",
     "home": "Cardinals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G13",
@@ -989,7 +1112,8 @@
     "away": "Vikings",
     "home": "Commanders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G14",
@@ -997,7 +1121,8 @@
     "away": "Lions",
     "home": "Saints",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G15",
@@ -1005,7 +1130,8 @@
     "away": "Rams",
     "home": "Packers",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W08G16",
@@ -1013,7 +1139,8 @@
     "away": "Falcons",
     "home": "49ers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G01",
@@ -1021,7 +1148,8 @@
     "away": "Bills",
     "home": "Ravens",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G02",
@@ -1029,7 +1157,8 @@
     "away": "Dolphins",
     "home": "49ers",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G03",
@@ -1037,7 +1166,8 @@
     "away": "Patriots",
     "home": "Vikings",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G04",
@@ -1045,7 +1175,8 @@
     "away": "Jets",
     "home": "Lions",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G05",
@@ -1053,7 +1184,8 @@
     "away": "Texans",
     "home": "Bengals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G06",
@@ -1061,7 +1193,8 @@
     "away": "Browns",
     "home": "Raiders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G07",
@@ -1069,7 +1202,8 @@
     "away": "Steelers",
     "home": "Falcons",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G08",
@@ -1077,7 +1211,8 @@
     "away": "Giants",
     "home": "Colts",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G09",
@@ -1085,7 +1220,8 @@
     "away": "Broncos",
     "home": "Jaguars",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G10",
@@ -1093,7 +1229,8 @@
     "away": "Eagles",
     "home": "Titans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G11",
@@ -1101,7 +1238,8 @@
     "away": "Chiefs",
     "home": "Rams",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G12",
@@ -1109,7 +1247,8 @@
     "away": "Cardinals",
     "home": "Chargers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G13",
@@ -1117,7 +1256,8 @@
     "away": "Cowboys",
     "home": "Buccaneers",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G14",
@@ -1125,7 +1265,8 @@
     "away": "Commanders",
     "home": "Seahawks",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G15",
@@ -1133,7 +1274,8 @@
     "away": "Bears",
     "home": "Panthers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W09G16",
@@ -1141,7 +1283,8 @@
     "away": "Packers",
     "home": "Saints",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G01",
@@ -1149,7 +1292,8 @@
     "away": "Lions",
     "home": "Bills",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G02",
@@ -1157,7 +1301,8 @@
     "away": "Dolphins",
     "home": "Raiders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G03",
@@ -1165,7 +1310,8 @@
     "away": "Patriots",
     "home": "Packers",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G04",
@@ -1173,7 +1319,8 @@
     "away": "Chargers",
     "home": "Jets",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G05",
@@ -1181,7 +1328,8 @@
     "away": "Falcons",
     "home": "Ravens",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G06",
@@ -1189,7 +1337,8 @@
     "away": "Bengals",
     "home": "Colts",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G07",
@@ -1197,7 +1346,8 @@
     "away": "Browns",
     "home": "Texans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G08",
@@ -1205,7 +1355,8 @@
     "away": "Steelers",
     "home": "Panthers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G09",
@@ -1213,7 +1364,8 @@
     "away": "Jaguars",
     "home": "Commanders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G10",
@@ -1221,7 +1373,8 @@
     "away": "Titans",
     "home": "Cowboys",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G11",
@@ -1229,7 +1382,8 @@
     "away": "Seahawks",
     "home": "Broncos",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G12",
@@ -1237,7 +1391,8 @@
     "away": "Chiefs",
     "home": "Cardinals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G13",
@@ -1245,7 +1400,8 @@
     "away": "Giants",
     "home": "49ers",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G14",
@@ -1253,7 +1409,8 @@
     "away": "Eagles",
     "home": "Rams",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G15",
@@ -1261,7 +1418,8 @@
     "away": "Bears",
     "home": "Buccaneers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W10G16",
@@ -1269,7 +1427,8 @@
     "away": "Saints",
     "home": "Vikings",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W11G01",
@@ -1277,7 +1436,8 @@
     "away": "Bills",
     "home": "Chiefs",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W11G02",
@@ -1285,7 +1445,8 @@
     "away": "Dolphins",
     "home": "Vikings",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W11G03",
@@ -1293,7 +1454,8 @@
     "away": "Bengals",
     "home": "Commanders",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W11G04",
@@ -1301,7 +1463,8 @@
     "away": "Steelers",
     "home": "Texans",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W11G05",
@@ -1309,7 +1472,8 @@
     "away": "Browns",
     "home": "Buccaneers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W11G06",
@@ -1317,7 +1481,8 @@
     "away": "Jaguars",
     "home": "Giants",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W11G07",
@@ -1325,7 +1490,8 @@
     "away": "Raiders",
     "home": "Cardinals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W11G08",
@@ -1333,7 +1499,8 @@
     "away": "Lions",
     "home": "Falcons",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W12G01",
@@ -1341,7 +1508,8 @@
     "away": "Patriots",
     "home": "Seahawks",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W12G02",
@@ -1349,7 +1517,8 @@
     "away": "Jets",
     "home": "Bears",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W12G03",
@@ -1357,7 +1526,8 @@
     "away": "Ravens",
     "home": "Colts",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W12G04",
@@ -1365,7 +1535,8 @@
     "away": "Broncos",
     "home": "Rams",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W12G05",
@@ -1373,7 +1544,8 @@
     "away": "49ers",
     "home": "Chargers",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W12G06",
@@ -1381,7 +1553,8 @@
     "away": "Cowboys",
     "home": "Packers",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W12G07",
@@ -1389,7 +1562,8 @@
     "away": "Titans",
     "home": "Giants",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W12G08",
@@ -1397,7 +1571,8 @@
     "away": "Eagles",
     "home": "Panthers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W12G09",
@@ -1405,7 +1580,8 @@
     "away": "Jaguars",
     "home": "Saints",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G01",
@@ -1413,7 +1589,8 @@
     "away": "Bills",
     "home": "Patriots",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G02",
@@ -1421,7 +1598,8 @@
     "away": "Jets",
     "home": "Dolphins",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G03",
@@ -1429,7 +1607,8 @@
     "away": "Ravens",
     "home": "Steelers",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G04",
@@ -1437,7 +1616,8 @@
     "away": "Browns",
     "home": "Bengals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G05",
@@ -1445,7 +1625,8 @@
     "away": "Jaguars",
     "home": "Texans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G06",
@@ -1453,7 +1634,8 @@
     "away": "Titans",
     "home": "Colts",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G07",
@@ -1461,7 +1643,8 @@
     "away": "Chargers",
     "home": "Broncos",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G08",
@@ -1469,7 +1652,8 @@
     "away": "Raiders",
     "home": "Chiefs",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G09",
@@ -1477,7 +1661,8 @@
     "away": "Cowboys",
     "home": "Eagles",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G10",
@@ -1485,7 +1670,8 @@
     "away": "Giants",
     "home": "Commanders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G11",
@@ -1493,7 +1679,8 @@
     "away": "Packers",
     "home": "Bears",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G12",
@@ -1501,7 +1688,8 @@
     "away": "Lions",
     "home": "Vikings",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G13",
@@ -1509,7 +1697,8 @@
     "away": "Saints",
     "home": "Falcons",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G14",
@@ -1517,7 +1706,8 @@
     "away": "Buccaneers",
     "home": "Panthers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G15",
@@ -1525,7 +1715,8 @@
     "away": "49ers",
     "home": "Cardinals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W13G16",
@@ -1533,7 +1724,8 @@
     "away": "Rams",
     "home": "Seahawks",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G01",
@@ -1541,7 +1733,8 @@
     "away": "Bills",
     "home": "Jets",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G02",
@@ -1549,7 +1742,8 @@
     "away": "Dolphins",
     "home": "Patriots",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G03",
@@ -1557,7 +1751,8 @@
     "away": "Ravens",
     "home": "Browns",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G04",
@@ -1565,7 +1760,8 @@
     "away": "Bengals",
     "home": "Steelers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G05",
@@ -1573,7 +1769,8 @@
     "away": "Texans",
     "home": "Titans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G06",
@@ -1581,7 +1778,8 @@
     "away": "Colts",
     "home": "Jaguars",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G07",
@@ -1589,7 +1787,8 @@
     "away": "Chiefs",
     "home": "Broncos",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G08",
@@ -1597,7 +1796,8 @@
     "away": "Chargers",
     "home": "Raiders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G09",
@@ -1605,7 +1805,8 @@
     "away": "Giants",
     "home": "Cowboys",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G10",
@@ -1613,7 +1814,8 @@
     "away": "Commanders",
     "home": "Eagles",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G11",
@@ -1621,7 +1823,8 @@
     "away": "Vikings",
     "home": "Bears",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G12",
@@ -1629,7 +1832,8 @@
     "away": "Packers",
     "home": "Lions",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G13",
@@ -1637,7 +1841,8 @@
     "away": "Falcons",
     "home": "Panthers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G14",
@@ -1645,7 +1850,8 @@
     "away": "Buccaneers",
     "home": "Saints",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G15",
@@ -1653,7 +1859,8 @@
     "away": "Rams",
     "home": "Cardinals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W14G16",
@@ -1661,7 +1868,8 @@
     "away": "49ers",
     "home": "Seahawks",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G01",
@@ -1669,7 +1877,8 @@
     "away": "Dolphins",
     "home": "Bills",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G02",
@@ -1677,7 +1886,8 @@
     "away": "Jets",
     "home": "Patriots",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G03",
@@ -1685,7 +1895,8 @@
     "away": "Bengals",
     "home": "Ravens",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G04",
@@ -1693,7 +1904,8 @@
     "away": "Browns",
     "home": "Steelers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G05",
@@ -1701,7 +1913,8 @@
     "away": "Colts",
     "home": "Texans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G06",
@@ -1709,7 +1922,8 @@
     "away": "Titans",
     "home": "Jaguars",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G07",
@@ -1717,7 +1931,8 @@
     "away": "Broncos",
     "home": "Raiders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G08",
@@ -1725,7 +1940,8 @@
     "away": "Chargers",
     "home": "Chiefs",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G09",
@@ -1733,7 +1949,8 @@
     "away": "Commanders",
     "home": "Cowboys",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G10",
@@ -1741,7 +1958,8 @@
     "away": "Giants",
     "home": "Eagles",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G11",
@@ -1749,7 +1967,8 @@
     "away": "Lions",
     "home": "Bears",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G12",
@@ -1757,7 +1976,8 @@
     "away": "Vikings",
     "home": "Packers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G13",
@@ -1765,7 +1985,8 @@
     "away": "Falcons",
     "home": "Buccaneers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G14",
@@ -1773,7 +1994,8 @@
     "away": "Saints",
     "home": "Panthers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G15",
@@ -1781,7 +2003,8 @@
     "away": "Cardinals",
     "home": "Seahawks",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W15G16",
@@ -1789,7 +2012,8 @@
     "away": "49ers",
     "home": "Rams",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G01",
@@ -1797,7 +2021,8 @@
     "away": "Patriots",
     "home": "Bills",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G02",
@@ -1805,7 +2030,8 @@
     "away": "Jets",
     "home": "Dolphins",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G03",
@@ -1813,7 +2039,8 @@
     "away": "Steelers",
     "home": "Ravens",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G04",
@@ -1821,7 +2048,8 @@
     "away": "Browns",
     "home": "Bengals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G05",
@@ -1829,7 +2057,8 @@
     "away": "Jaguars",
     "home": "Texans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G06",
@@ -1837,7 +2066,8 @@
     "away": "Titans",
     "home": "Colts",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G07",
@@ -1845,7 +2075,8 @@
     "away": "Chargers",
     "home": "Broncos",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G08",
@@ -1853,7 +2084,8 @@
     "away": "Raiders",
     "home": "Chiefs",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G09",
@@ -1861,7 +2093,8 @@
     "away": "Eagles",
     "home": "Cowboys",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G10",
@@ -1869,7 +2102,8 @@
     "away": "Commanders",
     "home": "Giants",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G11",
@@ -1877,7 +2111,8 @@
     "away": "Bears",
     "home": "Packers",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G12",
@@ -1885,7 +2120,8 @@
     "away": "Vikings",
     "home": "Lions",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G13",
@@ -1893,7 +2129,8 @@
     "away": "Saints",
     "home": "Falcons",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G14",
@@ -1901,7 +2138,8 @@
     "away": "Panthers",
     "home": "Buccaneers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G15",
@@ -1909,7 +2147,8 @@
     "away": "49ers",
     "home": "Cardinals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W16G16",
@@ -1917,7 +2156,8 @@
     "away": "Rams",
     "home": "Seahawks",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G01",
@@ -1925,7 +2165,8 @@
     "away": "Jets",
     "home": "Bills",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G02",
@@ -1933,7 +2174,8 @@
     "away": "Patriots",
     "home": "Dolphins",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G03",
@@ -1941,7 +2183,8 @@
     "away": "Browns",
     "home": "Ravens",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G04",
@@ -1949,7 +2192,8 @@
     "away": "Steelers",
     "home": "Bengals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G05",
@@ -1957,7 +2201,8 @@
     "away": "Titans",
     "home": "Texans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G06",
@@ -1965,7 +2210,8 @@
     "away": "Jaguars",
     "home": "Colts",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G07",
@@ -1973,7 +2219,8 @@
     "away": "Chiefs",
     "home": "Broncos",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G08",
@@ -1981,7 +2228,8 @@
     "away": "Chargers",
     "home": "Raiders",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G09",
@@ -1989,7 +2237,8 @@
     "away": "Giants",
     "home": "Cowboys",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G10",
@@ -1997,7 +2246,8 @@
     "away": "Commanders",
     "home": "Eagles",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G11",
@@ -2005,7 +2255,8 @@
     "away": "Vikings",
     "home": "Bears",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G12",
@@ -2013,7 +2264,8 @@
     "away": "Lions",
     "home": "Packers",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G13",
@@ -2021,7 +2273,8 @@
     "away": "Panthers",
     "home": "Falcons",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G14",
@@ -2029,7 +2282,8 @@
     "away": "Saints",
     "home": "Buccaneers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G15",
@@ -2037,7 +2291,8 @@
     "away": "Cardinals",
     "home": "Rams",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W17G16",
@@ -2045,7 +2300,8 @@
     "away": "Seahawks",
     "home": "49ers",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G01",
@@ -2053,7 +2309,8 @@
     "away": "Bills",
     "home": "Dolphins",
     "slot": "SAT",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G02",
@@ -2061,7 +2318,8 @@
     "away": "Jets",
     "home": "Patriots",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G03",
@@ -2069,7 +2327,8 @@
     "away": "Bengals",
     "home": "Ravens",
     "slot": "SNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G04",
@@ -2077,7 +2336,8 @@
     "away": "Browns",
     "home": "Steelers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G05",
@@ -2085,7 +2345,8 @@
     "away": "Colts",
     "home": "Texans",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G06",
@@ -2093,7 +2354,8 @@
     "away": "Titans",
     "home": "Jaguars",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G07",
@@ -2101,7 +2363,8 @@
     "away": "Raiders",
     "home": "Broncos",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G08",
@@ -2109,7 +2372,8 @@
     "away": "Chargers",
     "home": "Chiefs",
     "slot": "TNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G09",
@@ -2117,7 +2381,8 @@
     "away": "Commanders",
     "home": "Cowboys",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G10",
@@ -2125,7 +2390,8 @@
     "away": "Eagles",
     "home": "Giants",
     "slot": "MNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G11",
@@ -2133,7 +2399,8 @@
     "away": "Lions",
     "home": "Bears",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G12",
@@ -2141,7 +2408,8 @@
     "away": "Vikings",
     "home": "Packers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G13",
@@ -2149,7 +2417,8 @@
     "away": "Falcons",
     "home": "Buccaneers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G14",
@@ -2157,7 +2426,8 @@
     "away": "Saints",
     "home": "Panthers",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G15",
@@ -2165,7 +2435,8 @@
     "away": "Seahawks",
     "home": "Cardinals",
     "slot": "Not Aired",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   },
   {
     "id": "W18G16",
@@ -2173,6 +2444,7 @@
     "away": "Rams",
     "home": "49ers",
     "slot": "FNF",
-    "official": null
+    "official": null,
+    "notes": "No Current Notes"
   }
 ]
