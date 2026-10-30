@@ -777,26 +777,34 @@ const TMFL_RIVALRIES=[
  {name:'The Gulf Cup',teams:['Saints','Texans','Buccaneers']}
 ];
 function rivalryStandingsView(){
+ const season=officialRecords();
  const sections=TMFL_RIVALRIES.map(rivalry=>{
   const members=new Set(rivalry.teams);
-  const stats=Object.fromEntries(rivalry.teams.map(t=>[t,{team:t,w:0,l:0,t:0,pf:0,pa:0,played:0}]));
-  let completed=0;
+  const rivalryStats=Object.fromEntries(rivalry.teams.map(team=>[team,{w:0,l:0,ties:0,played:0}]));
   for(const g of SCHEDULE){
    if(!members.has(g.away)||!members.has(g.home))continue;
    const v=officialResult(g);if(!v)continue;
-   completed++;
-   const a=stats[g.away],h=stats[g.home];
-   a.played++;h.played++;a.pf+=v.a;a.pa+=v.h;h.pf+=v.h;h.pa+=v.a;
-   if(v.a>v.h){a.w++;h.l++}else if(v.h>v.a){h.w++;a.l++}else{a.t++;h.t++}
+   const away=rivalryStats[g.away],home=rivalryStats[g.home];
+   away.played++;home.played++;
+   if(v.a>v.h){away.w++;home.l++}
+   else if(v.h>v.a){home.w++;away.l++}
+   else{away.ties++;home.ties++}
   }
-  const ranked=Object.values(stats).sort((a,b)=>{
-   const pct=x=>x.played?(x.w+x.t*.5)/x.played:0;
-   return pct(b)-pct(a)||(b.w-a.w)||((b.pf-b.pa)-(a.pf-a.pa))||(b.pf-a.pf)||a.team.localeCompare(b.team);
-  });
-  const rows=ranked.map((s,i)=>`<tr><td>${i+1}</td><td>${esc(s.team)}</td><td>${s.w}-${s.l}-${s.t}</td><td>${s.played?((s.w+s.t*.5)/s.played).toFixed(3):'.000'}</td><td>${s.pf}</td><td>${s.pa}</td><td>${s.pf-s.pa>0?'+':''}${s.pf-s.pa}</td></tr>`).join('');
-  return `<div class="panel"><h3>${esc(rivalry.name)}</h3><p class="muted">${completed} official rivalry games completed · ${rivalry.teams.length} teams</p><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Team</th><th>W-L-T</th><th>Win %</th><th>PF</th><th>PA</th><th>Diff</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  const rivalryPct=t=>{const r=rivalryStats[t];return r.played?(r.w+r.ties*.5)/r.played:0};
+  const ranked=[...rivalry.teams].sort((a,b)=>
+   rivalryPct(b)-rivalryPct(a)||
+   winPct(season[b])-winPct(season[a])||
+   season[b].pts-season[a].pts||
+   (season[b].ps-season[b].pa)-(season[a].ps-season[a].pa)||
+   a.localeCompare(b)
+  );
+  const rows=ranked.map((team,i)=>{
+   const s=season[team],r=rivalryStats[team];
+   return `<tr><td>${i+1}</td><td>${esc(team)}</td><td>${s.w}-${s.l}-${s.ties}</td><td>${winPct(s).toFixed(3)}</td><td>${r.w}-${r.l}-${r.ties}</td><td>${rivalryPct(team).toFixed(3)}</td><td>${s.pts}</td><td>${s.ps}</td><td>${s.pa}</td><td>${s.ps-s.pa}</td></tr>`;
+  }).join('');
+  return `<div class="panel"><h3>${esc(rivalry.name)}</h3><p class="muted">${rivalry.teams.length} teams · Ranked by head-to-head rivalry performance</p><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Team</th><th>W-L-T</th><th>Win %</th><th>Rivalry Record</th><th>Rivalry Win %</th><th>Pts</th><th>PS</th><th>PA</th><th>PD</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
  }).join('');
- return `<h2>Rivalry Standings</h2><div class="panel"><p class="muted">Automatically updated from published official results. Only games between teams in the same named rivalry count toward that rivalry's standings. Teams may appear in multiple rivalries. Rankings: win percentage (ties count as half a win), wins, point differential, then points scored. Teams without official rivalry games remain at 0-0-0.</p></div><div class="tables">${sections}</div>`;
+ return `<h2>Rivalry Standings</h2><div class="panel"><p class="muted">W-L-T, Win %, Pts, PS, PA, and PD show each team's full-season official record. Rivalry Record and Rivalry Win % count only official head-to-head games against the other teams in that particular rivalry. Ranked by rivalry win percentage, then full-season win percentage, TMFL points, and point differential. Ties count as half a win; teams with no rivalry games start at .000. Teams can belong to multiple rivalries.</p></div><div class="tables">${sections}</div>`;
 }
 let standingsMode='division';
 window.setStandingsMode=mode=>{if(['division','conference','overall'].includes(mode)){standingsMode=mode;render()}};
