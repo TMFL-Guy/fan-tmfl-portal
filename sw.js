@@ -1,4 +1,4 @@
-const CACHE='tmfl-fan-v15-kicker-motion';
+const CACHE='tmfl-fan-v16-fast-publish';
 const ASSETS=['./index.html','./manifest.webmanifest','./tmfl-icon-512.png','./tmfl-news.json','./tmfl-draft.json'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
@@ -53,18 +53,22 @@ self.addEventListener('fetch',event=>{
   })());
   return;
  }
- if(/\/(tmfl-news|tmfl-draft)\.json$/.test(url.pathname)||/\/(manifest\.webmanifest|tmfl-icon-512\.png)$/.test(url.pathname)){
+ // Published data is network-first: updates appear as soon as GitHub Pages serves them.
+ if(/\/(tmfl-news|tmfl-draft)\.json$/.test(url.pathname)){
   event.respondWith((async()=>{
    const cache=await caches.open(CACHE);
-   const cached=await cache.match(req,{ignoreSearch:true});
-   const refresh=fetch(req).then(async response=>{
-    if(response.ok)await cache.put(req,response.clone());
-    return response;
-   });
-   if(cached){event.waitUntil(refresh.catch(()=>{}));return cached}
-   return refresh.catch(()=>new Response('{}',{status:503,headers:{'Content-Type':'application/json'}}));
+   try{
+    const response=await fetch(req,{cache:'no-store'});
+    if(response.ok){event.waitUntil(cache.put(req,response.clone()));return response}
+    throw Error('Latest TMFL data unavailable');
+   }catch(error){return await cache.match(req,{ignoreSearch:true})||new Response('{}',{status:503,headers:{'Content-Type':'application/json'}})}
   })());
   return;
  }
+ if(/\/(manifest\.webmanifest|tmfl-icon-512\.png)$/.test(url.pathname)){
+  event.respondWith(caches.match(req,{ignoreSearch:true}).then(cached=>cached||fetch(req)));
+  return;
+ }
+
  event.respondWith(fetch(req).catch(()=>caches.match(req)));
 });
