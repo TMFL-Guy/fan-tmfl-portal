@@ -62,17 +62,17 @@ window.tmflInitSupabase();
  const arrow=splash.querySelector('.kick-arrow'),needle=splash.querySelector('.kick-needle'),ball=splash.querySelector('.kick-ball'),action=splash.querySelector('.kick-action'),instruction=splash.querySelector('.kick-instruction'),points=splash.querySelector('.tmfl-kick-points'),board=splash.querySelector('.tmfl-kick-scoreboard');
  let phase=0,angle=0,power=50,frame=0,finished=false,loaded=false,minimumElapsed=false,successfulKick=false,score=0,madeKicks=0,aimSpeed=4.5,powerSpeed=1.3,phaseStarted=performance.now();
  // New randomized startup duration on each opening (1–40 seconds).
- const startupDelayMs=1000+Math.floor(Math.random()*39001);
+ const startupDelayMs=0; // Never impose artificial wait time.
  const started=performance.now();
+ const skip=document.createElement('button');skip.type='button';skip.textContent='Skip Game / Enter Portal';skip.className='kick-skip';skip.onclick=()=>finish();splash.querySelector('.loading-panel').appendChild(skip);
  function finish(){if(finished)return;finished=true;cancelAnimationFrame(frame);try{sessionStorage.setItem(kickoffSessionKey,'yes')}catch(e){}splash.hidden=true;document.removeEventListener('keydown',onKey)}
  function checkReady(){
   if(finished)return;
-  if(!minimumElapsed){instruction.textContent=successfulKick?'Field goal good!':'Keep practicing your field goal while the portal loads.';return}
-  if(!successfulKick){instruction.textContent='Make a field goal to enter the portal.';return}
-  if(!loaded){instruction.textContent='Field goal good! Waiting for the site to finish loading…';return}
+  if(!loaded){instruction.textContent='Loading the portal… You can keep kicking or skip the game.';return}
   finish();
  }
  window.tmflStartupDataReady=function(){loaded=true;checkReady()};
+ // Kickoff is optional and never holds the portal after its initial render.
  window.setTimeout(()=>{minimumElapsed=true;checkReady()},startupDelayMs);
  function onKey(e){if(splash.hidden)return;if((e.code==='Space'||e.code==='Enter')&&e.target!==action){e.preventDefault();kick()}}
  document.addEventListener('keydown',onKey);
@@ -1185,7 +1185,8 @@ const tmflInitialResults=tmflLoadPublishedResults();
 // Render immediately; do not wait for third-party libraries or network data.
 render();
 // The splash stays playable until initial published league data settles and the first view renders.
-Promise.allSettled([tmflInitialFeatures,tmflInitialSchedule,tmflInitialResults]).then(()=>{if(typeof window.tmflStartupDataReady==='function')window.tmflStartupDataReady()});
+// Show the portal as soon as the initial screen is rendered; network updates continue independently.
+if(typeof window.tmflStartupDataReady==='function')window.tmflStartupDataReady();
 if(navigator.onLine)requestAnimationFrame(()=>tmflRefreshNotifications());else tmflBuildNotifications();
 // Defer account services until the first dashboard paint.
 window.tmflLoadSupabase=function(){
@@ -1203,7 +1204,7 @@ if(navigator.onLine){
  else setTimeout(()=>window.tmflLoadSupabase(),1200);
 }
 window.addEventListener('online',()=>{window.tmflLoadSupabase();tmflRefreshNotifications()});
-/* Check published TMFL data every 5 seconds while fans have the page open. */
+/* Check published TMFL data every 60 seconds while fans have the page open. */
 let tmflLiveRefreshBusy=false;
 async function tmflLiveRefresh(){
  if(document.hidden||!navigator.onLine||tmflLiveRefreshBusy)return;
@@ -1218,7 +1219,7 @@ async function tmflLiveRefresh(){
   ]);
  }finally{tmflLiveRefreshBusy=false}
 }
-setInterval(tmflLiveRefresh,5000);
+setInterval(tmflLiveRefresh,60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)tmflLiveRefresh()});
 window.addEventListener('focus',tmflLiveRefresh);
 
