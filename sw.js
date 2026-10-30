@@ -1,4 +1,4 @@
-const CACHE='tmfl-fan-v16-fast-publish';
+const CACHE='tmfl-fan-v17-random-kick-loader';
 const ASSETS=['./index.html','./manifest.webmanifest','./tmfl-icon-512.png','./tmfl-news.json','./tmfl-draft.json'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
