@@ -1092,6 +1092,9 @@ async function tmflLoadPublishedSchedule(){
    if(!Array.isArray(data)||!data.every(g=>g&&typeof g.id==='string'&&Number.isInteger(Number(g.week))&&typeof g.away==='string'&&typeof g.home==='string'))throw Error('Invalid published schedule');
    if(JSON.stringify(SCHEDULE)!==JSON.stringify(data)){
     SCHEDULE=data;
+    // Rebuild the schedule index after replacing the published games; otherwise views use stale objects.
+    for(const weekGames of Object.values(GAMES_BY_WEEK))weekGames.length=0;
+    for(const game of SCHEDULE)if(GAMES_BY_WEEK[game.week])GAMES_BY_WEEK[game.week].push(game);
     for(const g of SCHEDULE){if(g.slot==='Special Rivalry'){g.slot='Not Aired';g.notes='Special Rivalry'}else if(!g.notes)g.notes='No Current Notes'}
     render();
    }
