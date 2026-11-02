@@ -204,7 +204,7 @@ function tmsnView(){
   const title=week<1?'Preseason':'Week '+week;
   const cards=group.map(g=>{
    const v=g.week<=0?null:officialResult(g),has=!!tmsnReplayId(g);
-   return '<div class="tmsn-card"><div class="tmsn-live">'+esc(tmsnGameLabel(g))+' · '+(has?'REPLAY AVAILABLE':v?'AWAITING REPLAY UPLOAD':'SCHEDULED FOR RECORDING')+'</div><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p><strong>'+(v?v.a+' – '+v.h:'Upcoming')+'</strong>'+(v&&v.ot?' (OT)':'')+'</p>'+(has?'<button onclick="tmsnSelected=\''+g.id+'\';render()">▶ Watch Full Game</button>':'<p class="muted">Recording scheduled / replay not uploaded yet</p>')+'</div>';
+   return '<div class="tmsn-card"><div class="tmsn-live">'+esc(tmsnGameLabel(g))+' · '+(has?'REPLAY AVAILABLE':v?'AWAITING REPLAY UPLOAD':'SCHEDULED FOR RECORDING')+'</div><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p><strong>'+(v?v.a+' – '+v.h:g.week<1?'':'Upcoming')+'</strong>'+(v&&v.ot?' (OT)':'')+'</p>'+(has?'<button onclick="tmsnSelected=\''+g.id+'\';render()">▶ Watch Full Game</button>':'<p class="muted">Recording scheduled / replay not uploaded yet</p>')+'</div>';
   }).join('');
   return '<section class="panel"><h3>'+title+'</h3><div class="tmsn-cards">'+cards+'</div></section>';
  }).join('');
