@@ -810,20 +810,25 @@ function rivalryStandingsView(){
    else{away.ties++;home.ties++}
   }
   const rivalryPct=t=>{const r=rivalryStats[t];return r.played?(r.w+r.ties*.5)/r.played:0};
-  const ranked=[...rivalry.teams].sort((a,b)=>
-   rivalryPct(b)-rivalryPct(a)||
+  const overallSort=(a,b)=>
    winPct(season[b])-winPct(season[a])||
    season[b].pts-season[a].pts||
    (season[b].ps-season[b].pa)-(season[a].ps-season[a].pa)||
-   a.localeCompare(b)
+   a.localeCompare(b);
+  const rivalryRanked=[...rivalry.teams].sort((a,b)=>
+   rivalryPct(b)-rivalryPct(a)||
+   rivalryStats[b].w-rivalryStats[a].w||
+   overallSort(a,b)
   );
+  const rivalryRanks=Object.fromEntries(rivalryRanked.map((team,i)=>[team,i+1]));
+  const ranked=[...rivalry.teams].sort(overallSort);
   const rows=ranked.map((team,i)=>{
    const s=season[team],r=rivalryStats[team];
-   return `<tr><td>${i+1}</td><td>${esc(team)}</td><td style="white-space:nowrap">${s.w}-${s.l}-${s.ties}</td><td>${winPct(s).toFixed(3)}</td><td>${r.w}-${r.l}-${r.ties}</td><td>${rivalryPct(team).toFixed(3)}</td><td>${s.pts}</td><td>${s.ps}</td><td>${s.pa}</td><td>${s.ps-s.pa}</td></tr>`;
+   return `<tr><td>${i+1}</td><td>${esc(team)}</td><td style="white-space:nowrap">${s.w}-${s.l}-${s.ties}</td><td>${winPct(s).toFixed(3)}</td><td>${r.w}-${r.l}-${r.ties}</td><td>${rivalryPct(team).toFixed(3)}</td><td>${rivalryRanks[team]}</td><td>${s.pts}</td><td>${s.ps}</td><td>${s.pa}</td><td>${s.ps-s.pa}</td></tr>`;
   }).join('');
-  return `<div class="panel"><h3>${esc(rivalry.name)}</h3><p class="muted">${rivalry.teams.length} teams · Ranked by head-to-head rivalry performance</p><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Team</th><th style="white-space:nowrap">W-L-T</th><th>Win %</th><th>Rivalry Record</th><th>Rivalry Win %</th><th>Pts</th><th>PS</th><th>PA</th><th>PD</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  return `<div class="panel"><h3>${esc(rivalry.name)}</h3><p class="muted">${rivalry.teams.length} teams · Ordered by overall season record</p><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Team</th><th style="white-space:nowrap">W-L-T</th><th>Win %</th><th>Rivalry Record</th><th>Rivalry Win %</th><th>Rivalry Rank</th><th>Pts</th><th>PS</th><th>PA</th><th>PD</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
  }).join('');
- return `<h2>Rivalry Standings</h2><div class="panel"><p class="muted">W-L-T, Win %, Pts, PS, PA, and PD show each team's full-season official record. Rivalry Record and Rivalry Win % count only official head-to-head games against the other teams in that particular rivalry. Ranked by rivalry win percentage, then full-season win percentage, TMFL points, and point differential. Ties count as half a win; teams with no rivalry games start at .000. Teams can belong to multiple rivalries.</p></div><div class="tables">${sections}</div>`;
+ return `<h2>Rivalry Standings</h2><div class="panel"><p class="muted">W-L-T, Win %, Pts, PS, PA, and PD show each team's full-season official record. Rivalry Record and Rivalry Win % count only official head-to-head games against the other teams in that particular rivalry. Standings are ordered by full-season win percentage, then TMFL points and point differential. Rivalry Rank separately orders teams by rivalry win percentage, then rivalry wins and overall standings tiebreakers. Ties count as half a win; teams with no rivalry games start at .000. Teams can belong to multiple rivalries.</p></div><div class="tables">${sections}</div>`;
 }
 let standingsMode='division';
 window.setStandingsMode=mode=>{if(['division','conference','overall'].includes(mode)){standingsMode=mode;render()}};
