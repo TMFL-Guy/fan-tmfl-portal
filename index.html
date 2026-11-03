@@ -363,12 +363,31 @@ async function tmflLoadDiscipline(){
  }catch(error){console.warn('TMFL IR/Suspensions:',error);tmflDisciplineData=[]}
  finally{tmflDisciplineLoading=false;if(tab==='ir-suspensions')render()}
 }
+// Display time-limited suspensions as lifted when their calendar duration has elapsed.
+// This is derived from published data; it does not modify the official JSON record.
+function tmflEffectiveDisciplineStatus(e){
+ const status=String(e.status||'Unknown');
+ if(!['Suspension','SSPD'].includes(e.type)||!/^(in effect|suspended)$/i.test(status.trim()))return {status};
+ const duration=String(e.duration||'').trim();
+ const start=String(e.date||'').trim();
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(start))return {status};
+ const match=duration.match(/^(\d+)\s*(day|days|week|weeks)$/i);
+ const explicitEnd=/^\d{4}-\d{2}-\d{2}$/.test(duration);
+ if(!match&&!explicitEnd)return {status};
+ const begin=new Date(start+'T00:00:00Z');
+ if(!Number.isFinite(begin.getTime())||begin.toISOString().slice(0,10)!==start)return {status};
+ const expires=explicitEnd?new Date(duration+'T00:00:00Z'):new Date(begin.getTime()+Number(match[1])*(match[2].toLowerCase().startsWith('week')?7:1)*86400000);
+ if(!Number.isFinite(expires.getTime()))return {status};
+ const today=new Date().toISOString().slice(0,10);
+ const end=expires.toISOString().slice(0,10);
+ return today>=end?{status:'Lifted',end}:{status,end};
+}
 function tmflDisciplineView(){
  if(tmflDisciplineData===null){tmflLoadDiscipline();return '<section class="panel"><h2>IR &amp; Suspensions</h2><p>Loading official league updates…</p></section>'}
  const rows=tmflDisciplineData;
  const section=(type,title)=>{
   const list=rows.filter(e=>e.published!==false&&(e.type===type||(type==='SSPD'&&e.type==='Suspension')));
-  return '<div class="panel"><h3>'+title+'</h3>'+(list.length?list.map(e=>'<div class="game"><h4>'+esc(e.player||'Unknown player')+' · '+esc(e.team||'')+'</h4><p><strong>'+esc(e.status||'Unknown')+'</strong> · '+esc(e.duration||'Duration TBD')+'</p><p>'+esc(e.details||'')+'</p><p class="muted">'+esc(e.date||'')+'</p></div>').join(''):'<p class="muted">No entries currently listed.</p>')+'</div>';
+  return '<div class="panel"><h3>'+title+'</h3>'+(list.length?list.map(e=>'<div class="game"><h4>'+esc(e.player||'Unknown player')+' · '+esc(e.team||'')+'</h4><p><strong>'+esc(tmflEffectiveDisciplineStatus(e).status)+'</strong> · '+esc(e.duration||'Duration TBD')+'</p><p>'+esc(e.details||'')+'</p><p class="muted">'+esc(e.date||'')+(tmflEffectiveDisciplineStatus(e).end?' · Suspension ends: '+esc(tmflEffectiveDisciplineStatus(e).end):'')+'</p></div>').join(''):'<p class="muted">No entries currently listed.</p>')+'</div>';
  };
  return '<section class="panel"><h2>TMFL IR &amp; Suspensions</h2><p class="muted">Official injury reserve and disciplinary updates. Pending suspensions are not confirmed.</p></section>'+section('IR','Injured Reserve')+section('SSPD','Suspensions &amp; Pending Decisions');
 }
