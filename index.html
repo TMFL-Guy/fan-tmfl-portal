@@ -1251,6 +1251,8 @@ async function tmflLoadPublishedResults(){
  }catch(error){console.warn('TMFL published results:',error)}
 }
 const tmflInitialResults=tmflLoadPublishedResults();
+// Load commissioner-published replay mappings on first visit as well as refresh.
+tmflLoadPublishedReplays();
 // Render immediately; do not wait for third-party libraries or network data.
 render();
 // The splash stays playable until initial published league data settles and the first view renders.
@@ -1285,6 +1287,7 @@ async function tmflLiveRefresh(){
    tmflLoadPublishedFanFeatures(),
    tmflLoadPublishedSchedule(),
    tmflLoadPublishedReplays(),
+   ...(tab==='tmsn'||tab==='notifications'?[tmflLoadHighlights()]:[]),
    ...(tab==='ir-suspensions'?[tmflLoadDiscipline()]:[])
   ]);
  }finally{tmflLiveRefreshBusy=false}
