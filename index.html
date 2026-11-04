@@ -166,16 +166,43 @@ const TMSN_SPECIAL_GAMES=[
 {id:"PRE3-DEN-PHI",week:-1,away:"Broncos",home:"Eagles",slot:"Preseason",label:"Preseason Week 3 GOTW"}
 ];
 const tmsnAired=g=>!!g.slot&&!['Not Aired','Not Listed'].includes(g.slot);
+// Commissioner-published replay links override bundled defaults.
+async function tmflLoadPublishedReplays(){
+ try{
+  const response=await fetch('./tmfl-tmsn-links.json',{cache:'no-store'});
+  if(!response.ok)throw Error('Published replay links unavailable');
+  const links=await response.json();
+  if(!links||typeof links!=='object'||Array.isArray(links))throw Error('Invalid replay links');
+  let changed=false;
+  for(const [id,fileId] of Object.entries(links)){
+   if(!/^(W\d{2}G\d{2}|PRE\d+-[A-Z-]+|HOF-[A-Z-]+)$/.test(id)||!/^[A-Za-z0-9_-]{20,}$/.test(String(fileId)))continue;
+   if(TMSN_REPLAYS[id]!==fileId){TMSN_REPLAYS[id]=fileId;changed=true}
+  }
+  if(changed&&tab==='tmsn')render();
+ }catch(error){console.warn('TMFL published replays:',error)}
+}
 const tmsnReplayId=g=>TMSN_REPLAYS[g.id]||'';
 let tmflHighlights=[],tmflHighlightsLoaded=false,tmflHighlightsRequest=null,tmflSelectedHighlight=null;
 async function tmflLoadHighlights(){
  if(tmflHighlightsRequest)return tmflHighlightsRequest;
  tmflHighlightsRequest=(async()=>{
   try{
-   const response=await fetch('./tmfl-highlights.json',{cache:'no-store'});
-   if(!response.ok)throw Error('Highlights unavailable');
-   const data=await response.json();
-   tmflHighlights=Array.isArray(data.highlights)?data.highlights.filter(h=>h&&typeof h.title==='string'&&/^[A-Za-z0-9_-]{20,}$/.test(String(h.fileId||''))):[];
+   const sources=await Promise.allSettled(['./tmfl-highlights.json','./tmfl-tmsn-highlights.json'].map(async url=>{
+    const response=await fetch(url,{cache:'no-store'});
+    if(!response.ok)throw Error('Highlights unavailable: '+url);
+    const data=await response.json();
+    return Array.isArray(data)?data:Array.isArray(data.highlights)?data.highlights:[];
+   }));
+   const combined=new Map();
+   // Prefer the Commissioner-published version when the same highlight exists in both files.
+   for(const result of sources){
+    if(result.status!=='fulfilled')continue;
+    for(const h of result.value){
+     if(!h||typeof h.title!=='string'||!/^[A-Za-z0-9_-]{20,}$/.test(String(h.fileId||'')))continue;
+     combined.set(String(h.fileId),h);
+    }
+   }
+   tmflHighlights=[...combined.values()];
   }catch(error){console.warn('TMFL highlights:',error)}
   tmflHighlightsLoaded=true;
   tmflBuildNotifications();
@@ -1257,6 +1284,7 @@ async function tmflLiveRefresh(){
    tmflLoadPublishedResults(),
    tmflLoadPublishedFanFeatures(),
    tmflLoadPublishedSchedule(),
+   tmflLoadPublishedReplays(),
    ...(tab==='ir-suspensions'?[tmflLoadDiscipline()]:[])
   ]);
  }finally{tmflLiveRefreshBusy=false}
