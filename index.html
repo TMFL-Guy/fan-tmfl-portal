@@ -48,7 +48,10 @@ window.tmflInitSupabase();
 #tmfl-startup-splash .tmfl-kick-bonus{position:absolute;z-index:5;pointer-events:none;font-size:27px;font-weight:900;color:#f7c948;text-shadow:0 2px 6px #000;transition:transform .9s ease-in-out,opacity .9s ease-in-out;transform:translate(-50%,-50%)}
 #tmfl-startup-splash .tmfl-score-flash{animation:tmflScorePulse .4s ease-out}
 @keyframes tmflScorePulse{50%{color:#f7c948;transform:scale(1.1)}}
-</style></head><body><div id="tmfl-startup-splash" role="status" aria-label="TMFL Fan Portal loading"><div class="loading-panel"><h2>TMFL LOADING</h2><p class="tmfl-loading-message">Loading the TMFL Fan Portal…</p><div class="tmfl-kick-scoreboard">POINTS <strong class="tmfl-kick-points">0</strong></div><div class="kick-field"><div class="kick-goal"></div><div class="kick-arrow"></div><div class="kick-ball"></div></div><div class="kick-instruction" aria-live="polite">While the portal loads, try a field goal! Lock aim, then time your power.</div><div class="kick-meter"><div class="kick-needle"></div></div><button type="button" class="kick-action">LOCK AIM</button></div></div><script>
+</style><style>
+.tmfl-tv-main-tabs,.tmfl-tv-filters{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.tmfl-tv-main-tabs button,.tmfl-tv-filter{border:1px solid #536076;background:#17202d;color:#f4f6fa;border-radius:9px;padding:10px 14px;font-weight:700}.tmfl-tv-main-tabs button.active,.tmfl-tv-filter.active{background:#a80922;border-color:#ed677b;color:#fff}.tmfl-tv-scorelist{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:12px;margin:12px 0}.tmfl-tv-scorecard{display:flex;justify-content:space-between;gap:12px;background:#141c29;border:1px solid #384456;border-radius:12px;padding:16px;box-shadow:0 2px 10px #0002}.tmfl-tv-scorecard-main{flex:1;min-width:0}.tmfl-tv-card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;letter-spacing:.08em;color:#aebbd0;margin-bottom:12px}.tmfl-tv-score-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:5px 0;color:#d8e0ec;font-size:16px}.tmfl-tv-team{font-weight:600;overflow-wrap:anywhere}.tmfl-tv-points{font-weight:800;font-size:20px;min-width:26px;text-align:right;font-variant-numeric:tabular-nums}.tmfl-tv-winner{color:#fff}.tmfl-tv-winner .tmfl-tv-team{font-weight:900}.tmfl-tv-card-action{display:flex;align-items:center}.tmfl-tv-card-action button{font-size:12px;white-space:nowrap;padding:8px}@media(max-width:460px){.tmfl-tv-scorecard{flex-direction:column}.tmfl-tv-card-action button{width:100%}}
+</style>
+</head><body><div id="tmfl-startup-splash" role="status" aria-label="TMFL Fan Portal loading"><div class="loading-panel"><h2>TMFL LOADING</h2><p class="tmfl-loading-message">Loading the TMFL Fan Portal…</p><div class="tmfl-kick-scoreboard">POINTS <strong class="tmfl-kick-points">0</strong></div><div class="kick-field"><div class="kick-goal"></div><div class="kick-arrow"></div><div class="kick-ball"></div></div><div class="kick-instruction" aria-live="polite">While the portal loads, try a field goal! Lock aim, then time your power.</div><div class="kick-meter"><div class="kick-needle"></div></div><button type="button" class="kick-action">LOCK AIM</button></div></div><script>
 (function(){
  const splash=document.getElementById('tmfl-startup-splash');
  // Show the interactive kick only once per app-opening session, not on refreshes.
@@ -459,6 +462,19 @@ function render(){tmflDivisionRecordCache=null;if(!document.querySelector('nav b
 
 /* TMFL Regular Season Schedule and Game Center. Probabilities are illustrative
    pregame estimates based solely on officially published TMFL results. */
+let tmflScheduleMode='games';
+let tmflTVSlot='TNF';
+const tmflTVSlotNames={TNF:'Thursday Night Battle',FNF:'Friday Night Rivalry',SAT:'Saturday Night Clash',GOTW:'Game of the Week',SNF:'Sunday Night Showdown',MNF:'Monday Night Brawl','Special Edition':'Special Edition'};
+window.tmflSetScheduleMode=mode=>{tmflScheduleMode=mode==='tv'?'tv':'games';tmflSelectedGameId='';render()};
+window.tmflSetTVSlot=slot=>{if(!Object.prototype.hasOwnProperty.call(tmflTVSlotNames,slot))return;tmflTVSlot=slot;tmflSelectedGameId='';render()};
+function tmflTVScheduleView(){
+ const games=SCHEDULE.filter(g=>g.slot===tmflTVSlot).sort((a,b)=>a.week-b.week||a.id.localeCompare(b.id));
+ const buttons=Object.entries(tmflTVSlotNames).map(([slot,name])=>'<button type="button" class="tmfl-tv-filter '+(slot===tmflTVSlot?'active':'')+'" aria-pressed="'+(slot===tmflTVSlot)+'" onclick="tmflSetTVSlot(\\''+esc(slot)+'\\')">'+esc(name)+'</button>').join('');
+ const rows=games.map(g=>{const v=officialResult(g);const final=!!v;const winner=final?(v.a>v.h?'away':v.h>v.a?'home':'tie'):'';
+  return '<div class="tmfl-tv-scorecard"><div class="tmfl-tv-scorecard-main"><div class="tmfl-tv-card-meta"><strong>WEEK '+g.week+'</strong><span>'+(final?'FINAL'+(v.ot?' / OT':''):'UPCOMING')+'</span></div><div class="tmfl-tv-score-row '+(winner==='away'?'tmfl-tv-winner':'')+'"><span class="tmfl-tv-team">'+esc(g.away)+'</span><span class="tmfl-tv-points">'+(final?v.a:'–')+'</span></div><div class="tmfl-tv-score-row '+(winner==='home'?'tmfl-tv-winner':'')+'"><span class="tmfl-tv-team">'+esc(g.home)+'</span><span class="tmfl-tv-points">'+(final?v.h:'–')+'</span></div>'+tmflSpecialGameNotes(g)+'</div><div class="tmfl-tv-card-action"><button type="button" onclick="tmflOpenGameCenter(\\''+esc(g.id)+'\\')">Game Center</button></div></div>';
+ }).join('');
+ return '<div class="panel"><h3>TV Schedule</h3><p class="muted">Browse every televised TMFL matchup by broadcast series. Official final scores update as results are published.</p><div class="tmfl-tv-filters">'+buttons+'</div><p class="muted">'+games.length+' games · '+games.filter(g=>officialResult(g)).length+' finals</p></div><div class="tmfl-tv-scorelist">'+(rows||'<div class="panel"><p>No games currently assigned to this broadcast series.</p></div>')+'</div>';
+}
 let tmflScheduleWeek=1;
 let tmflSelectedGameId='';
 const tmflGameCenterRecords=()=>officialRecords();
@@ -519,14 +535,17 @@ function tmflGameCenterView(g){
 function tmflRegularScheduleView(){
  const week=tmflScheduleWeek,games=gamesByWeek(week),selected=SCHEDULE.find(g=>g.id===tmflSelectedGameId);
  const options=Array.from({length:18},(_,i)=>'<option value="'+(i+1)+'" '+(week===i+1?'selected':'')+'>Week '+(i+1)+'</option>').join('');
- return '<div class="panel"><h2>TMFL Regular Season Schedule</h2><p class="muted">Browse every regular-season game and open its Game Center.</p>'+
+ return '<div class="panel"><h2>TMFL Regular Season Schedule</h2><div class="tmfl-tv-main-tabs"><button type="button" class="'+(tmflScheduleMode==='games'?'active':'')+'" onclick="tmflSetScheduleMode(\\'games\\')">Weekly Schedule</button><button type="button" class="'+(tmflScheduleMode==='tv'?'active':'')+'" onclick="tmflSetScheduleMode(\\'tv\\')">TV Schedule</button></div></div>'+
+ (selected?tmflGameCenterView(selected):'')+
+ (tmflScheduleMode==='tv'?tmflTVScheduleView():
+ '<div class="panel"><p class="muted">Browse every regular-season game and open its Game Center.</p>'+
  '<div class="tmfl-schedule-toolbar"><button onclick="tmflScheduleSetWeek('+Math.max(1,week-1)+')" '+(week===1?'disabled':'')+'>← Previous</button><label>Week <select aria-label="Select regular season week" onchange="tmflScheduleSetWeek(this.value)">'+options+'</select></label><button onclick="tmflScheduleSetWeek('+Math.min(18,week+1)+')" '+(week===18?'disabled':'')+'>Next →</button></div>'+
  '<p class="muted">'+games.length+' games · '+games.filter(g=>officialResult(g)).length+' official finals</p></div>'+
  (selected?tmflGameCenterView(selected):'')+
  '<div class="tmfl-schedule-list">'+games.map(g=>{
  const v=officialResult(g);
  return '<div class="game"><span class="pill">'+esc(g.slot==='GOTW'?'Game of the Week':g.slot||'Scheduled')+'</span><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p class="muted">'+(v?'FINAL · '+esc(g.away)+' '+v.a+' – '+v.h+' '+esc(g.home)+(v.ot?' (OT)':''):'Upcoming · '+esc(g.id))+'</p>'+tmflSpecialGameNotes(g)+'<button onclick="tmflOpenGameCenter(\''+esc(g.id)+'\')">Open Game Center</button></div>';
- }).join('')+'</div>';
+ }).join('')+'</div>');
 }
 
 // Dashboard and information pages use official results for facts, never unsubmitted fan picks.
