@@ -495,7 +495,7 @@ window.tmflOpenGameCenter=id=>{
 };
 window.tmflScheduleSetWeek=w=>{tmflScheduleWeek=Math.max(1,Math.min(18,Number(w)||1));tmflSelectedGameId='';render()};
 window.tmflScheduleBack=()=>{tmflSelectedGameId='';render()};
-const tmflSpecialGameNotes=g=>g.slot==='Special Edition'&&g.notes&&g.notes.trim()&&g.notes.trim()!=='No Current Notes'?'<p class="muted"><strong>Game Notes:</strong> '+esc(g.notes)+'</p>':'';
+const tmflSpecialGameNotes=g=>{const notes=String(g.notes||'').trim();return notes&&!/^No Current Notes$/i.test(notes)?'<p class="muted"><strong>Game Notes:</strong> '+esc(notes)+'</p>':''};
 function tmflGameCenterView(g){
  if(!tmflHighlightsLoaded&&!tmflHighlightsRequest)tmflLoadHighlights();
  const v=officialResult(g),p=tmflPregameProbability(g),r=tmflGameCenterRecords();
@@ -1237,6 +1237,8 @@ async function tmflLoadPublishedSchedule(){
    if(!response.ok)throw Error('Published schedule unavailable');
    const data=await response.json();
    if(!Array.isArray(data)||!data.every(g=>g&&typeof g.id==='string'&&Number.isInteger(Number(g.week))&&typeof g.away==='string'&&typeof g.home==='string'))throw Error('Invalid published schedule');
+   // Normalize defaults before comparing, so every newly published note is detected.
+   for(const g of data){if(g.slot==='Special Rivalry'){g.slot='Not Aired';g.notes='Special Rivalry'}else if(!g.notes)g.notes='No Current Notes'}
    if(JSON.stringify(SCHEDULE)!==JSON.stringify(data)){
     SCHEDULE=data;
     // Rebuild the schedule index after replacing the published games; otherwise views use stale objects.
