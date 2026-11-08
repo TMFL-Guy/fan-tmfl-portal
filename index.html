@@ -469,9 +469,9 @@ window.tmflSetScheduleMode=mode=>{tmflScheduleMode=mode==='tv'?'tv':'games';tmfl
 window.tmflSetTVSlot=slot=>{if(!Object.prototype.hasOwnProperty.call(tmflTVSlotNames,slot))return;tmflTVSlot=slot;tmflSelectedGameId='';render()};
 function tmflTVScheduleView(){
  const games=SCHEDULE.filter(g=>g.slot===tmflTVSlot).sort((a,b)=>a.week-b.week||a.id.localeCompare(b.id));
- const buttons=Object.entries(tmflTVSlotNames).map(([slot,name])=>'<button type="button" class="tmfl-tv-filter '+(slot===tmflTVSlot?'active':'')+'" aria-pressed="'+(slot===tmflTVSlot)+'" onclick="tmflSetTVSlot(\\''+esc(slot)+'\\')">'+esc(name)+'</button>').join('');
+ const buttons=Object.entries(tmflTVSlotNames).map(([slot,name])=>'<button type="button" class="tmfl-tv-filter '+(slot===tmflTVSlot?'active':'')+'" aria-pressed="'+(slot===tmflTVSlot)+'" onclick="tmflSetTVSlot(&quot;'+esc(slot)+'&quot;)">'+esc(name)+'</button>').join('');
  const rows=games.map(g=>{const v=officialResult(g);const final=!!v;const winner=final?(v.a>v.h?'away':v.h>v.a?'home':'tie'):'';
-  return '<div class="tmfl-tv-scorecard"><div class="tmfl-tv-scorecard-main"><div class="tmfl-tv-card-meta"><strong>WEEK '+g.week+'</strong><span>'+(final?'FINAL'+(v.ot?' / OT':''):'UPCOMING')+'</span></div><div class="tmfl-tv-score-row '+(winner==='away'?'tmfl-tv-winner':'')+'"><span class="tmfl-tv-team">'+esc(g.away)+'</span><span class="tmfl-tv-points">'+(final?v.a:'–')+'</span></div><div class="tmfl-tv-score-row '+(winner==='home'?'tmfl-tv-winner':'')+'"><span class="tmfl-tv-team">'+esc(g.home)+'</span><span class="tmfl-tv-points">'+(final?v.h:'–')+'</span></div>'+tmflSpecialGameNotes(g)+'</div><div class="tmfl-tv-card-action"><button type="button" onclick="tmflOpenGameCenter(\\''+esc(g.id)+'\\')">Game Center</button></div></div>';
+  return '<div class="tmfl-tv-scorecard"><div class="tmfl-tv-scorecard-main"><div class="tmfl-tv-card-meta"><strong>WEEK '+g.week+'</strong><span>'+(final?'FINAL'+(v.ot?' / OT':''):'UPCOMING')+'</span></div><div class="tmfl-tv-score-row '+(winner==='away'?'tmfl-tv-winner':'')+'"><span class="tmfl-tv-team">'+esc(g.away)+'</span><span class="tmfl-tv-points">'+(final?v.a:'–')+'</span></div><div class="tmfl-tv-score-row '+(winner==='home'?'tmfl-tv-winner':'')+'"><span class="tmfl-tv-team">'+esc(g.home)+'</span><span class="tmfl-tv-points">'+(final?v.h:'–')+'</span></div>'+tmflSpecialGameNotes(g)+'</div><div class="tmfl-tv-card-action"><button type="button" onclick="tmflOpenGameCenter(&quot;'+esc(g.id)+'&quot;)">Game Center</button></div></div>';
  }).join('');
  return '<div class="panel"><h3>TV Schedule</h3><p class="muted">Browse every televised TMFL matchup by broadcast series. Official final scores update as results are published.</p><div class="tmfl-tv-filters">'+buttons+'</div><p class="muted">'+games.length+' games · '+games.filter(g=>officialResult(g)).length+' finals</p></div><div class="tmfl-tv-scorelist">'+(rows||'<div class="panel"><p>No games currently assigned to this broadcast series.</p></div>')+'</div>';
 }
@@ -535,17 +535,16 @@ function tmflGameCenterView(g){
 function tmflRegularScheduleView(){
  const week=tmflScheduleWeek,games=gamesByWeek(week),selected=SCHEDULE.find(g=>g.id===tmflSelectedGameId);
  const options=Array.from({length:18},(_,i)=>'<option value="'+(i+1)+'" '+(week===i+1?'selected':'')+'>Week '+(i+1)+'</option>').join('');
- return '<div class="panel"><h2>TMFL Regular Season Schedule</h2><div class="tmfl-tv-main-tabs"><button type="button" class="'+(tmflScheduleMode==='games'?'active':'')+'" onclick="tmflSetScheduleMode(\\'games\\')">Weekly Schedule</button><button type="button" class="'+(tmflScheduleMode==='tv'?'active':'')+'" onclick="tmflSetScheduleMode(\\'tv\\')">TV Schedule</button></div></div>'+
- (selected?tmflGameCenterView(selected):'')+
- (tmflScheduleMode==='tv'?tmflTVScheduleView():
- '<div class="panel"><p class="muted">Browse every regular-season game and open its Game Center.</p>'+
+ const tabs='<div class="panel"><h2>TMFL Regular Season Schedule</h2><div class="tmfl-tv-main-tabs"><button class="'+(tmflScheduleMode==='games'?'active':'')+'" onclick="tmflSetScheduleMode(&quot;games&quot;)">Weekly Schedule</button><button class="'+(tmflScheduleMode==='tv'?'active':'')+'" onclick="tmflSetScheduleMode(&quot;tv&quot;)">TV Schedule</button></div></div>';
+ const center=selected?tmflGameCenterView(selected):'';
+ if(tmflScheduleMode==='tv')return tabs+center+tmflTVScheduleView();
+ return tabs+center+'<div class="panel"><p class="muted">Browse every regular-season game and open its Game Center.</p>'+
  '<div class="tmfl-schedule-toolbar"><button onclick="tmflScheduleSetWeek('+Math.max(1,week-1)+')" '+(week===1?'disabled':'')+'>← Previous</button><label>Week <select aria-label="Select regular season week" onchange="tmflScheduleSetWeek(this.value)">'+options+'</select></label><button onclick="tmflScheduleSetWeek('+Math.min(18,week+1)+')" '+(week===18?'disabled':'')+'>Next →</button></div>'+
  '<p class="muted">'+games.length+' games · '+games.filter(g=>officialResult(g)).length+' official finals</p></div>'+
- (selected?tmflGameCenterView(selected):'')+
  '<div class="tmfl-schedule-list">'+games.map(g=>{
  const v=officialResult(g);
- return '<div class="game"><span class="pill">'+esc(g.slot==='GOTW'?'Game of the Week':g.slot||'Scheduled')+'</span><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p class="muted">'+(v?'FINAL · '+esc(g.away)+' '+v.a+' – '+v.h+' '+esc(g.home)+(v.ot?' (OT)':''):'Upcoming · '+esc(g.id))+'</p>'+tmflSpecialGameNotes(g)+'<button onclick="tmflOpenGameCenter(\''+esc(g.id)+'\')">Open Game Center</button></div>';
- }).join('')+'</div>');
+ return '<div class="game"><span class="pill">'+esc(g.slot==='GOTW'?'Game of the Week':g.slot||'Scheduled')+'</span><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p class="muted">'+(v?'FINAL · '+esc(g.away)+' '+v.a+' – '+v.h+' '+esc(g.home)+(v.ot?' (OT)':''):'Upcoming · '+esc(g.id))+'</p>'+tmflSpecialGameNotes(g)+'<button onclick="tmflOpenGameCenter(&quot;'+esc(g.id)+'&quot;)">Open Game Center</button></div>';
+ }).join('')+'</div>';
 }
 
 // Dashboard and information pages use official results for facts, never unsubmitted fan picks.
