@@ -17,6 +17,15 @@
       "message": "The Week 7 Game of the Week is: Buccaneers @ Rams",
       "date": "2026-11-04",
       "published": true
+    },
+    {
+      "id": "cms-1794165346120-3ty742",
+      "title": "League-Wide Bye",
+      "team": "",
+      "type": "Announcement",
+      "message": "Hello TMFL Fans! Due to travel conflicts, there will be a league-wide bye week beginning on Wednesday, November 11, 2026, lasting until Tuesday, November 17, 2026. Week 8 will begin on Thursday, November 19, 2026. \n\nThank you,\nTMFL Commissioner",
+      "date": "2026-11-08",
+      "published": true
     }
   ]
 }
