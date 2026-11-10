@@ -151,13 +151,14 @@ const isPredictionWeekLocked=w=>syncLockedWeeks().has(Number(w));
 const validScore=(x)=>Number.isInteger(Number(x))&&String(x).trim()!==''&&Number(x)>=0&&Number(x)<=999;
 const normalize=(g,v)=>{if(!v||!validScore(v.a)||!validScore(v.h))return null;let a=Number(v.a),h=Number(v.h),ot=!!v.ot;return {a,h,ot}};
 const result=g=>normalize(g,official[g.id])||normalize(g,bracket().games[g.id]);
-function records(){let out=Object.fromEntries(TEAMS.map(t=>[t,{t,w:0,l:0,ties:0,otw:0,otl:0,ps:0,pa:0,pts:0,perfect:true,played:0,home:{w:0,l:0,ties:0},away:{w:0,l:0,ties:0},streakType:'',streakCount:0}]));for(const g of SCHEDULE){let v=result(g);if(!v)continue;let a=out[g.away],h=out[g.home],aw=v.a,hw=v.h;a.ps+=aw;a.pa+=hw;h.ps+=hw;h.pa+=aw;let win=aw>hw?a:hw>aw?h:null,lose=win===a?h:a;if(!win){a.ties++;h.ties++;a.pts+=3;h.pts+=3;a.perfect=false;h.perfect=false}else{let shutout=(win===a?hw:aw)===0;let winPts=v.ot?4:shutout?6:5;win.pts+=winPts;if(g.week>1&&win.perfect&&win.played>0)win.pts+=2;win.w++;lose.l++;if(v.ot){win.otw++;lose.otl++;lose.pts+=1}else if(shutout){lose.pts-=1}lose.perfect=false}const ar=a.away,hr=h.home;const updateStreak=(team,type)=>{team.streakCount=team.streakType===type?team.streakCount+1:1;team.streakType=type};if(aw>hw){ar.w++;hr.l++;updateStreak(a,'W');updateStreak(h,'L')}else if(hw>aw){hr.w++;ar.l++;updateStreak(h,'W');updateStreak(a,'L')}else{ar.ties++;hr.ties++;updateStreak(a,'T');updateStreak(h,'T')}a.played++;h.played++;if(g.week>1){if(a.l===0&&a.ties>0)a.pts+=1;if(h.l===0&&h.ties>0)h.pts+=1}}return out}
+function records(throughWeek=Infinity){let out=Object.fromEntries(TEAMS.map(t=>[t,{t,w:0,l:0,ties:0,otw:0,otl:0,ps:0,pa:0,pts:0,perfect:true,played:0,home:{w:0,l:0,ties:0},away:{w:0,l:0,ties:0},streakType:'',streakCount:0}]));for(const g of SCHEDULE){if(g.week>throughWeek)continue;let v=result(g);if(!v)continue;let a=out[g.away],h=out[g.home],aw=v.a,hw=v.h;a.ps+=aw;a.pa+=hw;h.ps+=hw;h.pa+=aw;let win=aw>hw?a:hw>aw?h:null,lose=win===a?h:a;if(!win){a.ties++;h.ties++;a.pts+=3;h.pts+=3;a.perfect=false;h.perfect=false}else{let shutout=(win===a?hw:aw)===0;let winPts=v.ot?4:shutout?6:5;win.pts+=winPts;if(g.week>1&&win.perfect&&win.played>0)win.pts+=2;win.w++;lose.l++;if(v.ot){win.otw++;lose.otl++;lose.pts+=1}else if(shutout){lose.pts-=1}lose.perfect=false}const ar=a.away,hr=h.home;const updateStreak=(team,type)=>{team.streakCount=team.streakType===type?team.streakCount+1:1;team.streakType=type};if(aw>hw){ar.w++;hr.l++;updateStreak(a,'W');updateStreak(h,'L')}else if(hw>aw){hr.w++;ar.l++;updateStreak(h,'W');updateStreak(a,'L')}else{ar.ties++;hr.ties++;updateStreak(a,'T');updateStreak(h,'T')}a.played++;h.played++;if(g.week>1){if(a.l===0&&a.ties>0)a.pts+=1;if(h.l===0&&h.ties>0)h.pts+=1}}return out}
 const winPct=x=>(x.w+x.ties*0.5)/Math.max(1,x.w+x.l+x.ties);
 // Division record is the first tiebreaker after overall winning percentage.
 const tmflDivisionOf=team=>Object.keys(DIVS).find(d=>DIVS[d].includes(team))||'';
-function tmflDivisionRecords(){
+function tmflDivisionRecords(throughWeek=Infinity){
  const out=Object.fromEntries(TEAMS.map(t=>[t,{w:0,l:0,ties:0}]));
  for(const g of SCHEDULE){
+  if(g.week>throughWeek)continue;
   if(tmflDivisionOf(g.away)!==tmflDivisionOf(g.home))continue;
   const v=result(g);if(!v)continue;
   const a=out[g.away],h=out[g.home];
@@ -972,10 +973,17 @@ window.setStandingsMode=mode=>{if(['division','conference','overall'].includes(m
 function standingsView(){
  tmflDivisionRecordCache=tmflDivisionRecords();
  const r=records(), s=seeds(r);
+ const latestWeek=Math.max(0,...SCHEDULE.filter(g=>result(g)).map(g=>g.week));
+ const priorWeek=latestWeek-1;
+ const priorRecords=priorWeek>0?records(priorWeek):null;
+ const currentDivisionCache=tmflDivisionRecordCache;
+ const previousDivisionCache=priorRecords?tmflDivisionRecords(priorWeek):null;
  const rank=(teams)=>[...teams].sort((a,b)=>compare(a,b,r));
+ const previousRanks=teams=>{if(!priorRecords)return null;tmflDivisionRecordCache=previousDivisionCache;try{return new Map([...teams].sort((a,b)=>compare(a,b,priorRecords)).map((t,i)=>[t,i]))}finally{tmflDivisionRecordCache=currentDivisionCache}};
+ const movement=(t,i,prior)=>{if(!prior)return '—';const delta=prior.get(t)-i;return delta>0?'<span style="color:#65e89a;font-weight:700">▲ '+delta+'</span>':delta<0?'<span style="color:#ff9ca5;font-weight:700">▼ '+Math.abs(delta)+'</span>':'—'};
  const modes=[['division','Divisions'],['conference','Conferences'],['overall','Overall League']];
  const controls=`<div class="row" role="group" aria-label="Standings view">${modes.map(([id,label])=>`<button class="${standingsMode===id?'active':''}" onclick="setStandingsMode('${id}')">${label}</button>`).join('')}</div>`;
- const table=(teams,numbered=false)=>`<p class="muted" style="margin:8px 0">Scroll to view rest of table</p><div style="width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="min-width:1100px"><thead><tr>${numbered?'<th>#</th>':''}<th>Team</th><th>Record</th><th>Win %</th><th>Div. Record</th><th>Pts</th><th>PS</th><th>PA</th><th>Diff</th><th>Home</th><th>Away</th><th>Streak</th></tr></thead><tbody>${rank(teams).map((t,i)=>`<tr class="${s[conf(t)].includes(t)?'seeded':''}">${numbered?`<td>${i+1}</td>`:''}<td>${esc(t)}</td><td>${r[t].w}-${r[t].l}-${r[t].ties}</td><td>${winPct(r[t]).toFixed(3)}</td><td>${tmflDivRecord(t).w}-${tmflDivRecord(t).l}-${tmflDivRecord(t).ties}</td><td>${r[t].pts}</td><td>${r[t].ps}</td><td>${r[t].pa}</td><td>${r[t].ps-r[t].pa}</td><td>${r[t].home.w}-${r[t].home.l}-${r[t].home.ties}</td><td>${r[t].away.w}-${r[t].away.l}-${r[t].away.ties}</td><td>${tmflStreak(r[t])}</td></tr>`).join('')}</tbody></table></div>`;
+ const table=(teams,numbered=false)=>{const prior=previousRanks(teams);return `<p class="muted" style="margin:8px 0">Scroll to view rest of table</p><div style="width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="min-width:1180px"><thead><tr>${numbered?'<th>#</th>':''}<th>Team</th><th>Move</th><th>Record</th><th>Win %</th><th>Div. Record</th><th>Pts</th><th>PS</th><th>PA</th><th>Diff</th><th>Home</th><th>Away</th><th>Streak</th></tr></thead><tbody>${rank(teams).map((t,i)=>`<tr class="${s[conf(t)].includes(t)?'seeded':''}">${numbered?`<td>${i+1}</td>`:''}<td>${esc(t)}</td><td>${movement(t,i,prior)}</td><td>${r[t].w}-${r[t].l}-${r[t].ties}</td><td>${winPct(r[t]).toFixed(3)}</td><td>${tmflDivRecord(t).w}-${tmflDivRecord(t).l}-${tmflDivRecord(t).ties}</td><td>${r[t].pts}</td><td>${r[t].ps}</td><td>${r[t].pa}</td><td>${r[t].ps-r[t].pa}</td><td>${r[t].home.w}-${r[t].home.l}-${r[t].home.ties}</td><td>${r[t].away.w}-${r[t].away.l}-${r[t].away.ties}</td><td>${tmflStreak(r[t])}</td></tr>`).join('')}</tbody></table></div>`};
  const divisionWinners=new Set([...s.AFC.slice(0,4),...s.NFC.slice(0,4)]);
  let sections;
  if(standingsMode==='division')sections=Object.entries(DIVS).map(([name,ts])=>`<div class="panel"><h3>${name}</h3>${table(ts)}</div>`).join('');
