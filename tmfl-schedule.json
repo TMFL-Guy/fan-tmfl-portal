@@ -1075,7 +1075,7 @@
     "week": 8,
     "away": "Bengals",
     "home": "Ravens",
-    "slot": "Not Aired",
+    "slot": "GOTW",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1255,7 +1255,7 @@
     "week": 10,
     "away": "Steelers",
     "home": "Falcons",
-    "slot": "Not Aired",
+    "slot": "SNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1381,7 +1381,7 @@
     "week": 11,
     "away": "Bills",
     "home": "Bears",
-    "slot": "Not Aired",
+    "slot": "TNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1516,7 +1516,7 @@
     "week": 12,
     "away": "Jets",
     "home": "Bears",
-    "slot": "Not Aired",
+    "slot": "SNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1543,7 +1543,7 @@
     "week": 12,
     "away": "Texans",
     "home": "Bengals",
-    "slot": "Not Aired",
+    "slot": "MNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1642,7 +1642,7 @@
     "week": 13,
     "away": "Cowboys",
     "home": "Buccaneers",
-    "slot": "Not Aired",
+    "slot": "MNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1903,7 +1903,7 @@
     "week": 15,
     "away": "Titans",
     "home": "Cowboys",
-    "slot": "Not Aired",
+    "slot": "TNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -2020,7 +2020,7 @@
     "week": 16,
     "away": "Jaguars",
     "home": "Cowboys",
-    "slot": "Not Aired",
+    "slot": "SNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -2308,7 +2308,7 @@
     "week": 18,
     "away": "Bills",
     "home": "Dolphins",
-    "slot": "Not Aired",
+    "slot": "MNF",
     "official": null,
     "notes": "No Current Notes"
   },
