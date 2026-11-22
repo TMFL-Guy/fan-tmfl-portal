@@ -1129,7 +1129,7 @@
     "week": 9,
     "away": "Seahawks",
     "home": "Raiders",
-    "slot": "FNF",
+    "slot": "Not Aired",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1147,7 +1147,7 @@
     "week": 9,
     "away": "Bengals",
     "home": "Colts",
-    "slot": "TNF",
+    "slot": "Not Aired",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1156,9 +1156,9 @@
     "week": 9,
     "away": "Jets",
     "home": "Lions",
-    "slot": "Special Edition",
+    "slot": "Not Aired",
     "official": null,
-    "notes": "Turkey Bowl"
+    "notes": ""
   },
   {
     "id": "W09G05",
@@ -1210,7 +1210,7 @@
     "week": 9,
     "away": "Dolphins",
     "home": "Bills",
-    "slot": "SAT",
+    "slot": "Not Aired",
     "official": null,
     "notes": "No Current Notes"
   },
