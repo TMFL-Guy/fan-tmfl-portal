@@ -2,6 +2,7 @@
 """Rebuild TMFL leaderboard from GitHub Issues and published official scores."""
 import json, os, re, subprocess, urllib.request
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -45,7 +46,7 @@ for issue in sorted(issues,key=lambda i:(i["created_at"],i["number"])):
     a,h=field("Away score"),field("Home score")
     user=issue["user"]["login"]
     if gid not in schedule or not a.isdigit() or not h.isdigit():continue
-    if gid in first_final and issue["created_at"] >= first_final[gid]:continue
+    if gid in first_final and datetime.fromisoformat(issue["created_at"].replace("Z","+00:00")) >= datetime.fromisoformat(first_final[gid].replace("Z","+00:00")):continue
     if max(int(a),int(h))>999:continue
     key=(user.lower(),gid)
     if key in picks:continue
