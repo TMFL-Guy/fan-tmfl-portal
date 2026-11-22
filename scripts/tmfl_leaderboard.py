@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Rebuild TMFL leaderboard from GitHub Issues and published official scores."""
-import json, os, re, urllib.request
+import json, os, re, subprocess, urllib.request
 from collections import defaultdict
 from pathlib import Path
 
@@ -12,6 +12,20 @@ def api(path):
     with urllib.request.urlopen(req,timeout=30) as r:return json.load(r)
 schedule={g["id"]:g for g in json.loads((ROOT/"tmfl-schedule.json").read_text())}
 official=json.loads((ROOT/"tmfl-official-results.json").read_text())
+# Historical publication timestamps prevent predictions submitted after a final was posted.
+# Uses the repository's complete git history of the official results feed.
+first_final={}
+try:
+    commits=subprocess.check_output(["git","log","--reverse","--format=%H","--","tmfl-official-results.json"],cwd=ROOT,text=True).splitlines()
+    for sha in commits:
+        raw=subprocess.check_output(["git","show",sha+":tmfl-official-results.json"],cwd=ROOT,text=True)
+        past=json.loads(raw)
+        timestamp=subprocess.check_output(["git","show","-s","--format=%cI",sha],cwd=ROOT,text=True).strip()
+        for gid,result in past.items():
+            if gid not in first_final and isinstance(result,dict) and isinstance(result.get("a"),int) and isinstance(result.get("h"),int):
+                first_final[gid]=timestamp
+except (subprocess.CalledProcessError,ValueError) as e:
+    raise RuntimeError("Cannot verify official-result publication history; refusing to score picks") from e
 # The first accepted submission per GitHub user per game wins; edits do not count.
 issues=[]; page=1
 while True:
@@ -31,6 +45,7 @@ for issue in sorted(issues,key=lambda i:(i["created_at"],i["number"])):
     a,h=field("Away score"),field("Home score")
     user=issue["user"]["login"]
     if gid not in schedule or not a.isdigit() or not h.isdigit():continue
+    if gid in first_final and issue["created_at"] >= first_final[gid]:continue
     if max(int(a),int(h))>999:continue
     key=(user.lower(),gid)
     if key in picks:continue
