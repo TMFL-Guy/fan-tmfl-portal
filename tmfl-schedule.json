@@ -1003,7 +1003,7 @@
     "week": 8,
     "away": "Lions",
     "home": "Bills",
-    "slot": "TNF",
+    "slot": "GOTW",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1012,7 +1012,7 @@
     "week": 8,
     "away": "Steelers",
     "home": "Panthers",
-    "slot": "FNF",
+    "slot": "Not Aired",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1021,9 +1021,9 @@
     "week": 8,
     "away": "Patriots",
     "home": "Broncos",
-    "slot": "Special Edition",
+    "slot": "Not Aired",
     "official": null,
-    "notes": "Commissioner Birthday Classic"
+    "notes": ""
   },
   {
     "id": "W08G04",
@@ -1057,9 +1057,9 @@
     "week": 8,
     "away": "Jaguars",
     "home": "Commanders",
-    "slot": "Special Edition",
+    "slot": "Not Aired",
     "official": null,
-    "notes": "Military Appreciation Game"
+    "notes": ""
   },
   {
     "id": "W08G08",
@@ -1084,7 +1084,7 @@
     "week": 8,
     "away": "Giants",
     "home": "Eagles",
-    "slot": "MNF",
+    "slot": "Not Aired",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1093,7 +1093,7 @@
     "week": 8,
     "away": "Bears",
     "home": "Packers",
-    "slot": "GOTW",
+    "slot": "MNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1111,7 +1111,7 @@
     "week": 8,
     "away": "Chargers",
     "home": "Chiefs",
-    "slot": "Not Aired",
+    "slot": "TNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1120,7 +1120,7 @@
     "week": 8,
     "away": "Rams",
     "home": "49ers",
-    "slot": "Not Aired",
+    "slot": "FNF",
     "official": null,
     "notes": "No Current Notes"
   },
