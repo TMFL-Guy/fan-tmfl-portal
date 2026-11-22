@@ -15,13 +15,13 @@ official=json.loads((ROOT/"tmfl-official-results.json").read_text())
 # The first accepted submission per GitHub user per game wins; edits do not count.
 issues=[]; page=1
 while True:
-    batch=api("issues?state=all&labels=tmfl-prediction&per_page=100&page="+str(page))
+    batch=api("issues?state=all&per_page=100&page="+str(page))
     issues.extend(i for i in batch if "pull_request" not in i)
     if len(batch)<100:break
     page+=1
 picks={}
 for issue in sorted(issues,key=lambda i:(i["created_at"],i["number"])):
-    if issue.get("state_reason")=="not_planned":continue
+    if issue.get("state_reason")=="not_planned" or not issue.get("title","").startswith("TMFL Prediction"):continue
     body=issue.get("body") or ""
     # GitHub Issue Forms serialize fields under Markdown headings.
     def field(name):
