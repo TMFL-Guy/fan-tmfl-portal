@@ -1,0 +1,30 @@
+name: TMFL Game Prediction
+description: Submit one game prediction using your GitHub account.
+title: "TMFL Prediction"
+labels: ["tmfl-prediction"]
+body:
+  - type: markdown
+    attributes:
+      value: "Submit one prediction per game. Your first submitted pick counts; edits and later duplicate issues do not replace it. Predictions are public. Do not include personal information."
+  - type: input
+    id: game
+    attributes:
+      label: Game ID
+      description: "Copy the game ID from the TMFL Fan Portal (example W08G09)."
+      placeholder: W08G09
+    validations:
+      required: true
+  - type: input
+    id: away
+    attributes:
+      label: Away score
+      placeholder: "21"
+    validations:
+      required: true
+  - type: input
+    id: home
+    attributes:
+      label: Home score
+      placeholder: "24"
+    validations:
+      required: true
