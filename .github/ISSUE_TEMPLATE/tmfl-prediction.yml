@@ -1,7 +1,6 @@
 name: TMFL Game Prediction
 description: Submit one game prediction using your GitHub account.
 title: "TMFL Prediction"
-labels: ["tmfl-prediction"]
 body:
   - type: markdown
     attributes:
