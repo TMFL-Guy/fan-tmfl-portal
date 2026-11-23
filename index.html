@@ -633,7 +633,7 @@ function tmflPoolView(){
  const type=tmflPoolType,contexts=tmflPoolContext(type),isRanking=contexts.length>0;
  const nav='<div class="actions" style="display:flex;flex-wrap:wrap;gap:8px">'+TMFL_POOL_TYPES.filter(([id])=>tmflPoolAllowed.includes(id)).map(([id,label])=>'<button type="button" class="'+(type===id?'active':'')+'" onclick="tmflPoolChoose(\''+id+'\')">'+esc(label)+'</button>').join('')+'</div>';
  const intro='<section class="panel"><h2>Independent TMFL Prediction Pools</h2><p>Each pool has its own predictions, scoring and leaderboard. Picks save to this browser. Submit your saved predictions with GitHub to enter the public leaderboard.</p>'+nav+'</section>';
- const leaderboard='<p><button type="button" onclick="tmflSubmitPool(\\\''+type+'\\\')">Submit Saved Predictions with GitHub</button></p>';
+ const leaderboard='<p><button type="button" onclick="tmflSubmitPool(&quot;'+type+'&quot;)">Submit Saved Predictions with GitHub</button></p>';
  if(isRanking){
  const names=contexts.map(x=>x[0]);if(!names.includes(tmflPoolGroup))tmflPoolGroup=names[0];
  const teams=contexts.find(x=>x[0]===tmflPoolGroup)[1],weekly=['division','conference','league'].includes(type),key=type+'|'+(weekly?'week-'+tmflPoolWeek+'|':'')+tmflPoolGroup,data=tmflPoolRead(),saved=Array.isArray(data[key])?data[key]:[];
@@ -656,8 +656,8 @@ function tmflSubmitPool(type){
  const saved=tmflPoolRead(),entries=Object.entries(saved).filter(([key,value])=>(key.startsWith(type+'|')||(type==='isc-seeding'&&key.startsWith('isc-record|')))&&value!==''&&value!=null);
  if(!entries.length){alert('Make a prediction in this competition before submitting.');return}
  const payload={version:1,competition:type,picks:Object.fromEntries(entries)};
- const body='TMFL public prediction submission. This issue is public. Do not include personal information.\\n\\n'+
-  '```json\\n'+JSON.stringify(payload,null,2)+'\\n```';
+ const body='TMFL public prediction submission. This issue is public. Do not include personal information.\n\n'+
+  '```json\n'+JSON.stringify(payload,null,2)+'\n```';
  const title='TMFL Pool Prediction: '+type;
  const url='https://github.com/TMFL-Guy/fan-tmfl-portal/issues/new?title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body);
  if(url.length>7800){alert('This prediction is too large for one GitHub submission. Submit fewer picks at once.');return}
