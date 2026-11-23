@@ -531,7 +531,7 @@ function tmflCupBracketHTML(d,editable){
  }).join('')+'</div>').join('');
  return '<section class="panel"><h3>32-Team Knockout Bracket</h3><p>Seeds 1–8 enter Round 3; 9–16 enter Round 2; 17–32 enter Round 1. Matchups and results are entered manually by the Commissioner.</p><div class="tmfl-cup-scroll"><div class="tmfl-cup-bracket tmfl-cup-connected" style="width:'+width+'px;height:'+height+'px">'+links+html+'</div></div></section>';
 }
-const tmflCupSlotLabel=v=>({'CUP-GOTW':'Group GOTW','CUP-PT':'Primetime','CUP-SAT':'Primetime','CUP-SUN':'Primetime','CUP-SF':'Cup Semifinal','CUP-FINAL':'Cup Final','Not Aired':'Primetime'}[v]||v||'Primetime');
+const tmflCupSlotLabel=v=>({'CUP-GOTW':'Group GOTW','CUP-PT':'Primetime','CUP-SAT':'Primetime','CUP-SUN':'Primetime','CUP-SF':'Cup Semifinal','CUP-FINAL':'Cup Final','Not Aired':''}[v]||v||'');
 function tmflCupView(){
  if(!tmflCupLoaded){tmflLoadCup();return '<section class="panel"><h2>TMFL In-Season Cup</h2><p>Checking Cup schedule…</p></section>'}
  if(!tmflCup)return '<section class="panel"><h2>TMFL In-Season Cup</h2><p>The 32-team knockout bracket is open for viewing. Matchups and scores will appear as the Commissioner publishes them.</p></section>'+tmflCupBracketHTML({knockout:{}},false);
