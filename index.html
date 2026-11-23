@@ -627,13 +627,13 @@ function tmflISCSeedingView(){
   const complete=teams.length===4&&selected.length===4&&new Set(selected).size===4&&selected.every(t=>teams.includes(t))&&selected.every(t=>{const q=records[t]||{};return q.w!==''&&q.w!==undefined&&q.l!==''&&q.l!==undefined&&Number(q.w)+Number(q.l)===3});
   return '<section class="panel"><h3>'+esc(name)+'</h3>'+(teams.length!==4?'<p class="muted">Awaiting four published team assignments for this group.</p>':'<p class="muted">Predict the final group standings after all three games per team.</p>')+'<div style="width:100%;overflow-x:auto"><table><thead><tr><th>Seed</th><th>Team</th><th>W</th><th>L</th></tr></thead><tbody>'+rows+'</tbody></table></div><p class="muted">'+(complete?'Prediction complete and saved in this browser.':'Select four different teams and a 3-game W–L record for each.')+'</p></section>';
  }).join('');
- return '<section class="panel"><h2>Final In-Season Cup Pool Seeding Predictor</h2><p>Predict the finishing order and records for each of the eight In-Season Cup groups. Each team plays three group games.</p><p class="muted">Predictions save automatically in this browser. Public submissions and rankings are not yet connected.</p></section>'+panels;
+ return '<section class="panel"><h2>Final In-Season Cup Pool Seeding Predictor</h2><p>Predict the finishing order and records for each of the eight In-Season Cup groups. Each team plays three group games.</p><p class="muted">Predictions save automatically in this browser. Submit your saved predictions using GitHub to enter the public leaderboard.</p><button onclick="tmflSubmitPool(\'isc-seeding\')">Submit Saved Predictions with GitHub</button></section>'+panels;
 }
 function tmflPoolView(){
  const type=tmflPoolType,contexts=tmflPoolContext(type),isRanking=contexts.length>0;
  const nav='<div class="actions" style="display:flex;flex-wrap:wrap;gap:8px">'+TMFL_POOL_TYPES.filter(([id])=>tmflPoolAllowed.includes(id)).map(([id,label])=>'<button type="button" class="'+(type===id?'active':'')+'" onclick="tmflPoolChoose(\''+id+'\')">'+esc(label)+'</button>').join('')+'</div>';
- const intro='<section class="panel"><h2>Independent TMFL Prediction Pools</h2><p>Each pool has its own predictions, scoring and leaderboard. Picks are currently saved only in this browser; they are not submitted to a public competition.</p>'+nav+'</section>';
- const leaderboard='';
+ const intro='<section class="panel"><h2>Independent TMFL Prediction Pools</h2><p>Each pool has its own predictions, scoring and leaderboard. Picks save to this browser. Submit your saved predictions with GitHub to enter the public leaderboard.</p>'+nav+'</section>';
+ const leaderboard='<p><button type="button" onclick="tmflSubmitPool(\\\''+type+'\\\')">Submit Saved Predictions with GitHub</button></p>';
  if(isRanking){
  const names=contexts.map(x=>x[0]);if(!names.includes(tmflPoolGroup))tmflPoolGroup=names[0];
  const teams=contexts.find(x=>x[0]===tmflPoolGroup)[1],weekly=['division','conference','league'].includes(type),key=type+'|'+(weekly?'week-'+tmflPoolWeek+'|':'')+tmflPoolGroup,data=tmflPoolRead(),saved=Array.isArray(data[key])?data[key]:[];
@@ -651,10 +651,30 @@ function tmflPoolPage(types,initial){
  if(!types.includes(tmflPoolType))tmflPoolType=initial;
  return tmflPoolView();
 }
+const TMFL_PUBLIC_POOL_BOARDS=[['cup-games','In-Season Cup Game Predictor'],['cup-bracket','In-Season Cup Bracket Predictor'],['rivalry','Rivalry Standings Predictor'],['division','End-of-Week Division Standings'],['conference','End-of-Week Conference Standings'],['league','End-of-Week League Standings'],['isc-seeding','Final In-Season Cup Pool Seeding Predictor']];
+function tmflSubmitPool(type){
+ const saved=tmflPoolRead(),entries=Object.entries(saved).filter(([key,value])=>(key.startsWith(type+'|')||(type==='isc-seeding'&&key.startsWith('isc-record|')))&&value!==''&&value!=null);
+ if(!entries.length){alert('Make a prediction in this competition before submitting.');return}
+ const payload={version:1,competition:type,picks:Object.fromEntries(entries)};
+ const body='TMFL public prediction submission. This issue is public. Do not include personal information.\\n\\n'+
+  '```json\\n'+JSON.stringify(payload,null,2)+'\\n```';
+ const title='TMFL Pool Prediction: '+type;
+ const url='https://github.com/TMFL-Guy/fan-tmfl-portal/issues/new?title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body);
+ if(url.length>7800){alert('This prediction is too large for one GitHub submission. Submit fewer picks at once.');return}
+ window.open(url,'_blank','noopener,noreferrer');
+}
+async function tmflPublicPoolLeaderboard(type){
+ try{
+  const response=await fetch('./tmfl-pool-leaderboards.json?ts='+Date.now(),{cache:'no-store'});
+  if(!response.ok)throw Error('Public leaderboard feed is not published yet');
+  const data=await response.json(),rows=Array.isArray(data.boards?.[type])?data.boards[type]:[];
+  return rows.length?'<div style="overflow-x:auto"><table><thead><tr><th>Rank</th><th>GitHub fan</th><th>Points</th><th>Scored</th><th>Submitted</th></tr></thead><tbody>'+rows.map(r=>'<tr><td>'+esc(r.rank)+'</td><td>'+tmflFanProfileLink(r.user)+'</td><td>'+esc(r.points)+'</td><td>'+esc(r.scored)+'</td><td>'+esc(r.submitted)+'</td></tr>').join('')+'</tbody></table></div>':'<p>No public submissions for this competition yet.</p>';
+ }catch(e){return '<p class="muted">'+esc(e.message||'Leaderboard unavailable')+'.</p>'}
+}
 let tmflLeaderboardMode='regular';
 function tmflSelectLeaderboard(id){tmflLeaderboardMode=id;render()}
 function tmflPoolLeaderboardsView(){
- const boards=[['regular','Game Predictor'],['cup-games','In-Season Cup Game Predictor'],['cup-bracket','In-Season Cup Bracket Predictor'],['rivalry','Rivalry Standings Predictor'],['division','End-of-Week Division Standings'],['conference','End-of-Week Conference Standings'],['league','End-of-Week League Standings'],['isc-seeding','Final In-Season Cup Pool Seeding Predictor']];
+ const boards=[['regular','Game Predictor'],...TMFL_PUBLIC_POOL_BOARDS];
  if(!boards.some(([id])=>id===tmflLeaderboardMode))tmflLeaderboardMode='regular';
  const selected=boards.find(([id])=>id===tmflLeaderboardMode),buttons=boards.map(([id,name])=>'<button type="button" class="'+(id===tmflLeaderboardMode?'active':'')+'" onclick="tmflSelectLeaderboard(\''+id+'\')">'+esc(name)+'</button>').join('');
  const header='<div class="panel"><h2>Prediction Leaderboards</h2><p class="muted">Choose a competition to view its individual leaderboard.</p><div class="tmfl-tv-main-tabs" style="flex-wrap:wrap">'+buttons+'</div></div>';
@@ -662,7 +682,8 @@ function tmflPoolLeaderboardsView(){
   tmflLeaderboardView().then(html=>{if(tab==='pool-leaderboards'&&tmflLeaderboardMode==='regular'){const el=document.getElementById('tmfl-selected-leaderboard');if(el)el.innerHTML=html}}).catch(()=>{const el=document.getElementById('tmfl-selected-leaderboard');if(el)el.innerHTML='<section class="panel"><p>Unable to load the Game Predictor leaderboard.</p></section>'});
   return header+'<div id="tmfl-selected-leaderboard"><section class="panel"><h3>Game Predictor Leaderboard</h3>'+tmflLoadingHTML()+'</section></div>';
  }
- return header+'<section class="panel"><h3>'+esc(selected[1])+' Leaderboard</h3><p class="muted">No verified public leaderboard feed is connected for this competition yet. Predictions saved only in a browser are not public leaderboard entries.</p></section>';
+ tmflPublicPoolLeaderboard(tmflLeaderboardMode).then(html=>{if(tab==='pool-leaderboards'&&tmflLeaderboardMode===selected[0]){const el=document.getElementById('tmfl-selected-leaderboard');if(el)el.innerHTML=html}});
+ return header+'<section class="panel"><h3>'+esc(selected[1])+' Leaderboard</h3><p class="muted">Public GitHub submissions only. Browser-saved predictions are not automatically public.</p><button onclick="tmflSubmitPool(\''+selected[0]+'\')">Submit Saved Predictions with GitHub</button><div id="tmfl-selected-leaderboard">'+tmflLoadingHTML()+'</div></section>';
 }
 function render(){tmflDivisionRecordCache=null;if(!document.querySelector('nav button[data-tab="'+tab+'"]')&&tab!=='favorite-detail')tab='home';try{sessionStorage.setItem(TMFL_LAST_TAB,tab)}catch{}document.querySelectorAll('nav button').forEach(b=>{b.hidden=false;b.classList.toggle('active',b.dataset.tab===tab)});document.getElementById('app').innerHTML=({home:homeView,account:()=>{const el=document.createElement("div");el.innerHTML="<section><h2>Fan Account</h2>'+tmflLoadingHTML()+'</section>";accountView().then(html=>{if(tab==="account")document.getElementById("app").innerHTML=html});return el.innerHTML},"draft-central":()=>{tmflPublishedDraftView().then(html=>{if(tab==="draft-central")document.getElementById("app").innerHTML=html});return '<section class="panel"><h2>Draft Central</h2><p>Loading published draft…</p></section>'},"fan-profile":()=>{tmflFanProfileView().then(html=>{if(tab==='fan-profile')document.getElementById('app').innerHTML=html});return '<section class="panel"><h2>Fan Profile</h2><p>Loading public statistics…</p></section>'},leaderboard:()=>{const el=document.createElement("div");el.innerHTML="<section class='panel'><h2>Fan Leaderboard</h2>'+tmflLoadingHTML()+'</section>";tmflLeaderboardView().then(html=>{if(tab==="leaderboard")document.getElementById("app").innerHTML=html});return el.innerHTML},"in-season-cup":tmflCupView,"prediction-pools":tmflPoolView,"standings-predictor":()=>tmflPoolPage(["division","conference","league"],"division"),"cup-predictor":()=>tmflPoolPage(["cup-games","cup-bracket"],"cup-games"),"rivalry-predictor":()=>tmflPoolPage(["rivalry"],"rivalry"),"isc-seeding-predictor":tmflISCSeedingView,"pool-leaderboards":tmflPoolLeaderboardsView,games:gamesView,"prediction-history":predictionHistoryView,"season-records":seasonRecordsView,"regular-schedule":tmflRegularScheduleView,standings:standingsView,"rivalry-standings":rivalryStandingsView,accuracy:accuracyView,recaps:recapsView,tmsn:tmsnView,history:historyView,rules:rulesView,"final-standings":finalStandingsView,picture:playoffPictureView,playoffs:playoffsView,"playoff-results":playoffResultsView,brackets:bracketsView,"favorite-team":favoriteTeamDashboardView,notifications:()=>{if(!tmflNotificationFeedLoaded)tmflRefreshNotifications();if(!tmflHighlightsLoaded&&!tmflHighlightsRequest)tmflLoadHighlights();return tmflNotificationsView()},"favorite-detail":favoriteTeamDetailView,teams:teamProfilesView,"head-to-head":headToHeadView,"fan-polls":()=>{if(!tmflPollCache.ready){loadTmflPolls()}return fanPollsView()},news:()=>{if(tmflNewsCache===null)loadTmflNews();return newsCenterView()},"ir-suspensions":tmflDisciplineView,"weekly-picks":weeklyPicksView,achievements:achievementsView,awards:weeklyAwardsView,records:leagueRecordsView,archive:seasonArchiveView,hof:hallOfFameView,"gotw-request":gotwRequestView}[tab])()}
 
