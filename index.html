@@ -503,39 +503,18 @@ async function tmflLoadCup(){
  tmflCupLoaded=true;if(tab==='in-season-cup')render();
 }
 
-function tmflCupSeeds(d){
- const games=(d.games||[]).filter(g=>g.stage==='group'),groups='ABCDEFGH'.split('');if(games.length!==48)return [];
- const all=[];
- for(const k of groups){
-  const names=d.groups?.[k]||[],matches=games.filter(g=>g.group===k);
-  if(names.length!==4||matches.length!==6)return [];
-  const stats=names.map(t=>{let w=0,diff=0,scored=0;for(const g of matches){if(g.home!==t&&g.away!==t)continue;if(!Number.isInteger(g.homeScore)||!Number.isInteger(g.awayScore)||g.homeScore<0||g.awayScore<0||g.homeScore===g.awayScore)return null;const forPts=g.home===t?g.homeScore:g.awayScore,against=g.home===t?g.awayScore:g.homeScore;w+=forPts>against?1:0;diff+=forPts-against;scored+=forPts}return {team:t,group:k,w,diff,scored}});
-  if(stats.some(x=>!x))return [];
-  stats.sort((a,b)=>b.w-a.w||((a.w===b.w)?(()=>{const head=matches.find(g=>(g.home===a.team&&g.away===b.team)||(g.away===a.team&&g.home===b.team));if(head&&head.homeScore!==head.awayScore)return (head.home===a.team?head.homeScore>head.awayScore:head.awayScore>head.homeScore)?-1:1;return 0})():0)||b.diff-a.diff||b.scored-a.scored||a.team.localeCompare(b.team));
-  stats.forEach((x,i)=>all.push({...x,place:i+1}));
- }
- all.sort((a,b)=>a.place-b.place||b.w-a.w||b.diff-a.diff||b.scored-a.scored||a.team.localeCompare(b.team));
- return all.map((x,i)=>({...x,seed:i+1}));
-}
 function tmflCupBracket(d){
- const seeds=tmflCupSeeds(d);if(seeds.length!==32)return [];
- const bySeed=n=>seeds[n-1],results=d.knockout||{},rounds=[];
- const winner=m=>{const x=results[m.id];if(!m.a||!m.b||!x||!Number.isInteger(x.a)||!Number.isInteger(x.b)||x.a<0||x.b<0||x.a===x.b)return null;return x.a>x.b?m.a:m.b};
- const build=(round,pairs)=>{const matches=pairs.map((p,i)=>({id:'CUP-K'+round+'-'+(i+1),round,a:p[0],b:p[1]}));rounds.push(matches);return matches};
- const first=build(1,Array.from({length:8},(_,i)=>[bySeed(17+i),bySeed(32-i)]));
- const second=build(2,first.map((m,i)=>[bySeed(9+i),winner(m)]));
- const third=build(3,second.map((m,i)=>[bySeed(1+i),winner(m)]));
- const quarter=build(4,[[third[0],third[7]],[third[3],third[4]],[third[1],third[6]],[third[2],third[5]]].map(p=>p.map(winner)));
- const semi=build(5,[[quarter[0],quarter[1]],[quarter[2],quarter[3]]].map(p=>p.map(winner)));
- build(6,[[winner(semi[0]),winner(semi[1])]]);
- return rounds;
+ const counts=[8,8,8,4,2,1],labels=['Opening Round','Second Round','Third Round','Quarterfinals','Semifinals','Championship'];
+ return counts.map((count,i)=>Array.from({length:count},(_,j)=>({id:'CUP-K'+(i+1)+'-'+(j+1),round:i+1,label:labels[i],data:(d.knockout||{})['CUP-K'+(i+1)+'-'+(j+1)]||{}})));
 }
 function tmflCupBracketHTML(d,editable){
- const rounds=tmflCupBracket(d),escapeText=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- if(!rounds.length)return '<section class="panel"><h3>Knockout Bracket</h3><p>Complete all 48 group games with non-tied final scores to determine seeds 1–32. All teams qualify.</p></section>';
- const labels=['Opening Round','Second Round','Third Round','Quarterfinals','Semifinals','Championship'];
- const cards=rounds.map((matches,ri)=>'<div class="tmfl-cup-round"><h4>'+labels[ri]+'</h4>'+matches.map(m=>{const score=(d.knockout||{})[m.id]||{},ready=!!m.a&&!!m.b;const line=(t,k)=>'<div class="tmfl-cup-team"><span class="tmfl-cup-seed">'+(t?t.seed:'–')+'</span><span class="tmfl-cup-name">'+escapeText(t?t.team:'TBD')+'</span>'+(editable?'<input aria-label="'+escapeText(m.id+' '+k+' score')+'" type="number" min="0" '+(ready?'':'disabled')+' value="'+(Number.isInteger(score[k])?score[k]:'')+'" onchange="cupSetKnockout(\''+m.id+'\',\''+k+'\',this.value)">':'<strong class="tmfl-cup-score">'+(ready&&Number.isInteger(score[k])?score[k]:'–')+'</strong>')+'</div>';return '<div class="tmfl-cup-match"><small>'+m.id+'</small>'+line(m.a,'a')+line(m.b,'b')+'</div>'}).join('')+'</div>').join('');
- return '<section class="panel"><h3>32-Team Knockout Bracket</h3><p>Seeds 1–8: two byes · 9–16: one bye · 17–32: opening round. 31 knockout games.</p><div class="tmfl-cup-scroll"><div class="tmfl-cup-bracket">'+cards+'</div></div></section>';
+ const escCup=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const rounds=tmflCupBracket(d);
+ const html=rounds.map((matches,i)=>'<div class="tmfl-cup-round"><h4>'+matches[0].label+'</h4>'+matches.map(m=>{
+ const line=k=>{const t=m.data[k]||{},seed=t.seed??'',team=t.team||'',score=t.score??'';return '<div class="tmfl-cup-team">'+(editable?'<input aria-label="Seed" title="Seed" type="number" min="1" max="32" placeholder="#" value="'+escCup(seed)+'" onchange="cupSetKnockout(\''+m.id+'\',\''+k+'\',\'seed\',this.value)" style="width:43px;min-width:43px">':'<span class="tmfl-cup-seed">'+escCup(seed||'–')+'</span>')+(editable?'<input aria-label="Team" title="Team" placeholder="Team" value="'+escCup(team)+'" onchange="cupSetKnockout(\''+m.id+'\',\''+k+'\',\'team\',this.value)" style="flex:1;min-width:75px;width:100px">':'<span class="tmfl-cup-name">'+escCup(team||'TBD')+'</span>')+(editable?'<input aria-label="Score" title="Score" type="number" min="0" placeholder="–" value="'+escCup(score)+'" onchange="cupSetKnockout(\''+m.id+'\',\''+k+'\',\'score\',this.value)">':'<strong class="tmfl-cup-score">'+escCup(score===''?'–':score)+'</strong>')+'</div>'};
+ return '<div class="tmfl-cup-match"><small>'+m.id+'</small>'+line('a')+line('b')+'</div>';
+ }).join('')+'</div>').join('');
+ return '<section class="panel"><h3>32-Team Knockout Bracket</h3><p>Manual bracket · seeds 1–8 enter Round 3 · 9–16 enter Round 2 · 17–32 enter Round 1. All teams, seeds and scores are entered by the Commissioner.</p><div class="tmfl-cup-scroll"><div class="tmfl-cup-bracket">'+html+'</div></div></section>';
 }
 function tmflCupView(){
  if(!tmflCupLoaded){tmflLoadCup();return '<section class="panel"><h2>TMFL In-Season Cup</h2><p>Checking Cup schedule…</p></section>'}
