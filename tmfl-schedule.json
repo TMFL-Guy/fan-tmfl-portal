@@ -1003,7 +1003,7 @@
     "week": 8,
     "away": "Lions",
     "home": "Bills",
-    "slot": "GOTW",
+    "slot": "TNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1012,7 +1012,7 @@
     "week": 8,
     "away": "Steelers",
     "home": "Panthers",
-    "slot": "Not Aired",
+    "slot": "FNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1021,16 +1021,16 @@
     "week": 8,
     "away": "Patriots",
     "home": "Broncos",
-    "slot": "Not Aired",
+    "slot": "Special Edition",
     "official": null,
-    "notes": ""
+    "notes": "Commissioner Birthday Classic"
   },
   {
     "id": "W08G04",
     "week": 8,
     "away": "Raiders",
     "home": "Cardinals",
-    "slot": "Not Aired",
+    "slot": "TNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1039,7 +1039,7 @@
     "week": 8,
     "away": "Titans",
     "home": "Texans",
-    "slot": "Not Aired",
+    "slot": "MNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1057,9 +1057,9 @@
     "week": 8,
     "away": "Jaguars",
     "home": "Commanders",
-    "slot": "Not Aired",
+    "slot": "Special Edition",
     "official": null,
-    "notes": ""
+    "notes": "Military Appreciation Game"
   },
   {
     "id": "W08G08",
@@ -1084,7 +1084,7 @@
     "week": 8,
     "away": "Giants",
     "home": "Eagles",
-    "slot": "Not Aired",
+    "slot": "MNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1129,7 +1129,7 @@
     "week": 9,
     "away": "Seahawks",
     "home": "Raiders",
-    "slot": "Not Aired",
+    "slot": "FNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1147,7 +1147,7 @@
     "week": 9,
     "away": "Bengals",
     "home": "Colts",
-    "slot": "Not Aired",
+    "slot": "TNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1156,9 +1156,9 @@
     "week": 9,
     "away": "Jets",
     "home": "Lions",
-    "slot": "Not Aired",
+    "slot": "Special Edition",
     "official": null,
-    "notes": ""
+    "notes": "Turkey Bowl"
   },
   {
     "id": "W09G05",
@@ -1210,7 +1210,7 @@
     "week": 9,
     "away": "Dolphins",
     "home": "Bills",
-    "slot": "Not Aired",
+    "slot": "SAT",
     "official": null,
     "notes": "No Current Notes"
   },
