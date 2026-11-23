@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "boards": {
+    "cup-games": [],
+    "cup-bracket": [],
+    "rivalry": [],
+    "division": [],
+    "conference": [],
+    "league": [],
+    "isc-seeding": []
+  }
+}
