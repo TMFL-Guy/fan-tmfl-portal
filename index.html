@@ -620,27 +620,30 @@ function tmflUpdateNotificationBadge(){
  const bell=document.getElementById('tmfl-notif-bell');
  const headerCount=document.getElementById('tmfl-notif-header-count');if(headerCount)headerCount.textContent=tmflUnreadNotifications()?String(tmflUnreadNotifications()):'';
 }
+const TMFL_NOTIFICATION_PREFS='tmfl-notification-preferences-v1';
+const tmflNotificationPrefs=()=>read(TMFL_NOTIFICATION_PREFS,{news:true,alerts:true,highlights:true,finals:true});
+window.tmflSetNotificationPref=(kind,checked)=>{const prefs=tmflNotificationPrefs();prefs[kind]=checked;localStorage.setItem(TMFL_NOTIFICATION_PREFS,JSON.stringify(prefs));tmflBuildNotifications();render()};
 function tmflBuildNotifications(){
- const favorites=new Set(getFavoriteTeams()),items=[];
+ const favorites=new Set(getFavoriteTeams()),items=[],prefs=tmflNotificationPrefs();
  if(!favorites.size){tmflNotifications=[];tmflUpdateNotificationBadge();return}
- for(const a of tmflNewsCache||[]){
+ for(const a of (prefs.news?tmflNewsCache||[]:[])){
   const team=String(a.team||'').trim();
   if(!favorites.has(team))continue;
   const id=tmflNotificationKey('news',a.id||[a.title,a.date,team].join('|'));
   items.push({id,team,kind:'News',title:a.title,detail:String(a.date||''),sort:String(a.date||''),open:'news'});
  }
- for(const a of tmflPublishedAlerts){
+ for(const a of (prefs.alerts?tmflPublishedAlerts:[])){
   const team=String(a.team||'').trim();
   if(team&&!favorites.has(team))continue;
   const id=tmflNotificationKey('alert',a.id||[a.title,a.date,team].join('|'));
   items.push({id,team:team||'League',kind:String(a.type||'Announcement'),title:String(a.title||'TMFL Alert'),detail:[a.date,a.message].filter(Boolean).join(' · '),sort:String(a.date||''),open:'news'});
  }
- for(const h of tmflHighlights){
+ for(const h of (prefs.highlights?tmflHighlights:[])){
   const team=String(h.announceTeam||'').trim();
   if(!team||!favorites.has(team))continue;
   items.push({id:tmflNotificationKey('highlight',h.id+':'+team),team,kind:'New Highlights',title:String(h.title||'New Highlight Reel'),detail:'New highlight reel available in TMSN Watch',sort:String(h.publishedAt||'2026-10-28'),open:'tmsn'});
  }
- for(const g of SCHEDULE){
+ for(const g of (prefs.finals?SCHEDULE:[])){
   const interested=[g.away,g.home].filter(t=>favorites.has(t));
   const v=officialResult(g);
   if(!v)continue;
@@ -697,8 +700,9 @@ window.tmflOpenNotification=id=>{
  tmflUpdateNotificationBadge();render();
 };
 function tmflNotificationsView(){
- const favorites=getFavoriteTeams(),seen=new Set(tmflSeenNotifications());
- return '<div class="panel"><h2>🔔 Team Notifications</h2><p class="muted">In-app updates for your followed teams. Alerts refresh when you open the portal or select Refresh. Device push notifications are not enabled.</p><div class="row"><button onclick="tmflRefreshNotifications()">Refresh Alerts</button><button onclick="tmflMarkAllNotificationsRead()">Mark All Read</button><button onclick="tab=\'favorite-team\';render()">Manage Favorite Teams</button></div>'+(favorites.length?'<p class="muted">Following: '+favorites.map(esc).join(', ')+'</p>':'<p>Follow a team in Favorite Team Dashboard to receive alerts.</p>')+(!tmflNotificationFeedLoaded?'<p>Loading team updates…</p>':'')+(tmflNotifications.length?tmflNotifications.map(n=>'<div class="game tmfl-notif-item"><div class="row space"><strong>'+esc(n.team)+' · '+esc(n.kind)+'</strong>'+(seen.has(n.id)?'':'<span class="pill">New</span>')+'</div><p>'+esc(n.title)+'</p><p class="muted">'+esc(n.detail)+'</p><button onclick="tmflOpenNotification(\''+esc(n.id)+'\')">Open Update</button></div>').join(''):'<p class="muted">No published updates for your favorite teams yet.</p>')+'</div>';
+ const favorites=getFavoriteTeams(),seen=new Set(tmflSeenNotifications()),prefs=tmflNotificationPrefs();
+ const preferences='<div class="game"><h3>Notification Preferences</h3>'+[['news','Team news'],['alerts','League announcements'],['highlights','TMSN highlights'],['finals','Final scores']].map(([key,label])=>'<label style="display:inline-flex;align-items:center;gap:6px;margin:8px 14px 8px 0"><input type="checkbox" '+(prefs[key]!==false?'checked':'')+' onchange="tmflSetNotificationPref(\''+key+'\',this.checked)">'+label+'</label>').join('')+'<p class="muted">Saved on this device. No push notifications are sent.</p></div>';
+ return '<div class="panel"><h2>🔔 Team Notifications</h2><p class="muted">In-app updates for your followed teams. Alerts refresh when you open the portal or select Refresh. Device push notifications are not enabled.</p><div class="row"><button onclick="tmflRefreshNotifications()">Refresh Alerts</button><button onclick="tmflMarkAllNotificationsRead()">Mark All Read</button><button onclick="tab=\'favorite-team\';render()">Manage Favorite Teams</button></div>'+(favorites.length?'<p class="muted">Following: '+favorites.map(esc).join(', ')+'</p>':'<p>Follow a team in Favorite Team Dashboard to receive alerts.</p>')+preferences+(!tmflNotificationFeedLoaded?'<p>Loading team updates…</p>':'')+(tmflNotifications.length?tmflNotifications.map(n=>'<div class="game tmfl-notif-item"><div class="row space"><strong>'+esc(n.team)+' · '+esc(n.kind)+'</strong>'+(seen.has(n.id)?'':'<span class="pill">New</span>')+'</div><p>'+esc(n.title)+'</p><p class="muted">'+esc(n.detail)+'</p><button onclick="tmflOpenNotification(\''+esc(n.id)+'\')">Open Update</button></div>').join(''):'<p class="muted">No published updates for your favorite teams yet.</p>')+'</div>';
 }
 function favoriteTeamDashboardView(){
  const favorites=getFavoriteTeams(),records=officialRecords();
