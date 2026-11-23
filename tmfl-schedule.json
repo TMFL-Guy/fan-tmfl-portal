@@ -1030,7 +1030,7 @@
     "week": 8,
     "away": "Raiders",
     "home": "Cardinals",
-    "slot": "Not Aired",
+    "slot": "SAT",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1255,7 +1255,7 @@
     "week": 10,
     "away": "Steelers",
     "home": "Falcons",
-    "slot": "Not Aired",
+    "slot": "SAT",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1264,7 +1264,7 @@
     "week": 10,
     "away": "Dolphins",
     "home": "Raiders",
-    "slot": "Not Aired",
+    "slot": "SNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1399,7 +1399,7 @@
     "week": 11,
     "away": "Cardinals",
     "home": "Chargers",
-    "slot": "Not Aired",
+    "slot": "TNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1417,7 +1417,7 @@
     "week": 11,
     "away": "Broncos",
     "home": "Rams",
-    "slot": "Not Aired",
+    "slot": "SAT",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1516,7 +1516,7 @@
     "week": 12,
     "away": "Jets",
     "home": "Bears",
-    "slot": "Not Aired",
+    "slot": "SNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1534,7 +1534,7 @@
     "week": 12,
     "away": "Dolphins",
     "home": "49ers",
-    "slot": "Not Aired",
+    "slot": "MNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1651,7 +1651,7 @@
     "week": 13,
     "away": "Rams",
     "home": "Seahawks",
-    "slot": "Not Aired",
+    "slot": "MNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1903,7 +1903,7 @@
     "week": 15,
     "away": "Titans",
     "home": "Cowboys",
-    "slot": "Not Aired",
+    "slot": "TNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -1912,7 +1912,7 @@
     "week": 15,
     "away": "Chiefs",
     "home": "Cardinals",
-    "slot": "Not Aired",
+    "slot": "FNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -2020,7 +2020,7 @@
     "week": 16,
     "away": "Jaguars",
     "home": "Cowboys",
-    "slot": "Not Aired",
+    "slot": "SNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -2200,7 +2200,7 @@
     "week": 17,
     "away": "Jaguars",
     "home": "Saints",
-    "slot": "Not Aired",
+    "slot": "SAT",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -2326,7 +2326,7 @@
     "week": 18,
     "away": "Eagles",
     "home": "Titans",
-    "slot": "Not Aired",
+    "slot": "FNF",
     "official": null,
     "notes": "No Current Notes"
   },
@@ -2335,7 +2335,7 @@
     "week": 18,
     "away": "Packers",
     "home": "Saints",
-    "slot": "Not Aired",
+    "slot": "MNF",
     "official": null,
     "notes": "No Current Notes"
   },
