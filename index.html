@@ -653,14 +653,33 @@ function tmflPoolPage(types,initial){
 }
 const TMFL_PUBLIC_POOL_BOARDS=[['cup-games','In-Season Cup Game Predictor'],['cup-bracket','In-Season Cup Bracket Predictor'],['rivalry','Rivalry Standings Predictor'],['division','End-of-Week Division Standings'],['conference','End-of-Week Conference Standings'],['league','End-of-Week League Standings'],['isc-seeding','Final In-Season Cup Pool Seeding Predictor']];
 function tmflSubmitPool(type){
- const saved=tmflPoolRead(),entries=Object.entries(saved).filter(([key,value])=>(key.startsWith(type+'|')||(type==='isc-seeding'&&key.startsWith('isc-record|')))&&value!==''&&value!=null);
+ const saved=tmflPoolRead();
+ let entries=Object.entries(saved).filter(([key,value])=>(key.startsWith(type+'|')||(type==='isc-seeding'&&key.startsWith('isc-record|')))&&value!==''&&value!=null);
  if(!entries.length){alert('Make a prediction in this competition before submitting.');return}
+ if(['division','conference','league','rivalry'].includes(type)){
+  const group=tmflPoolGroup,week=tmflPoolWeek;
+  const key=type+'|'+(['division','conference','league'].includes(type)?'week-'+week+'|':'')+group;
+  if(Object.prototype.hasOwnProperty.call(saved,key))entries=[[key,saved[key]]];
+ }
+ if(type==='isc-seeding'){
+  const groups='ABCDEFGH'.split('').filter(g=>saved['isc-seeding|Group '+g]);
+  if(!groups.length){alert('Complete at least one group before submitting.');return}
+  const group=groups.length===1?groups[0]:prompt('Which completed group do you want to submit? ('+groups.join(', ')+')',groups[0]);
+  if(!group||!groups.includes(group.toUpperCase()))return;
+  const name='Group '+group.toUpperCase();
+  entries=[['isc-seeding|'+name,saved['isc-seeding|'+name]],['isc-record|'+name,saved['isc-record|'+name]||{}]];
+ }
+ if(['cup-games','cup-bracket'].includes(type)&&entries.length>6){
+  const batches=Math.ceil(entries.length/6),answer=prompt('Submit which batch of 6 predictions? (1–'+batches+')','1'),batch=Number(answer);
+  if(!Number.isInteger(batch)||batch<1||batch>batches)return;
+  entries=entries.slice((batch-1)*6,batch*6);
+ }
  const payload={version:1,competition:type,picks:Object.fromEntries(entries)};
- const body='TMFL public prediction submission. This issue is public. Do not include personal information.\n\n'+
-  '```json\n'+JSON.stringify(payload,null,2)+'\n```';
+ const body='TMFL public prediction submission. This issue is public. Do not include personal information.\\n\\n'+
+  '```json\\n'+JSON.stringify(payload,null,2)+'\\n```';
  const title='TMFL Pool Prediction: '+type;
  const url='https://github.com/TMFL-Guy/fan-tmfl-portal/issues/new?title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body);
- if(url.length>7800){alert('This prediction is too large for one GitHub submission. Submit fewer picks at once.');return}
+ if(url.length>7800){alert('This submission is too large for a GitHub issue URL.');return}
  window.open(url,'_blank','noopener,noreferrer');
 }
 async function tmflPublicPoolLeaderboard(type){
