@@ -27,3 +27,12 @@ body:
       placeholder: "24"
     validations:
       required: true
+  - type: dropdown
+    id: overtime
+    attributes:
+      label: Overtime
+      options:
+        - "No"
+        - "Yes"
+    validations:
+      required: true
