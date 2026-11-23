@@ -540,19 +540,28 @@ function tmflCupView(){
  'ABCDEFGH'.split('').map(k=>{
   const a=d.groups[k]||[],gs=d.games.filter(g=>g.stage==='group'&&g.group===k);
   const completed=gs.filter(g=>Number.isFinite(g.homeScore)&&Number.isFinite(g.awayScore));
-  const table=a.map(t=>{
-   const w=completed.filter(g=>(g.home===t&&g.homeScore>g.awayScore)||(g.away===t&&g.awayScore>g.homeScore)).length;
-   const l=completed.filter(g=>(g.home===t&&g.homeScore<g.awayScore)||(g.away===t&&g.awayScore<g.homeScore)).length;
-   const diff=completed.reduce((v,g)=>v+(g.home===t?g.homeScore-g.awayScore:g.away===t?g.awayScore-g.homeScore:0),0);
-   return {t,w,l,diff};
-  }).sort((a,b)=>b.w-a.w||b.diff-a.diff);
+  const cupStats=games=>Object.fromEntries(a.map(t=>{
+   const played=games.filter(g=>g.home===t||g.away===t).filter(g=>Number.isFinite(g.homeScore)&&Number.isFinite(g.awayScore));
+   let w=0,l=0,ps=0,pa=0,pts=0,homeW=0,homeL=0,awayW=0,awayL=0,streak='',streakCount=0,divW=0,divL=0;
+   for(const g of played.slice().sort((x,y)=>(Number(x.week)||0)-(Number(y.week)||0)||String(x.id).localeCompare(String(y.id)))){
+    const isHome=g.home===t,scored=isHome?g.homeScore:g.awayScore,allowed=isHome?g.awayScore:g.homeScore,won=scored>allowed;
+    ps+=scored;pa+=allowed;if(won){w++;pts+=3;if(isHome)homeW++;else awayW++}else if(scored<allowed){l++;if(isHome)homeL++;else awayL++}
+    if(div[g.home]===div[g.away]){if(won)divW++;else if(scored<allowed)divL++}
+    const outcome=won?'W':scored<allowed?'L':'T';streakCount=outcome===streak?streakCount+1:1;streak=outcome;
+   }
+   return [t,{t,w,l,ps,pa,pts,homeW,homeL,awayW,awayL,divW,divL,streak:streak&&streak!=='T'?streak+streakCount:'—'}];
+  }));
+  const current=cupStats(gs),weeks=[...new Set(completed.map(g=>Number(g.week)||0))].sort((x,y)=>x-y),prior=weeks.length>1?cupStats(gs.filter(g=>(Number(g.week)||0)<weeks[weeks.length-1])):null;
+  const order=stats=>a.slice().sort((x,y)=>stats[y].w-stats[x].w||(stats[y].w+stats[y].l?stats[y].w/(stats[y].w+stats[y].l):0)-(stats[x].w+stats[x].l?stats[x].w/(stats[x].w+stats[x].l):0)||stats[y].pts-stats[x].pts||(stats[y].ps-stats[y].pa)-(stats[x].ps-stats[x].pa));
+  const prevRanks=prior?new Map(order(prior).map((t,i)=>[t,i])):null;
+  const table=order(current).map((t,i)=>({...current[t],move:prevRanks?(prevRanks.get(t)-i):null}));
   const fixtures=gs.slice().sort((a,b)=>(Number(a.week)||0)-(Number(b.week)||0)||String(a.id).localeCompare(String(b.id))).map(g=>{
    const final=Number.isFinite(g.awayScore)&&Number.isFinite(g.homeScore);
    const winner=final?(g.awayScore>g.homeScore?'away':g.homeScore>g.awayScore?'home':''):'';
    const slot=tmflCupSlotLabel(g.slot);
    return '<div class="tmfl-tv-scorecard"><div class="tmfl-tv-scorecard-main"><div class="tmfl-tv-card-meta"><strong>WEEK '+esc(g.week||'—')+' · '+esc(g.id)+'</strong><span>'+(final?'FINAL':'UPCOMING')+(slot?' · '+esc(slot):'')+'</span></div><div class="tmfl-tv-score-row '+(winner==='away'?'tmfl-tv-winner':'')+'"><span class="tmfl-tv-team">'+esc(g.away||'TBD')+'</span><span class="tmfl-tv-points">'+(final?g.awayScore:'–')+'</span></div><div class="tmfl-tv-score-row '+(winner==='home'?'tmfl-tv-winner':'')+'"><span class="tmfl-tv-team">'+esc(g.home||'TBD')+'</span><span class="tmfl-tv-points">'+(final?g.homeScore:'–')+'</span></div></div></div>';
   }).join('');
-  return '<section class="panel"><h3>Group '+k+'</h3><table><thead><tr><th>Team</th><th>W</th><th>L</th><th>Pts</th><th>Diff</th></tr></thead><tbody>'+table.map(r=>'<tr><td>'+esc(r.t)+'</td><td>'+r.w+'</td><td>'+r.l+'</td><td>'+(r.w*3)+'</td><td>'+r.diff+'</td></tr>').join('')+'</tbody></table><h4>Group Games</h4><p class="muted">Away team on top · Home team on bottom. Cup scores and records are separate from regular-season standings.</p><div class="tmfl-tv-scorelist">'+(fixtures||'<p class="muted">No group games scheduled.</p>')+'</div></section>';
+  return '<section class="panel"><h3>Group '+k+'</h3><p class="muted" style="margin:8px 0">Scroll to view rest of table</p><div style="width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="min-width:1180px"><thead><tr><th>Team</th><th>Record</th><th>Win %</th><th>Div. Record</th><th>Pts</th><th>PS</th><th>PA</th><th>Diff</th><th>Home</th><th>Away</th><th>Streak</th><th>Move</th></tr></thead><tbody>'+table.map(r=>'<tr><td>'+esc(r.t)+'</td><td>'+r.w+'-'+r.l+'</td><td>'+(r.w+r.l?r.w/(r.w+r.l):0).toFixed(3)+'</td><td>'+r.divW+'-'+r.divL+'</td><td>'+r.pts+'</td><td>'+r.ps+'</td><td>'+r.pa+'</td><td>'+(r.ps-r.pa)+'</td><td>'+r.homeW+'-'+r.homeL+'</td><td>'+r.awayW+'-'+r.awayL+'</td><td>'+r.streak+'</td><td>'+(r.move===null||r.move===0?'—':r.move>0?'▲ '+r.move:'▼ '+Math.abs(r.move))+'</td></tr>').join('')+'</tbody></table></div><h4>Group Games</h4><p class="muted">Away team on top · Home team on bottom. Cup scores and records are separate from regular-season standings.</p><div class="tmfl-tv-scorelist">'+(fixtures||'<p class="muted">No group games scheduled.</p>')+'</div></section>';
  }).join('')+tmflCupBracketHTML(d,false);
 }
 
