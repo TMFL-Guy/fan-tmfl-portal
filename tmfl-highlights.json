@@ -65,6 +65,16 @@
       "gameId": "",
       "announceTeam": "Cardinals",
       "publishedAt": "2026-11-25"
+    },
+    {
+      "id": "hl-1795650966067",
+      "title": "Carolina Wins on Walkoff Touchdown",
+      "fileId": "1xQzYjGelUKEBDKxWJI3T0w7nkYxDl6mA",
+      "week": 8,
+      "competition": "cup",
+      "gameId": "",
+      "announceTeam": "Panthers",
+      "publishedAt": "2026-11-25"
     }
   ]
 }
