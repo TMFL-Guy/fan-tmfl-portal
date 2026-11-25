@@ -68,8 +68,10 @@
       "away": "Texans",
       "date": "",
       "slot": "Group GOTW",
-      "homeScore": null,
-      "awayScore": null
+      "homeScore": 24,
+      "awayScore": 22,
+      "ot": true,
+      "otCount": 4
     },
     {
       "id": "GRPA02",
