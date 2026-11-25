@@ -545,9 +545,9 @@ function tmflDisciplineView(){
 let tmflCup=null,tmflCupLoaded=false;
 function tmflCupValid(d){
  if(!d||!Array.isArray(d.games)||!d.groups)return false;
- const games=d.games.filter(g=>g.stage==='group'),teams=Object.values(d.groups).flat();
- if(games.length!==48||new Set(games.map(g=>g.id)).size!==48||teams.length!==32||new Set(teams).size!==32)return false;
- return 'ABCDEFGH'.split('').every(k=>{const group=d.groups[k];if(!Array.isArray(group)||group.length!==4)return false;const list=games.filter(g=>g.group===k);return list.length===6&&list.every(g=>group.includes(g.home)&&group.includes(g.away)&&g.home!==g.away)&&group.every(t=>list.filter(g=>g.home===t||g.away===t).length===3)});
+ const keys='ABCDEFGH'.split(''),games=d.games.filter(g=>g.stage==='group'),teams=keys.flatMap(k=>d.groups[k]||[]);
+ if(teams.length<32||new Set(teams).size!==teams.length||!teams.every(t=>PROFILE_TEAMS.includes(t))||!TEAMS.every(t=>teams.includes(t))||new Set(games.map(g=>g.id)).size!==games.length)return false;
+ return games.every(g=>keys.includes(g.group))&&keys.every(k=>{const group=d.groups[k];if(!Array.isArray(group)||group.length<2)return false;const list=games.filter(g=>g.group===k);return list.length===group.length*(group.length-1)/2&&list.every(g=>group.includes(g.home)&&group.includes(g.away)&&g.home!==g.away)&&new Set(list.map(g=>[g.home,g.away].sort().join('|'))).size===list.length});
 }
 async function tmflLoadCup(){
  try{const r=await fetch('./tmfl-in-season-cup.json?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('In-Season Cup schedule not published');const d=await r.json();tmflCup=tmflCupValid(d)?d:null}catch(e){tmflCup=null}
