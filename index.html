@@ -468,15 +468,21 @@ async function tmflResetPassword(){
 async function tmflSignOut(){try{const {error}=await window.tmflSupabase.auth.signOut();if(error)throw error;tmflAuthMessage='You have signed out. Your local predictions remain saved on this device.';render();}catch(e){tmflShowAuthMessage(e.message||'Could not sign out.');}}
 window.tmflSignUp=tmflSignUp;window.tmflSignIn=tmflSignIn;window.tmflResetPassword=tmflResetPassword;window.tmflSignOut=tmflSignOut;
 
+let tmflDraftMode='regular';
+function tmflSelectDraft(mode){tmflDraftMode=mode;render()}
 async function tmflPublishedDraftView(){
+ const expansion=tmflDraftMode==='expansion';
+ const nav='<div class="panel"><h2>Draft Central</h2><div class="row"><button onclick="tmflSelectDraft(\'regular\')" '+(!expansion?'disabled':'')+'>Regular Draft</button><button onclick="tmflSelectDraft(\'expansion\')" '+(expansion?'disabled':'')+'>Expansion Draft</button></div></div>';
+ if(expansion){try{const response=await fetch('./tmfl-expansion-draft.json?updated='+Date.now(),{cache:'no-store'});if(response.status===404)return nav+'<div class="panel"><h3>Expansion Draft</h3><p>No expansion draft picks have been published yet.</p></div>';if(!response.ok)throw Error('Unable to load expansion draft');const data=await response.json();const picks=(Array.isArray(data)?data:data.entries||[]).filter(p=>p.published!==false).sort((a,b)=>Number(a.year)-Number(b.year)||Number(a.overall)-Number(b.overall));const rows=picks.map(p=>'<tr>'+[p.year,p.round,p.overall,p.team,p.player,p.number,p.source].map(v=>'<td>'+esc(String(v??'—'))+'</td>').join('')+'</tr>').join('');return nav+'<div class="panel"><h3>Expansion Draft</h3>'+(picks.length?'<div class="tmfl-draft-table-wrap"><table class="tmfl-draft-board"><thead><tr><th>Year</th><th>Round</th><th>Overall Pick</th><th>Team</th><th>Player</th><th>Jersey #</th><th>Previous Team / College</th></tr></thead><tbody>'+rows+'</tbody></table></div>':'<p>No expansion draft picks have been published yet.</p>')+'</div>'}catch(e){return nav+'<div class="panel"><h3>Expansion Draft</h3><p>Published expansion draft information is temporarily unavailable.</p></div>'}}
+
  try{
   const response=await fetch('./tmfl-draft.json?updated='+Date.now(),{cache:'no-store'});
   if(!response.ok)throw Error('Unable to load published draft');
   const data=await response.json();
   const picks=(Array.isArray(data)?data:Array.isArray(data.picks)?data.picks:[]).slice().sort((a,b)=>Number(a.year)-Number(b.year)||Number(a.overall)-Number(b.overall));
   const rows=picks.map(p=>'<tr><td>'+esc(String(p.year??'—'))+'</td><td>'+esc(String(p.round??'—'))+'</td><td>'+esc(String(p.overall??'—'))+'</td><td>'+esc(String(p.roundPick??'—'))+'</td><td>'+esc(String(p.team??'—'))+'</td><td><strong>'+esc(String(p.player??'—'))+'</strong></td><td>'+esc(String(p.college??'—'))+'</td></tr>').join('');
-  return '<div class="panel"><h2>Draft Central</h2><p>Official published TMFL draft picks.</p>'+(picks.length?'<div class="tmfl-draft-table-wrap"><table class="tmfl-draft-board"><thead><tr><th scope="col">Year</th><th scope="col">Round</th><th scope="col">Overall Pick</th><th scope="col">Round Pick</th><th scope="col">Team</th><th scope="col">Player</th><th scope="col">College</th></tr></thead><tbody>'+rows+'</tbody></table></div>':'<p>No draft picks have been published yet.</p>')+'</div>';
- }catch(error){return '<div class="panel"><h2>Draft Central</h2><p>Published draft information is temporarily unavailable.</p></div>'}
+  return nav+'<div class="panel"><h3>Regular Draft</h3><p>Official published TMFL draft picks.</p>'+(picks.length?'<div class="tmfl-draft-table-wrap"><table class="tmfl-draft-board"><thead><tr><th scope="col">Year</th><th scope="col">Round</th><th scope="col">Overall Pick</th><th scope="col">Round Pick</th><th scope="col">Team</th><th scope="col">Player</th><th scope="col">College</th></tr></thead><tbody>'+rows+'</tbody></table></div>':'<p>No draft picks have been published yet.</p>')+'</div>';
+ }catch(error){return nav+'<div class="panel"><h3>Regular Draft</h3><p>Published draft information is temporarily unavailable.</p></div>'}
 }
 
 // Official IR and suspension listings are read from the published league JSON.
