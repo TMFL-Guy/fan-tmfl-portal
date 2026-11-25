@@ -201,7 +201,7 @@ async function tmflLoadPublishedReplays(){
   if(!links||typeof links!=='object'||Array.isArray(links))throw Error('Invalid replay links');
   let changed=false;
   for(const [id,fileId] of Object.entries(links)){
-   if(!/^(W\d{2}G\d{2}|PRE\d+-[A-Z-]+|HOF-[A-Z-]+)$/.test(id)||!/^[A-Za-z0-9_-]{20,}$/.test(String(fileId)))continue;
+   if(!/^(W\d{2}G\d{2}|PRE\d+-[A-Z-]+|HOF-[A-Z-]+|GRP[A-H]\d{2}|CUP-K[1-6]-[1-8])$/.test(id)||!/^[A-Za-z0-9_-]{20,}$/.test(String(fileId)))continue;
    if(TMSN_REPLAYS[id]!==fileId){TMSN_REPLAYS[id]=fileId;changed=true}
   }
   if(changed&&tab==='tmsn'&&!tmsnSelected)render();
@@ -244,8 +244,20 @@ function tmflHighlightsView(){
  +(highlights.length?'<div class="tmsn-cards">'+highlights.map(h=>'<div class="tmsn-card"><div class="tmsn-live">'+(Number(h.week)===-1?'PRESEASON':'WEEK '+esc(h.week))+' · HIGHLIGHTS</div><h3>'+esc(h.title)+'</h3><button onclick="tmflSelectedHighlight='+JSON.stringify(h.id).replace(/"/g,'&quot;')+';render()"> Watch Highlights</button></div>').join('')+'</div>':!tmflHighlightsLoaded?'<p>Loading highlights…</p>':'<p class="muted">No highlight reels published yet. Check back soon.</p>')+'</div>';
 }
 // Keep the Google Drive iframe outside #app so portal re-renders cannot restart playback.
+let tmsnCupRequested=false;
+function tmsnCupGames(){
+ if(!tmflCup)return [];
+ const groups=tmflCup.games.filter(g=>g.stage==='group'&&g.away&&g.home&&['Group GOTW','Cup Semifinal','Cup Final','First Round GOTW','Quarterfinal GOTW','Primetime'].includes(tmflCupSlotLabel(g.slot))).map(g=>({...g,label:'Group '+g.group+' · Week '+g.week+' · '+tmflCupSlotLabel(g.slot)}));
+ const knockout=tmflCupBracket(tmflCup).flat().filter(m=>m.data.a?.team&&m.data.b?.team).map(m=>({id:m.id,away:m.data.a.team,home:m.data.b.team,label:m.label,awayScore:m.data.a.score,homeScore:m.data.b.score}));
+ return [...groups,...knockout];
+}
+function tmsnCupReplayView(){
+ if(!tmflCupLoaded)return '<section class="panel"><h2>In-Season Cup Replays</h2><p>Loading Cup schedule…</p></section>';
+ const games=tmsnCupGames();
+ return '<section class="panel"><h2>In-Season Cup Replays</h2><p class="muted">Televised group games and assigned knockout matchups.</p><div class="tmsn-cards">'+(games.map(g=>'<div class="tmsn-card"><div class="tmsn-live">'+esc(g.label)+' · '+(tmsnReplayId(g)?'REPLAY AVAILABLE':'AWAITING REPLAY')+'</div><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p>'+(Number.isFinite(g.awayScore)&&Number.isFinite(g.homeScore)?g.awayScore+' – '+g.homeScore:'')+'</p>'+(tmsnReplayId(g)?'<button onclick="tmsnOpenReplay(&quot;'+esc(g.id)+'&quot;)">Watch Replay</button>':'<p class="muted">Replay not uploaded yet</p>')+'</div>').join('')||'<p>No Cup broadcast matchups published yet.</p>')+'</div></section>';
+}
 function tmsnOpenReplay(gameId){
- const game=[...TMSN_SPECIAL_GAMES,...SCHEDULE].find(g=>g.id===gameId);
+ const game=[...TMSN_SPECIAL_GAMES,...SCHEDULE,...tmsnCupGames()].find(g=>g.id===gameId);
  if(!game||!tmsnReplayId(game))return;
  const existing=document.getElementById('tmsn-replay-modal');
  if(existing)existing.remove();
@@ -280,6 +292,7 @@ function tmsnOpenReplay(gameId){
 }
 
 function tmsnView(){
+ if(!tmflCupLoaded&&!tmsnCupRequested){tmsnCupRequested=true;tmflLoadCup();}
  if(!tmflHighlightsLoaded&&!tmflHighlightsRequest)tmflLoadHighlights();
  const available=[...TMSN_SPECIAL_GAMES,...SCHEDULE].filter(g=>tmsnAired(g));
  const weeks=[...new Set(available.map(g=>g.week))].sort((a,b)=>a-b);
@@ -302,7 +315,8 @@ function tmsnView(){
  const selected=available.find(g=>g.id===tmsnSelected&&tmsnReplayId(g));
 
  return '<div class="tmsn-hero"><div class="tmsn-live">TMFL SPORTS NETWORK · ON DEMAND</div><div class="tmsn-brand">TM<span>S</span>N</div><h2>Every Aired Game. Every Aired Moment.</h2><p class="tmsn-sub">Your home for TMFL full-game replays, scores, and weekly matchups — all inside the Fan Portal.</p><div class="grid"><div class="game"><strong>'+ready+'</strong><p>Replays available</p></div><div class="game"><strong>'+awaiting+'</strong><p>Replays awaiting upload</p></div><div class="game"><strong>18</strong><p>Regular-season weeks</p></div></div></div>'
- +tmflHighlightsView()
+  +tmflHighlightsView()
+ +tmsnCupReplayView()
  +'<div class="panel"><div class="row space"><div><h2>Game Replay Library</h2><p class="muted">All games with a TV slot other than Not Aired are scheduled for recording. Browse all weeks or filter by week and team; watch links appear after uploads.</p></div></div><div class="tmsn-controls"><label>Week <select onchange="tmsnWeek=this.value===&quot;all&quot;?&quot;all&quot;:Number(this.value);tmsnSelected=null;render()"><option value="all" '+(tmsnWeek==='all'?'selected':'')+'>All Weeks</option>'+weeks.map(w=>'<option value="'+w+'" '+(w===tmsnWeek?'selected':'')+'>'+(w===-1?'Preseason':'Week '+w)+'</option>').join('')+'</select></label><label>Team <select onchange="tmsnTeam=this.value;tmsnSelected=null;render()"><option value="all">All teams</option>'+teams.map(t=>'<option value="'+esc(t)+'" '+(t===tmsnTeam?'selected':'')+'>'+esc(t)+'</option>').join('')+'</select></label></div></div>'
  + (games.length?replayGroups:'<div class="panel"><p>No televised games match these filters.</p></div>')
  +'<div class="panel"><h3>About TMSN</h3><p>TMFL Sports Network is the official on-demand replay hub. Games are recorded, not livestreamed. Videos are hosted on Google Drive and become watchable here when their replay links are published.</p><button onclick="tab=\'home\';render()">Back to Fan Portal</button></div>';
@@ -501,7 +515,7 @@ function tmflCupValid(d){
 }
 async function tmflLoadCup(){
  try{const r=await fetch('./tmfl-in-season-cup.json?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('In-Season Cup schedule not published');const d=await r.json();tmflCup=tmflCupValid(d)?d:null}catch(e){tmflCup=null}
- tmflCupLoaded=true;if(tab==='in-season-cup'||tab==='isc-seeding-predictor'||(tab==='regular-schedule'&&tmflScheduleMode==='cup-tv'))render();
+ tmflCupLoaded=true;if(tab==='tmsn'||tab==='in-season-cup'||tab==='isc-seeding-predictor'||(tab==='regular-schedule'&&tmflScheduleMode==='cup-tv'))render();
 }
 
 function tmflCupBracket(d){
