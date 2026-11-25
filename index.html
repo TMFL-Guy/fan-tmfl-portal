@@ -299,6 +299,7 @@ function tmsnOpenReplay(gameId){
  document.body.append(overlay);
 }
 
+let tmsnReplayMode='regular';
 function tmsnView(){
  if(!tmflCupLoaded&&!tmsnCupRequested){tmsnCupRequested=true;tmflLoadCup();}
  if(!tmflHighlightsLoaded&&!tmflHighlightsRequest)tmflLoadHighlights();
@@ -318,15 +319,16 @@ function tmsnView(){
   }).join('');
   return '<section class="panel"><h3>'+title+'</h3><div class="tmsn-cards">'+cards+'</div></section>';
  }).join('');
- const ready=available.filter(g=>tmsnReplayId(g)).length;
- const awaiting=available.length-ready;
+ const library=tmsnReplayMode==='cup'?tmsnCupGames():available;
+ const ready=library.filter(g=>tmsnReplayId(g)).length;
+ const awaiting=library.length-ready;
  const selected=available.find(g=>g.id===tmsnSelected&&tmsnReplayId(g));
 
- return '<div class="tmsn-hero"><div class="tmsn-live">TMFL SPORTS NETWORK · ON DEMAND</div><div class="tmsn-brand">TM<span>S</span>N</div><h2>Every Aired Game. Every Aired Moment.</h2><p class="tmsn-sub">Your home for TMFL full-game replays, scores, and weekly matchups — all inside the Fan Portal.</p><div class="grid"><div class="game"><strong>'+ready+'</strong><p>Replays available</p></div><div class="game"><strong>'+awaiting+'</strong><p>Replays awaiting upload</p></div><div class="game"><strong>18</strong><p>Regular-season weeks</p></div></div></div>'
+ return '<div class="tmsn-hero"><div class="tmsn-live">TMFL SPORTS NETWORK · ON DEMAND</div><div class="tmsn-brand">TM<span>S</span>N</div><h2>Every Aired Game. Every Aired Moment.</h2><p class="tmsn-sub">Your home for TMFL full-game replays, scores, and weekly matchups — all inside the Fan Portal.</p><div class="grid"><div class="game"><strong>'+ready+'</strong><p>Replays available</p></div><div class="game"><strong>'+awaiting+'</strong><p>Replays awaiting upload</p></div><div class="game"><strong>'+(tmsnReplayMode==='cup'?'8':'18')+'</strong><p>'+(tmsnReplayMode==='cup'?'Cup groups':'Regular-season weeks')+'</p></div></div></div>'
   +tmflHighlightsView()
- +tmsnCupReplayView()
- +'<div class="panel"><div class="row space"><div><h2>Game Replay Library</h2><p class="muted">All games with a TV slot other than Not Aired are scheduled for recording. Browse all weeks or filter by week and team; watch links appear after uploads.</p></div></div><div class="tmsn-controls"><label>Week <select onchange="tmsnWeek=this.value===&quot;all&quot;?&quot;all&quot;:Number(this.value);tmsnSelected=null;render()"><option value="all" '+(tmsnWeek==='all'?'selected':'')+'>All Weeks</option>'+weeks.map(w=>'<option value="'+w+'" '+(w===tmsnWeek?'selected':'')+'>'+(w===-1?'Preseason':'Week '+w)+'</option>').join('')+'</select></label><label>Team <select onchange="tmsnTeam=this.value;tmsnSelected=null;render()"><option value="all">All teams</option>'+teams.map(t=>'<option value="'+esc(t)+'" '+(t===tmsnTeam?'selected':'')+'>'+esc(t)+'</option>').join('')+'</select></label></div></div>'
- + (games.length?replayGroups:'<div class="panel"><p>No televised games match these filters.</p></div>')
+ +'<div class="panel"><div class="row"><button aria-pressed="'+(tmsnReplayMode==='regular')+'" class="'+(tmsnReplayMode==='regular'?'active selected':'')+'" onclick="tmsnReplayMode=&quot;regular&quot;;render()">Regular Season</button><button aria-pressed="'+(tmsnReplayMode==='cup')+'" class="'+(tmsnReplayMode==='cup'?'active selected':'')+'" onclick="tmsnReplayMode=&quot;cup&quot;;render()">In-Season Cup</button></div></div>'
+ +(tmsnReplayMode==='cup'?tmsnCupReplayView():'<div class="panel"><div class="row space"><div><h2>Game Replay Library</h2><p class="muted">All games with a TV slot other than Not Aired are scheduled for recording. Browse all weeks or filter by week and team; watch links appear after uploads.</p></div></div><div class="tmsn-controls"><label>Week <select onchange="tmsnWeek=this.value===&quot;all&quot;?&quot;all&quot;:Number(this.value);tmsnSelected=null;render()"><option value="all" '+(tmsnWeek==='all'?'selected':'')+'>All Weeks</option>'+weeks.map(w=>'<option value="'+w+'" '+(w===tmsnWeek?'selected':'')+'>'+(w===-1?'Preseason':'Week '+w)+'</option>').join('')+'</select></label><label>Team <select onchange="tmsnTeam=this.value;tmsnSelected=null;render()"><option value="all">All teams</option>'+teams.map(t=>'<option value="'+esc(t)+'" '+(t===tmsnTeam?'selected':'')+'>'+esc(t)+'</option>').join('')+'</select></label></div></div>'
+ + (games.length?replayGroups:'<div class="panel"><p>No televised games match these filters.</p></div>'))
  +'<div class="panel"><h3>About TMSN</h3><p>TMFL Sports Network is the official on-demand replay hub. Games are recorded, not livestreamed. Videos are hosted on Google Drive and become watchable here when their replay links are published.</p><button onclick="tab=\'home\';render()">Back to Fan Portal</button></div>';
 }
 
