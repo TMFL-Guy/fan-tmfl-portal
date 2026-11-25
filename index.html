@@ -251,10 +251,18 @@ function tmsnCupGames(){
  const knockout=tmflCupBracket(tmflCup).flat().filter(m=>m.data.a?.team&&m.data.b?.team).map(m=>({id:m.id,away:m.data.a.team,home:m.data.b.team,label:m.label,awayScore:m.data.a.score,homeScore:m.data.b.score}));
  return [...groups,...knockout];
 }
+let tmsnCupGroup='all';
 function tmsnCupReplayView(){
  if(!tmflCupLoaded)return '<section class="panel"><h2>In-Season Cup Replays</h2><p>Loading Cup schedule…</p></section>';
  const games=tmsnCupGames();
- return '<section class="panel"><h2>In-Season Cup Replays</h2><p class="muted">Televised group games and assigned knockout matchups.</p><div class="tmsn-cards">'+(games.map(g=>'<div class="tmsn-card"><div class="tmsn-live">'+esc(g.label)+' · '+(tmsnReplayId(g)?'REPLAY AVAILABLE':'AWAITING REPLAY')+'</div><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p>'+(Number.isFinite(g.awayScore)&&Number.isFinite(g.homeScore)?g.awayScore+' – '+g.homeScore:'')+'</p>'+(tmsnReplayId(g)?'<button onclick="tmsnOpenReplay(&quot;'+esc(g.id)+'&quot;)">Watch Replay</button>':'<p class="muted">Replay not uploaded yet</p>')+'</div>').join('')||'<p>No Cup broadcast matchups published yet.</p>')+'</div></section>';
+ const sections=[...Array.from('ABCDEFGH',g=>({key:g,title:'Group '+g})),{key:'knockout',title:'Knockout Rounds'}];
+ const options=[{key:'all',title:'All Groups & Rounds'},...sections];
+ const cards=list=>list.map(g=>'<div class="tmsn-card"><div class="tmsn-live">'+esc(g.label)+' · '+(tmsnReplayId(g)?'REPLAY AVAILABLE':'AWAITING REPLAY')+'</div><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p>'+(Number.isFinite(g.awayScore)&&Number.isFinite(g.homeScore)?g.awayScore+' – '+g.homeScore:'')+'</p>'+(tmsnReplayId(g)?'<button onclick="tmsnOpenReplay(&quot;'+esc(g.id)+'&quot;)">Watch Replay</button>':'<p class="muted">Replay not uploaded yet</p>')+'</div>').join('');
+ const groups=sections.filter(g=>tmsnCupGroup==='all'||tmsnCupGroup===g.key).map(g=>{
+  const list=games.filter(m=>g.key==='knockout'?m.id.startsWith('CUP-K'):m.group===g.key);
+  return '<section style="margin-top:16px"><h3>'+esc(g.title)+'</h3><div class="tmsn-cards">'+(cards(list)||'<p class="muted">No broadcast matchups published yet.</p>')+'</div></section>';
+ }).join('');
+ return '<section class="panel"><h2>In-Season Cup Replays</h2><div class="tmsn-controls"><label>Group <select onchange="tmsnCupGroup=this.value;render()">'+options.map(g=>'<option value="'+g.key+'" '+(tmsnCupGroup===g.key?'selected':'')+'>'+esc(g.title)+'</option>').join('')+'</select></label></div><p class="muted">Televised group games and assigned knockout matchups.</p>'+groups+'</section>';
 }
 function tmsnOpenReplay(gameId){
  const game=[...TMSN_SPECIAL_GAMES,...SCHEDULE,...tmsnCupGames()].find(g=>g.id===gameId);
