@@ -163,8 +163,10 @@
       "away": "Broncos",
       "date": "",
       "slot": "Group GOTW",
-      "homeScore": null,
-      "awayScore": null
+      "homeScore": 32,
+      "awayScore": 30,
+      "ot": true,
+      "otCount": 3
     },
     {
       "id": "GRPB03",
