@@ -238,10 +238,9 @@ async function tmflLoadHighlights(){
 }
 function tmflHighlightsView(competition='regular'){
  const highlights=tmflHighlights.filter(h=>competition==='cup'?h.competition==='cup':h.competition!=='cup').sort((a,b)=>Number(b.week)-Number(a.week));
- const selected=highlights.find(h=>h.id===tmflSelectedHighlight);
  return '<div class="panel"><div class="row space"><div><h2>'+(competition==='cup'?'In-Season Cup Highlights':'Game Highlights')+'</h2><p class="muted">'+(competition==='cup'?'Top plays and highlight reels from the In-Season Cup.':'Top plays and highlight reels from the regular season and preseason.')+'</p></div><button onclick="tmflLoadHighlights()">Refresh Highlights</button></div>'
- +(selected?'<div class="panel"><div class="row space"><h3>'+esc(selected.title)+'</h3><button onclick="tmflSelectedHighlight=null;render()">Close Player</button></div><iframe class="tmsn-screen" src="https://drive.google.com/file/d/'+encodeURIComponent(selected.fileId)+'/preview" allow="autoplay; fullscreen" allowfullscreen title="TMFL highlight reel"></iframe></div>':'')
- +(highlights.length?'<div class="tmsn-cards">'+highlights.map(h=>'<div class="tmsn-card"><div class="tmsn-live">'+(Number(h.week)===-1?'PRESEASON':'WEEK '+esc(h.week))+' · HIGHLIGHTS</div><h3>'+esc(h.title)+'</h3><button onclick="tmflSelectedHighlight='+JSON.stringify(h.id).replace(/"/g,'&quot;')+';render()"> Watch Highlights</button></div>').join('')+'</div>':!tmflHighlightsLoaded?'<p>Loading highlights…</p>':'<p class="muted">No highlight reels published yet. Check back soon.</p>')+'</div>';
+
+ +(highlights.length?'<div class="tmsn-cards">'+highlights.map(h=>'<div class="tmsn-card"><div class="tmsn-live">'+(Number(h.week)===-1?'PRESEASON':'WEEK '+esc(h.week))+' · HIGHLIGHTS</div><h3>'+esc(h.title)+'</h3><button onclick="tmflOpenHighlight('+JSON.stringify(h.fileId).replace(/"/g,'&quot;')+')"> Watch Highlights</button></div>').join('')+'</div>':!tmflHighlightsLoaded?'<p>Loading highlights…</p>':'<p class="muted">No highlight reels published yet. Check back soon.</p>')+'</div>';
 }
 // Keep the Google Drive iframe outside #app so portal re-renders cannot restart playback.
 let tmsnCupRequested=false;
@@ -266,34 +265,45 @@ function tmsnCupReplayView(){
 }
 function tmsnOpenReplay(gameId){
  const game=[...TMSN_SPECIAL_GAMES,...SCHEDULE,...tmsnCupGames()].find(g=>g.id===gameId);
- if(!game||!tmsnReplayId(game))return;
+ if(game)tmsnOpenVideo(tmsnReplayId(game),game.away+' @ '+game.home+' — Full Game Replay');
+}
+function tmflOpenHighlight(fileId){
+ const h=tmflHighlights.find(x=>x.fileId===fileId);
+ if(h)tmsnOpenVideo(h.fileId,h.title);
+}
+function tmsnOpenVideo(fileId,videoTitle){
+ if(!/^[A-Za-z0-9_-]{20,}$/.test(String(fileId)))return;
  const existing=document.getElementById('tmsn-replay-modal');
+ if(existing?.dataset.fileId===fileId)return;
  if(existing)existing.remove();
  const overlay=document.createElement('div');
  overlay.id='tmsn-replay-modal';
+ overlay.dataset.fileId=fileId;
+ overlay.addEventListener('click',event=>event.stopPropagation());
+ overlay.addEventListener('pointerdown',event=>event.stopPropagation());
  overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box';
  const dialog=document.createElement('div');
  dialog.setAttribute('role','dialog');
  dialog.setAttribute('aria-modal','true');
- dialog.setAttribute('aria-label','TMSN full game replay');
+ dialog.setAttribute('aria-label','TMSN video player');
  dialog.style.cssText='width:min(1050px,100%);max-height:95vh;overflow:auto;background:#111827;color:#fff;border:1px solid #526071;border-radius:12px;padding:16px;box-sizing:border-box';
  const header=document.createElement('div');
  header.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:12px';
  const title=document.createElement('h3');
  title.style.cssText='color:#fff;margin:0';
- title.textContent=game.away+' @ '+game.home+' — Full Game Replay';
+ title.textContent=videoTitle;
  const close=document.createElement('button');
  close.textContent='✕ Close';
- close.setAttribute('aria-label','Close replay player');
+ close.setAttribute('aria-label','Close video player');
  close.onclick=()=>overlay.remove();
  header.append(title,close);
  const iframe=document.createElement('iframe');
  iframe.className='tmsn-screen';
- iframe.title='TMFL game replay';
+ iframe.title=videoTitle;
  iframe.allow='autoplay; fullscreen';
  iframe.allowFullscreen=true;
  iframe.style.cssText='display:block;width:100%;aspect-ratio:16/9;max-height:75vh;margin-top:12px;border:0';
- iframe.src='https://drive.google.com/file/d/'+encodeURIComponent(tmsnReplayId(game))+'/preview';
+ iframe.src='https://drive.google.com/file/d/'+encodeURIComponent(fileId)+'/preview';
  dialog.append(header,iframe);
  overlay.append(dialog);
  document.body.append(overlay);
@@ -816,7 +826,7 @@ function tmflGameCenterView(g){
  '<div class="tmfl-prob-grid"><div class="tmfl-prob-wheel" role="img" aria-label="'+esc(g.away)+' '+p.away+' percent, '+esc(g.home)+' '+p.home+' percent" style="background:conic-gradient(#aab4c5 0% '+p.away+'%,#c31938 '+p.away+'% 100%)"><div class="tmfl-prob-wheel-inner"><div><strong style="font-size:25px">'+p.away+'% / '+p.home+'%</strong><div class="muted">Pregame estimate</div></div></div></div>'+
  '<div><div class="tmfl-prob-row"><span>'+esc(g.away)+' · '+p.away+'%</span><span>'+esc(g.home)+' · '+p.home+'%</span></div><div class="tmfl-prob-bar" role="img" aria-label="Win probability split"><span style="width:'+p.away+'%;background:#aab4c5"></span><span style="width:'+p.home+'%;background:#c31938"></span></div>'+
  '</div></div></div>'+ 
- '<div class="panel"><h3>Game Highlights</h3>'+(gameHighlights.length?gameHighlights.map(h=>'<div class="game"><h4>'+esc(h.title)+'</h4><iframe class="tmsn-screen" loading="lazy" src="https://drive.google.com/file/d/'+encodeURIComponent(h.fileId)+'/preview" allow="autoplay; fullscreen" allowfullscreen title="'+esc(h.title)+'"></iframe></div>').join(''):'<p class="muted">No highlights published for this game yet.</p>')+'</div>'+ 
+ '<div class="panel"><h3>Game Highlights</h3>'+(gameHighlights.length?gameHighlights.map(h=>'<div class="game"><h4>'+esc(h.title)+'</h4><button onclick="tmflOpenHighlight(&quot;'+esc(h.fileId)+'&quot;)">Watch Highlights</button></div>').join(''):'<p class="muted">No highlights published for this game yet.</p>')+'</div>'+ 
  '<div class="panel"><h3>Matchup Details</h3><p>Game ID: '+esc(g.id)+' · Broadcast: '+esc(g.slot==='Not Aired'?'Not televised':g.slot||'Not Aired')+'</p><p>Official result: '+(v?result:'Not played / not published')+'</p><p class="muted">Additional Game Center features can be added here later.</p></div></div>';
 }
 function tmflRegularScheduleView(){
