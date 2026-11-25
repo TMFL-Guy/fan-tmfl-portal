@@ -579,8 +579,8 @@
     {
       "name": "Reggie White",
       "number": "92",
-      "school": "Tennessee",
-      "experience": "1"
+      "school": "",
+      "experience": ""
     }
   ],
   "Commanders": [
@@ -943,6 +943,22 @@
       "number": "80",
       "school": "Tulsa",
       "experience": "4"
+    }
+  ],
+  "Argonauts": [
+    {
+      "name": "Damonte Coxie",
+      "number": "86",
+      "school": "Memphis",
+      "experience": "Rookie"
+    }
+  ],
+  "Huskies": [
+    {
+      "name": "Jacob Moss",
+      "number": "84",
+      "school": "Marshall",
+      "experience": "Rookie"
     }
   ]
 }
