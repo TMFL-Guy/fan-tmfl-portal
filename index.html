@@ -593,7 +593,7 @@ function tmflCupView(){
  if(!tmflCupLoaded){tmflLoadCup();return '<section class="panel"><h2>TMFL In-Season Cup</h2><p>Checking Cup schedule…</p></section>'}
  if(!tmflCup)return '<section class="panel"><h2>TMFL In-Season Cup</h2><p>The 32-team knockout bracket is open for viewing. Matchups and scores will appear as the Commissioner publishes them.</p></section>'+tmflCupBracketHTML({knockout:{}},false);
  const d=tmflCup;
- return '<section class="panel"><h2>TMFL In-Season Cup</h2><p>32 teams · 8 groups · 79 Cup games · All 32 teams advance · NCAA overtime (no ties)</p><p>Starts TMFL Week '+Number(d.startWeek||1)+'</p></section>'+
+ return '<section class="panel"><h2>TMFL In-Season Cup</h2><p>'+Object.values(d.groups).flat().filter(Boolean).length+' teams · '+Object.keys(d.groups).length+' groups · '+(d.games.filter(g=>g.stage==='group').length+31)+' Cup games · NCAA overtime (no ties)</p><p>Starts TMFL Week '+Number(d.startWeek||1)+'</p></section>'+
  'ABCDEFGH'.split('').map(k=>{
   const a=d.groups[k]||[],gs=d.games.filter(g=>g.stage==='group'&&g.group===k);
   const completed=gs.filter(g=>Number.isFinite(g.homeScore)&&Number.isFinite(g.awayScore));
