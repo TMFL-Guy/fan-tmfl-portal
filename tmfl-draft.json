@@ -88,5 +88,23 @@
     "team": "Titans",
     "player": "Bruce Matthews",
     "college": "USC"
+  },
+  {
+    "year": "2026",
+    "round": "2",
+    "roundPick": "3",
+    "overall": "11",
+    "team": "Argonauts",
+    "player": "Damonte Coxie",
+    "college": "Memphis"
+  },
+  {
+    "year": "2026",
+    "round": "2",
+    "roundPick": "4",
+    "overall": "12",
+    "team": "Huskies",
+    "player": "Jacob Moss",
+    "college": "Marshall"
   }
 ]
