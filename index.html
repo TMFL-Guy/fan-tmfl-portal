@@ -247,7 +247,7 @@ let tmsnCupRequested=false;
 function tmsnCupGames(){
  if(!tmflCup)return [];
  const groups=tmflCup.games.filter(g=>g.stage==='group'&&g.away&&g.home&&['Group GOTW','Cup Semifinal','Cup Final','First Round GOTW','Quarterfinal GOTW','Primetime'].includes(tmflCupSlotLabel(g.slot))).map(g=>({...g,label:'Group '+g.group+' · Week '+g.week+' · '+tmflCupSlotLabel(g.slot)}));
- const knockout=tmflCupBracket(tmflCup).flat().filter(m=>m.data.a?.team&&m.data.b?.team).map(m=>({id:m.id,away:m.data.a.team,home:m.data.b.team,label:m.label,awayScore:m.data.a.score,homeScore:m.data.b.score}));
+ const knockout=tmflCupBracket(tmflCup).flat().filter(m=>m.data.a?.team&&m.data.b?.team).map(m=>({id:m.id,away:m.data.a.team,home:m.data.b.team,label:m.label,awayScore:m.data.a.score,homeScore:m.data.b.score,ot:m.data.ot,otCount:m.data.otCount}));
  return [...groups,...knockout];
 }
 let tmsnCupGroup='A';
@@ -256,7 +256,7 @@ function tmsnCupReplayView(){
  const games=tmsnCupGames();
  const sections=[...Array.from('ABCDEFGH',g=>({key:g,title:'Group '+g})),{key:'knockout',title:'Knockout Rounds'}];
  const options=sections;
- const cards=list=>list.map(g=>'<div class="tmsn-card"><div class="tmsn-live">'+esc(g.label)+' · '+(tmsnReplayId(g)?'REPLAY AVAILABLE':'AWAITING REPLAY')+'</div><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p>'+(Number.isFinite(g.awayScore)&&Number.isFinite(g.homeScore)?g.awayScore+' – '+g.homeScore:'')+'</p>'+(tmsnReplayId(g)?'<button onclick="tmsnOpenReplay(&quot;'+esc(g.id)+'&quot;)">Watch Replay</button>':'<p class="muted">Replay not uploaded yet</p>')+'</div>').join('');
+ const cards=list=>list.map(g=>'<div class="tmsn-card"><div class="tmsn-live">'+esc(g.label)+' · '+(tmsnReplayId(g)?'REPLAY AVAILABLE':'AWAITING REPLAY')+'</div><h3>'+esc(g.away)+' @ '+esc(g.home)+'</h3><p>'+(Number.isFinite(g.awayScore)&&Number.isFinite(g.homeScore)?g.awayScore+' – '+g.homeScore+' · '+tmflCupFinalStatus(g):'')+'</p>'+(tmsnReplayId(g)?'<button onclick="tmsnOpenReplay(&quot;'+esc(g.id)+'&quot;)">Watch Replay</button>':'<p class="muted">Replay not uploaded yet</p>')+'</div>').join('');
  const groups=sections.filter(g=>tmsnCupGroup===g.key).map(g=>{
   const list=games.filter(m=>g.key==='knockout'?m.id.startsWith('CUP-K'):m.group===g.key);
   return '<section style="margin-top:16px"><h3>'+esc(g.title)+'</h3><div class="tmsn-cards">'+(cards(list)||'<p class="muted">No broadcast matchups published yet.</p>')+'</div></section>';
@@ -542,6 +542,7 @@ function tmflCupBracket(d){
  const counts=[8,8,8,4,2,1],labels=['Opening Round','Second Round','Third Round','Quarterfinals','Semifinals','Championship'];
  return counts.map((count,i)=>Array.from({length:count},(_,j)=>({id:'CUP-K'+(i+1)+'-'+(j+1),round:i+1,label:labels[i],data:(d.knockout||{})['CUP-K'+(i+1)+'-'+(j+1)]||{}})));
 }
+function tmflCupFinalStatus(g){return g.ot?'Final/'+(Number.isSafeInteger(g.otCount)&&g.otCount>=2?g.otCount:'')+'OT':'Final'}
 function tmflCupBracketHTML(d,editable){
  const escCup=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const rounds=tmflCupBracket(d),centers=[
@@ -561,7 +562,7 @@ function tmflCupBracketHTML(d,editable){
  const links='<svg class="tmfl-cup-connectors" viewBox="0 0 '+width+' '+height+'" width="'+width+'" height="'+height+'" aria-hidden="true">'+paths.join('')+'</svg>';
  const html=rounds.map((matches,i)=>'<div class="tmfl-cup-round" style="left:'+(i*step)+'px;width:'+columnWidth+'px"><h4>'+matches[0].label+'</h4>'+matches.map((m,j)=>{
  const line=k=>{const t=m.data[k]||{},seed=t.seed??'',team=t.team||'',score=t.score??'';return '<div class="tmfl-cup-team"><span class="tmfl-cup-seed">'+escCup(seed||'–')+'</span><span class="tmfl-cup-name">'+escCup(team||'TBD')+'</span><strong class="tmfl-cup-score">'+escCup(score===''?'–':score)+'</strong></div>'};
- return '<div class="tmfl-cup-match" style="top:'+(centers[i][j]-37)+'px"><small>'+m.id+'</small>'+line('a')+line('b')+'</div>';
+ return '<div class="tmfl-cup-match" style="top:'+(centers[i][j]-37)+'px"><small>'+m.id+(Number.isFinite(m.data.a?.score)&&Number.isFinite(m.data.b?.score)?' · '+tmflCupFinalStatus(m.data):'')+'</small>'+line('a')+line('b')+'</div>';
  }).join('')+'</div>').join('');
  return '<section class="panel"><h3>32-Team Knockout Bracket</h3><p>Seeds 1–8 enter Round 3; 9–16 enter Round 2; 17–32 enter Round 1. Matchups and results are entered manually by the Commissioner.</p><div class="tmfl-cup-scroll"><div class="tmfl-cup-bracket tmfl-cup-connected" style="width:'+width+'px;height:'+height+'px">'+links+html+'</div></div></section>';
 }
@@ -598,7 +599,7 @@ function tmflCupView(){
    const final=Number.isFinite(g.awayScore)&&Number.isFinite(g.homeScore);
    const winner=final?(g.awayScore>g.homeScore?'away':g.homeScore>g.awayScore?'home':''):'';
    const slot=tmflCupSlotLabel(g.slot);
-   return '<div class="tmfl-tv-scorecard"><div class="tmfl-tv-scorecard-main"><div class="tmfl-tv-card-meta"><strong>WEEK '+esc(g.week||'—')+' · '+esc(g.id)+'</strong><span>'+(final?'FINAL':'UPCOMING')+(slot?' · '+esc(slot):'')+'</span></div><div class="tmfl-tv-score-row '+(winner==='away'?'tmfl-tv-winner':'')+'"><span class="tmfl-tv-team">'+esc(g.away||'TBD')+'</span><span class="tmfl-tv-points">'+(final?g.awayScore:'–')+'</span></div><div class="tmfl-tv-score-row '+(winner==='home'?'tmfl-tv-winner':'')+'"><span class="tmfl-tv-team">'+esc(g.home||'TBD')+'</span><span class="tmfl-tv-points">'+(final?g.homeScore:'–')+'</span></div></div></div>';
+   return '<div class="tmfl-tv-scorecard"><div class="tmfl-tv-scorecard-main"><div class="tmfl-tv-card-meta"><strong>WEEK '+esc(g.week||'—')+' · '+esc(g.id)+'</strong><span>'+(final?tmflCupFinalStatus(g):'UPCOMING')+(slot?' · '+esc(slot):'')+'</span></div><div class="tmfl-tv-score-row '+(winner==='away'?'tmfl-tv-winner':'')+'"><span class="tmfl-tv-team">'+esc(g.away||'TBD')+'</span><span class="tmfl-tv-points">'+(final?g.awayScore:'–')+'</span></div><div class="tmfl-tv-score-row '+(winner==='home'?'tmfl-tv-winner':'')+'"><span class="tmfl-tv-team">'+esc(g.home||'TBD')+'</span><span class="tmfl-tv-points">'+(final?g.homeScore:'–')+'</span></div></div></div>';
   }).join('');
   return '<section class="panel"><h3>Group '+k+'</h3><p class="muted" style="margin:8px 0">Scroll to view rest of table</p><div style="width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="min-width:1080px"><thead><tr><th>Team</th><th>Record</th><th>Win %</th><th>Pts</th><th>PS</th><th>PA</th><th>Diff</th><th>Home</th><th>Away</th><th>Streak</th><th>Move</th></tr></thead><tbody>'+table.map(r=>'<tr><td>'+esc(r.t)+'</td><td>'+r.w+'-'+r.l+'</td><td>'+(r.w+r.l?r.w/(r.w+r.l):0).toFixed(3)+'</td><td>'+r.pts+'</td><td>'+r.ps+'</td><td>'+r.pa+'</td><td>'+(r.ps-r.pa)+'</td><td>'+r.homeW+'-'+r.homeL+'</td><td>'+r.awayW+'-'+r.awayL+'</td><td>'+r.streak+'</td><td>'+(r.move===null||r.move===0?'—':r.move>0?'▲ '+r.move:'▼ '+Math.abs(r.move))+'</td></tr>').join('')+'</tbody></table></div><p class="muted">Tiebreakers: Win % → Pts → PS → PA (fewest) → Diff → Home Win % → Away Win %. Streak and Move do not break ties.</p><h4>Group Games</h4><p class="muted">Cup scores and records are separate from regular-season standings.</p><div class="tmfl-tv-scorelist">'+(fixtures||'<p class="muted">No group games scheduled.</p>')+'</div></section>';
  }).join('')+tmflCupBracketHTML(d,false);
