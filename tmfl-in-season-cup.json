@@ -12,7 +12,8 @@
       "Texans",
       "Jaguars",
       "Cowboys",
-      "Commanders"
+      "Commanders",
+      "Sentinels"
     ],
     "B": [
       "Falcons",
@@ -25,7 +26,8 @@
       "Saints",
       "Bengals",
       "Rams",
-      "Panthers"
+      "Panthers",
+      "Brahmas"
     ],
     "D": [
       "Chargers",
@@ -787,6 +789,102 @@
       "week": 10,
       "home": "Huskies",
       "away": "Seahawks",
+      "date": "",
+      "slot": "",
+      "homeScore": null,
+      "awayScore": null
+    },
+    {
+      "id": "GRPA07",
+      "stage": "group",
+      "group": "A",
+      "round": 4,
+      "away": "Sentinels",
+      "home": "Texans",
+      "date": "",
+      "slot": "",
+      "homeScore": null,
+      "awayScore": null
+    },
+    {
+      "id": "GRPA08",
+      "stage": "group",
+      "group": "A",
+      "round": 4,
+      "away": "Jaguars",
+      "home": "Sentinels",
+      "date": "",
+      "slot": "",
+      "homeScore": null,
+      "awayScore": null
+    },
+    {
+      "id": "GRPA09",
+      "stage": "group",
+      "group": "A",
+      "round": 5,
+      "away": "Sentinels",
+      "home": "Cowboys",
+      "date": "",
+      "slot": "",
+      "homeScore": null,
+      "awayScore": null
+    },
+    {
+      "id": "GRPA10",
+      "stage": "group",
+      "group": "A",
+      "round": 5,
+      "away": "Commanders",
+      "home": "Sentinels",
+      "date": "",
+      "slot": "",
+      "homeScore": null,
+      "awayScore": null
+    },
+    {
+      "id": "GRPC07",
+      "stage": "group",
+      "group": "C",
+      "round": 4,
+      "away": "Brahmas",
+      "home": "Saints",
+      "date": "",
+      "slot": "",
+      "homeScore": null,
+      "awayScore": null
+    },
+    {
+      "id": "GRPC08",
+      "stage": "group",
+      "group": "C",
+      "round": 4,
+      "away": "Bengals",
+      "home": "Brahmas",
+      "date": "",
+      "slot": "",
+      "homeScore": null,
+      "awayScore": null
+    },
+    {
+      "id": "GRPC09",
+      "stage": "group",
+      "group": "C",
+      "round": 5,
+      "away": "Brahmas",
+      "home": "Rams",
+      "date": "",
+      "slot": "",
+      "homeScore": null,
+      "awayScore": null
+    },
+    {
+      "id": "GRPC10",
+      "stage": "group",
+      "group": "C",
+      "round": 5,
+      "away": "Panthers",
+      "home": "Brahmas",
       "date": "",
       "slot": "",
       "homeScore": null,
