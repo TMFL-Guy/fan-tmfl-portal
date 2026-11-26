@@ -177,7 +177,7 @@
       "home": "Falcons",
       "away": "Broncos",
       "date": "",
-      "slot": "Group GOTW",
+      "slot": "",
       "homeScore": null,
       "awayScore": null
     },
@@ -333,7 +333,7 @@
       "home": "Chargers",
       "away": "Raiders",
       "date": "",
-      "slot": "Group GOTW",
+      "slot": "",
       "homeScore": null,
       "awayScore": null
     },
@@ -723,7 +723,7 @@
       "home": "Broncos",
       "away": "Argonauts",
       "date": "",
-      "slot": "",
+      "slot": "Group GOTW",
       "homeScore": null,
       "awayScore": null
     },
@@ -775,7 +775,7 @@
       "home": "Raiders",
       "away": "Huskies",
       "date": "",
-      "slot": "",
+      "slot": "Group GOTW",
       "homeScore": null,
       "awayScore": null
     },
