@@ -1,3 +1,24 @@
 {
-  "videos": []
+  "videos": [
+    {
+      "id": "tn-1795712680342",
+      "title": "Argonauts Welcome Video",
+      "fileId": "1AEHmCpJAH58gYCwHF1KHIxob2ZAogAlR",
+      "description": "The TMFL has expanded again, and the first new franchise is the Toronto Argonauts",
+      "category": "Uniform Reveal",
+      "date": "2026-11-26",
+      "featured": false,
+      "announce": true
+    },
+    {
+      "id": "tn-1795712749558",
+      "title": "Huskies Welcome Video",
+      "fileId": "1pva7Aj-prD1AW2rUT60GgdO2APQCXF9-",
+      "description": "The league has expanded, and the next franchise is the Utah Huskies.",
+      "category": "Uniform Reveal",
+      "date": "2026-11-26",
+      "featured": false,
+      "announce": true
+    }
+  ]
 }
