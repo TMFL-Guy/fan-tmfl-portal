@@ -1,4 +1,4 @@
-const CACHE='tmfl-fan-v17-random-kick-loader';
+const CACHE='tmfl-fan-v18-intro-playback';
 const ASSETS=['./index.html','./manifest.webmanifest','./tmfl-icon-512.png','./tmfl-news.json','./tmfl-draft.json'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
@@ -22,6 +22,7 @@ self.addEventListener('fetch',event=>{
  const req=event.request;
  if(req.method!=='GET'||new URL(req.url).origin!==self.location.origin)return;
  const url=new URL(req.url);
+ if(/\/intro-(argonauts|huskies)\.html$/.test(url.pathname))return;
  if(req.mode==='navigate'){
   event.respondWith((async()=>{
    const cache=await caches.open(CACHE);
